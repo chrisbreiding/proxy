@@ -95,7 +95,7 @@ app.get('/weather', (req, res) => {
   })
 })
 
-const port = 3333
+const port = process.env.PORT || 3333
 
 app.listen(port, () => {
   console.log(`listening on port ${port}...`) // eslint-disable-line no-console
