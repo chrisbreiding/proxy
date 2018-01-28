@@ -1,0 +1,21 @@
+{
+  "name": "weather-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "prod": "node ./index.js",
+    "start": "nodemon ./index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.15.0",
+    "eslint-plugin-cypress-dev": "^1.1.2",
+    "nodemon": "^1.14.11"
+  }
+}
