@@ -95,6 +95,10 @@ app.get('/weather', (req, res) => {
   })
 })
 
+app.get('/test', (req, res) => {
+  res.json({ ok: true })
+})
+
 const port = process.env.PORT || 3333
 
 app.listen(port, () => {
