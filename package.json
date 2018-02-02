@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "dev": "nodemon ./index.js",
     "prod": "node ./index.js",
-    "start": "nodemon ./index.js"
+    "start": "nf start --procfile ./Procfile_dev --port 3333"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
@@ -14,8 +15,10 @@
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.1",
     "eslint": "^4.15.0",
     "eslint-plugin-cypress-dev": "^1.1.2",
+    "foreman": "^2.0.0",
     "nodemon": "^1.14.11"
   }
 }
