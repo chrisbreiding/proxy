@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon ./index.js",
     "prod": "node ./index.js",
+    "lint": "eslint *.js lib/*.js --fix",
     "start": "nf start --procfile ./Procfile_dev --port 3333"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
   "devDependencies": {
     "babel-eslint": "^8.2.1",
     "eslint": "^4.15.0",
+    "eslint-plugin-crb": "^1.0.0",
     "eslint-plugin-cypress-dev": "^1.1.2",
     "foreman": "^2.0.0",
     "nodemon": "^1.14.11"
