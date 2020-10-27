@@ -2,6 +2,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const express = require('express')
 
+const garage = require('./lib/garage')
 const location = require('./lib/location')
 const weather = require('./lib/weather')
 
@@ -19,6 +20,8 @@ app.use((req, res, next) => {
   next()
 })
 
+app.get('/garage-states', garage.get)
+app.post('/garage-states', garage.set)
 app.get('/location-search', location.search)
 app.get('/location-details', location.details)
 app.get('/weather', weather.get)
