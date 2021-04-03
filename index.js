@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/garage-states', garage.get)
-app.post('/garage-states', garage.set)
+app.post('/garage-states/:door/:state', garage.set)
 app.get('/location-search', location.search)
 app.get('/location-details', location.details)
 app.get('/weather', weather.get)
