@@ -12,6 +12,7 @@
     body {
       color: #f8f8f8;
       display: flex;
+      font-family: sans-serif;
       justify-content: center;
       padding-top: 2em;
     }
@@ -20,12 +21,13 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      margin: 1em;
+      margin: 1em 0.4em;
       min-width: 140px;
     }
     .state-icon {
       background-color: blue;
       height: 100px;
+      -webkit-mask-size: 100px;
       mask-size: 100px;
       width: 100px;
     }
@@ -42,14 +44,14 @@
   <div class="state">
     <div
       class="state-icon state-icon-{{states.left}}"
-      style="mask-image: url(/garage-{{states.left}}.png)"
+      style="mask-image: url(/garage-{{states.left}}.png); -webkit-mask-image: url(/garage-{{states.left}}.png);"
     ></div>
     <p>Left: {{states.left}}</p>
   </div>
   <div class="state">
     <div
       class="state-icon state-icon-{{states.right}}"
-      style="mask-image: url(/garage-{{states.right}}.png)"
+      style="mask-image: url(/garage-{{states.right}}.png); -webkit-mask-image: url(/garage-{{states.right}}.png);"
     ></div>
     <p>Right: {{states.right}}</p>
   </div>
