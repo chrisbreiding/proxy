@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const express = require('express')
+const handlebars = require('express-handlebars')
 
 const garage = require('./lib/garage')
 const location = require('./lib/location')
@@ -8,6 +9,10 @@ const weather = require('./lib/weather')
 
 const app = express()
 
+app.engine('.hbs', handlebars({ extname: '.hbs' }))
+app.set('view engine', '.hbs')
+
+app.use(express.static('public'))
 app.use(cors({
   origin: [
     /^http:\/\/(\w+\.)?local(host)?:\d{4}$/,
@@ -22,6 +27,7 @@ app.use((req, res, next) => {
 
 app.get('/garage-states', garage.get)
 app.post('/garage-states/:door/:state', garage.set)
+app.get('/garage-states.html', garage.view)
 app.get('/location-search', location.search)
 app.get('/location-details', location.details)
 app.get('/weather', weather.get)
