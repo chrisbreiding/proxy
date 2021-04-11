@@ -6,7 +6,7 @@
     "dev": "nodemon ./index.js",
     "prod": "node ./index.js",
     "lint": "eslint *.js lib/*.js --fix",
-    "start": "nf start --procfile ./Procfile_dev --port 3333"
+    "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
