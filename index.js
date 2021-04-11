@@ -25,9 +25,17 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/garage-states', garage.get)
-app.post('/garage-states/:door/:state', garage.set)
-app.get('/garage-states.html', garage.view)
+const ensureApiKey = (req, res, next) => {
+  if (req.params.key !== process.env.API_KEY) {
+    return res.sendStatus(403)
+  }
+
+  next()
+}
+
+app.get('/garage-states/:key', ensureApiKey, garage.get)
+app.post('/garage-states/:door/:state/:key', ensureApiKey, garage.set)
+app.get('/garage/:key', ensureApiKey, garage.view)
 app.get('/location-search', location.search)
 app.get('/location-details', location.details)
 app.get('/weather', weather.get)
