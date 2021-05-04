@@ -8,6 +8,9 @@
     "lint": "eslint *.js lib/*.js --fix",
     "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333"
   },
+  "nodemonConfig": {
+    "ignore": ["*.json"]
+  },
   "dependencies": {
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",

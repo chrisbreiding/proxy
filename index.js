@@ -35,6 +35,7 @@ const ensureApiKey = (req, res, next) => {
 
 app.get('/garage-states/:key', ensureApiKey, garage.get)
 app.post('/garage-states/:door/:state/:key', ensureApiKey, garage.set)
+app.post('/garage/notify-on-open/:notifyOnOpen/:key', ensureApiKey, garage.setNotifyOnOpen)
 app.get('/garage/:key', ensureApiKey, garage.view)
 app.get('/location-search', location.search)
 app.get('/location-details', location.details)
