@@ -3,6 +3,7 @@ const cors = require('cors')
 const express = require('express')
 const handlebars = require('express-handlebars')
 
+const dashboard = require('./lib/dashboard')
 const garage = require('./lib/garage')
 const location = require('./lib/location')
 const weather = require('./lib/weather')
@@ -33,6 +34,7 @@ const ensureApiKey = (req, res, next) => {
   next()
 }
 
+app.get('/dashboard/:key', ensureApiKey, dashboard.get)
 app.get('/garage-states/:key', ensureApiKey, garage.get)
 app.post('/garage-states/:door/:state/:key', ensureApiKey, garage.set)
 app.post('/garage/notify-on-open/:notifyOnOpen/:key', ensureApiKey, garage.setNotifyOnOpen)
