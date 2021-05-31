@@ -5,6 +5,9 @@ const handlebars = require('express-handlebars')
 const http = process.env.NODE_ENV === 'development' ? require('http') : require('https')
 const socketIO = require('socket.io')
 
+// eslint-disable-next-line no-console
+console.log('process.env.NODE_ENV:', process.env.NODE_ENV)
+
 const dashboard = require('./lib/dashboard')
 const garage = require('./lib/garage')
 const location = require('./lib/location')
@@ -16,6 +19,9 @@ const server = http.createServer(app)
 const io = socketIO(server, {
   serveClient: false,
 })
+
+// eslint-disable-next-line no-console
+console.log('below creating io')
 
 app.engine('.hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
