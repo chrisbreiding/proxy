@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon ./index.js",
-    "prod": "NODE_ENV=production node ./index.js",
+    "prod": "node ./index.js",
     "lint": "eslint *.js lib/*.js --fix",
     "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333"
   },
