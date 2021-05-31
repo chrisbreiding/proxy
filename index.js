@@ -2,7 +2,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const express = require('express')
 const handlebars = require('express-handlebars')
-const http = process.env.NODE_ENV === 'development' ? require('http') : require('https')
+const http = require('http')
 const morgan = require('morgan')
 const socketIO = require('socket.io')
 
@@ -21,7 +21,7 @@ const io = socketIO(server, {
 app.engine('.hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
 
-if (process.env.LOG_REQUESTS) {
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'))
 }
 
