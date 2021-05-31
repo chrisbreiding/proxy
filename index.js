@@ -2,6 +2,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const express = require('express')
 const handlebars = require('express-handlebars')
+const http = process.env.NODE_ENV === 'development' ? require('http') : require('https')
+const socketIO = require('socket.io')
 
 const dashboard = require('./lib/dashboard')
 const garage = require('./lib/garage')
@@ -10,6 +12,10 @@ const notion = require('./lib/notion')
 const weather = require('./lib/weather')
 
 const app = express()
+const server = http.createServer(app)
+const io = socketIO(server, {
+  serveClient: false,
+})
 
 app.engine('.hbs', handlebars({ extname: '.hbs' }))
 app.set('view engine', '.hbs')
@@ -51,6 +57,10 @@ app.get('/test', (req, res) => {
 
 const port = process.env.PORT || 3333
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+  notion.onSocket(socket)
+})
+
+server.listen(port, () => {
   console.log(`listening on port ${port}...`) // eslint-disable-line no-console
 })
