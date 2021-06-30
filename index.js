@@ -30,7 +30,8 @@ app.use(cors({
   origin: [
     /^http:\/\/(\w+\.)?local(host)?:\d{4}$/,
     /^https:\/\/\w+\.crbapps\.com$/,
-    /^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/,
+    // uncomment to allow ngrok requests
+    // /^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/,
   ],
 }))
 app.use(bodyParser.json())
