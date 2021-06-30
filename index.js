@@ -25,15 +25,17 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'))
 }
 
+const corsOrigins = [
+  /^http:\/\/(\w+\.)?local(host)?:\d{4}$/,
+  /^https:\/\/\w+\.crbapps\.com$/,
+]
+
+if (process.env.ALLOW_NGROK === 'TRUE') {
+  corsOrigins.push(/^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/)
+}
+
 app.use(express.static('public'))
-app.use(cors({
-  origin: [
-    /^http:\/\/(\w+\.)?local(host)?:\d{4}$/,
-    /^https:\/\/\w+\.crbapps\.com$/,
-    // uncomment to allow ngrok requests
-    // /^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/,
-  ],
-}))
+app.use(cors({ origin: corsOrigins }))
 app.use(bodyParser.json())
 app.use((req, res, next) => {
   res.set('Content-Type', 'application/json')
