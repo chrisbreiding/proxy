@@ -2,7 +2,7 @@
   "cron": [
     {
       "command": "npm run update-quests-weather",
-      "schedule": "0 4,10,16,22 * * *"
+      "schedule": "0 10,16,22 * * *"
     }
   ]
 }
