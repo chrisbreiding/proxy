@@ -7,7 +7,7 @@
     "prod": "node ./index.js",
     "lint": "eslint *.js lib/*.js --fix",
     "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333",
-    "update-quests-weather": "node ./lib/notion/update-quests-weather.js"
+    "update-current-weather": "node ./lib/notion/update-current-weather.js",
   },
   "nodemonConfig": {
     "ignore": [
@@ -22,6 +22,7 @@
     "express": "^4.16.2",
     "express-handlebars": "^5.3.0",
     "fs-extra": "^10.0.0",
+    "minimist": "^1.2.5",
     "morgan": "^1.10.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
