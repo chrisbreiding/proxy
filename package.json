@@ -7,7 +7,8 @@
     "prod": "node ./index.js",
     "lint": "eslint *.js lib/*.js --fix",
     "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333",
-    "get-block-id": "node ./lib/notion/get-block-id.js",
+    "get-block-id": "NODE_ENV=development node ./lib/notion/get-block-id.js",
+    "add-year": "NODE_ENV=development node ./lib/notion/add-year.js",
     "update-current-weather": "node ./lib/notion/update-current-weather.js",
     "update-upcoming-weather": "node ./lib/notion/update-upcoming-weather.js"
   },
