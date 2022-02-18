@@ -59,24 +59,35 @@
   <script>
     const addButton = document.querySelector('.add')
     const running = document.querySelector('.running')
-    const success = document.querySelector('.success')
-    const error = document.querySelector('.error')
+    const successMessage = document.querySelector('.success')
+    const errorMessage = document.querySelector('.error')
 
     const show = (el) => { el.classList.remove('hide') }
     const hide = (el) => { el.classList.add('hide') }
+    const showError = (error) => {
+      errorMessage.querySelector('.message').innerText = `Error: ${error.message}`
+      show(errorMessage)
+    }
 
     addButton.addEventListener('click', () => {
       hide(addButton)
       show(running)
 
       fetch(location.href, { method: 'POST' })
-      .then(() => {
+      .then((res) => {
         hide(running)
-        show(success)
+
+        if (res.ok) {
+          show(successMessage)
+        } else {
+          res.json().then((error) => {
+            showError(error)
+          })
+        }
       })
-      .catch(() => {
+      .catch((error) => {
         hide(running)
-        show(error)
+        showError(error)
       })
     })
 
