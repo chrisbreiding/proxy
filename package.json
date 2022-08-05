@@ -11,8 +11,11 @@
     "add-year": "NODE_ENV=development node ./lib/notion/add-year.js",
     "year-in-review": "NODE_ENV=development node ./lib/notion/year-in-review.js",
     "update-current-weather": "node ./lib/notion/update-current-weather.js",
+    "update-current-weather-dev": "NODE_ENV=development node ./lib/notion/update-current-weather.js",
     "update-upcoming-weather": "node ./lib/notion/update-upcoming-weather.js",
-    "update-restaurants-last-visit": "node ./lib/notion/update-restaurants-last-visit.js"
+    "update-upcoming-weather-dev": "NODE_ENV=development node ./lib/notion/update-upcoming-weather.js",
+    "update-restaurants-last-visit": "node ./lib/notion/update-restaurants-last-visit.js",
+    "update-restaurants-last-visit-dev": "NODE_ENV=development node ./lib/notion/update-restaurants-last-visit.js"
   },
   "nodemonConfig": {
     "ignore": [
