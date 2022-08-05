@@ -7,6 +7,10 @@
     {
       "command": "npm run update-current-weather",
       "schedule": "0,15,30,45 0-4,11-23 * * *"
+    },
+    {
+      "command": "npm run update-restaurants-last-visit",
+      "schedule": "0 4 * * *"
     }
   ]
 }
