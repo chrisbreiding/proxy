@@ -1,15 +1,15 @@
 {
   "cron": [
     {
-      "command": "npm run update-upcoming-weather",
+      "command": "npm run daytime-hourly",
       "schedule": "0 0-4,11-23 * * *"
     },
     {
-      "command": "npm run update-current-weather",
+      "command": "npm run daytime-quarter-hourly",
       "schedule": "0,15,30,45 0-4,11-23 * * *"
     },
     {
-      "command": "npm run update-restaurants-last-visit",
+      "command": "npm run nightly",
       "schedule": "0 4 * * *"
     }
   ]
