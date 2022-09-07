@@ -2,9 +2,6 @@
   "extends": [
     "plugin:crb/general"
   ],
-  "rules": {
-    "padding-line-between-statements": "off"
-  },
   "env": {
     "node": true
   },

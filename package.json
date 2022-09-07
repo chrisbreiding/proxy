@@ -2,6 +2,9 @@
   "name": "proxy",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "16.17.0"
+  },
   "scripts": {
     "dev": "nodemon ./index.js",
     "prod": "node ./index.js",
@@ -36,10 +39,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.1",
-    "eslint": "^4.15.0",
-    "eslint-plugin-crb": "^1.0.0",
-    "eslint-plugin-cypress-dev": "^1.1.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-crb": "^2.0.3",
     "foreman": "^2.0.0",
     "nodemon": "^1.14.11"
   }
