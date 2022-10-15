@@ -43,5 +43,6 @@
     "eslint-plugin-crb": "^2.0.3",
     "foreman": "^2.0.0",
     "nodemon": "^1.19.4"
-  }
+  },
+  "packageManager": "yarn@3.2.4"
 }
