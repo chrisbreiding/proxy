@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "16.18.0",
-    "yarn": "3.2.4"
+    "node": "16.18.0"
   },
   "scripts": {
     "dev": "nodemon ./index.js",
