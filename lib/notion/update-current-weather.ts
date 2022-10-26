@@ -1,13 +1,15 @@
-const debug = require('debug')('proxy:scripts')
+import Debug from 'debug'
 
-const { getData: getWeatherData } = require('../weather')
-const { updateBlock, makeTextPart, getWeatherIcon } = require('./util')
-const { compact } = require('../util/collections')
-const { getEnv } = require('../util/env')
+import { CurrentWeather, getWeatherData, getWeatherIcon } from '../weather'
+import { updateBlock, makeTextPart } from './util'
+import { compact } from '../util/collections'
+import { getEnv } from '../util/env'
 
-const notionToken = getEnv('NOTION_TOKEN')
-const currentWeatherId = getEnv('CURRENT_WEATHER_ID')
-const weatherLocation = getEnv('WEATHER_LOCATION')
+const debug = Debug('proxy:scripts')
+
+const notionToken = getEnv('NOTION_TOKEN')!
+const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
+const weatherLocation = getEnv('WEATHER_LOCATION')!
 
 debug('ENV:', {
   notionToken,
@@ -15,17 +17,17 @@ debug('ENV:', {
   weatherLocation,
 })
 
-const getWeather = async () => {
+async function getWeather () {
   const weather = await getWeatherData({ location: weatherLocation })
 
   return weather.currently
 }
 
-const makePrecipPart = (condition, info) => {
+function makePrecipPart (condition: boolean, info: string) {
   return condition ? makeTextPart(`(${info}) `, 'gray') : undefined
 }
 
-const getColor = (temp) => {
+function getColor (temp: number) {
   if (temp <= 32) return 'purple'
   if (temp > 32 && temp <= 45) return 'blue'
   if (temp > 45 && temp <= 75) return 'green'
@@ -33,7 +35,7 @@ const getColor = (temp) => {
   return 'red'
 }
 
-const updateBlockWeather = async (weather) => {
+async function updateBlockWeather (weather: CurrentWeather) {
   const {
     icon,
     precipProbability,
@@ -43,6 +45,7 @@ const updateBlockWeather = async (weather) => {
   const roundedTemperature = Math.round(temperature)
 
   const content = {
+    type: 'heading_1' as const,
     heading_1: {
       rich_text: compact([
         makeTextPart(`${getWeatherIcon(icon)} `),
@@ -50,6 +53,7 @@ const updateBlockWeather = async (weather) => {
         makePrecipPart(icon === 'snow' && precipAccumulation >= 0.1, `${(precipAccumulation || 0).toFixed(2)}in`),
         makeTextPart(`${roundedTemperature}°`, getColor(roundedTemperature)),
       ]),
+      color: 'default' as const,
     },
   }
 
@@ -59,28 +63,26 @@ const updateBlockWeather = async (weather) => {
   .trim()
 
   // eslint-disable-next-line no-console
-  console.log(`Update current weather to "${newText}"`)
+  console.log(`Update current weather to '${newText}'`)
 
   await updateBlock({ notionToken, block: content, blockId: currentWeatherId })
 }
 
-const updateWeather = async () => {
+export default async function updateWeather () {
   try {
     // eslint-disable-next-line no-console
     console.log('Updating current weather...')
 
-    const weather = await getWeather({ location: weatherLocation })
+    const weather = await getWeather()
 
     await updateBlockWeather(weather)
 
     // eslint-disable-next-line no-console
     console.log('Successfully updated current weather')
-  } catch (error) {
+  } catch (error: any) {
     // eslint-disable-next-line no-console
     console.log('Updating current weather failed:')
     // eslint-disable-next-line no-console
-    console.log(error.stack)
+    console.log(error?.stack || error)
   }
 }
-
-module.exports = updateWeather

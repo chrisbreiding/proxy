@@ -1,24 +1,21 @@
-const dayjs = require('dayjs')
-const debug = require('debug')('proxy:scripts')
+import dayjs from 'dayjs'
+import Debug from 'debug'
 
-const {
-  getBlockChildrenDeep,
-  getPlainText,
-  makeTextPart,
-  updateBlock,
-} = require('./util')
-const { compact, mapPromisesSerially } = require('../util/collections')
-const { getEnv } = require('../util/env')
+import { BlockContent, getBlockChildrenDeep, getBlockPlainText, makeTextPart, updateBlock } from './util'
+import { compact, mapPromisesSerially } from '../util/collections'
+import { getEnv } from '../util/env'
 
-const notionToken = getEnv('NOTION_SARAH_TOKEN')
-const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')
+const debug = Debug('proxy:scripts')
+
+const notionToken = getEnv('NOTION_SARAH_TOKEN')!
+const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')!
 
 debug('ENV:', {
   notionToken,
   dateExtrapolationId,
 })
 
-const getCategoryBlocks = () => {
+function getCategoryBlocks () {
   return getBlockChildrenDeep({
     notionToken,
     pageId: dateExtrapolationId,
@@ -27,56 +24,61 @@ const getCategoryBlocks = () => {
   })
 }
 
-const getDateFromBlock = (block) => {
-  const text = (getPlainText(block) || '').trim()
+function getDateFromBlock (block: BlockContent) {
+  const text = (getBlockPlainText(block) || '').trim()
   const date = dayjs(text)
 
   return date.isValid() ? date : undefined
 }
 
-const getHistoricalDates = (blocks) => {
+function getHistoricalDates (blocks: BlockContent[]) {
   return blocks.reduce((memo, block) => {
-    const text = (getPlainText(block) || '').trim()
+    const text = (getBlockPlainText(block) || '').trim()
 
     if (!['Historical', 'Recent'].includes(text)) return memo
 
-    const dates = block.children.map(getDateFromBlock)
+    const dates = compact(block.children!.map(getDateFromBlock)) as dayjs.Dayjs[]
 
-    dates.sort((a, b) => a - b)
+    dates.sort((a, b) => a.valueOf() - b.valueOf())
 
-    return memo.concat(compact(dates))
-  }, [])
+    return memo.concat(dates)
+  }, [] as dayjs.Dayjs[])
 }
 
-const getIntervals = (dates) => {
+function getIntervals (dates: dayjs.Dayjs[]) {
   return dates.reduce((memo, date, index) => {
     const nextDate = dates[index + 1]
 
     if (!nextDate) return memo
 
     return memo.concat(nextDate.diff(date, 'day'))
-  }, [])
+  }, [] as number[])
 }
 
-const getSum = (nums) => {
+function getSum (nums: number[]) {
   return nums.reduce((sum, num) => sum + num, 0)
 }
 
-const getAverage = (nums) => {
+function getAverage (nums: number[]) {
   return Math.round(getSum(nums) / nums.length)
 }
 
-const getExtrapolatedDateBlocks = (blocks) => {
+function getExtrapolatedDateBlocks (blocks: BlockContent[]) {
   const extrapolatedBlock = blocks.find((block) => {
-    const text = getPlainText(block) || ''
+    const text = getBlockPlainText(block) || ''
 
     return text.includes('Extrapolated')
-  })
+  })!
 
-  return extrapolatedBlock.children.filter((b) => b.type === 'bulleted_list_item')
+  return extrapolatedBlock.children!.filter((b) => b.type === 'bulleted_list_item')
 }
 
-const getExtrapolatedDates = (historicalDates, blocks) => {
+interface DatesAndBlocks {
+  date: dayjs.Dayjs
+  block: BlockContent
+}
+
+function getExtrapolatedDates (historicalDates: dayjs.Dayjs[], blocks: BlockContent[]) {
   const extrapolatedDateBlocks = getExtrapolatedDateBlocks(blocks)
   const intervals = getIntervals(historicalDates)
   const averageInterval = getAverage(intervals)
@@ -89,22 +91,24 @@ const getExtrapolatedDates = (historicalDates, blocks) => {
       lastDate: date,
       dates: memo.dates.concat({ date, block }),
     }
-  }, { lastDate: lastHistoricalDate, dates: [] }).dates
+  }, { lastDate: lastHistoricalDate, dates: [] as DatesAndBlocks[] }).dates
 }
 
-const updateDates = async (extrapolatedDates) => {
+async function updateDates (extrapolatedDates: DatesAndBlocks[]) {
   return mapPromisesSerially(extrapolatedDates, ({ date, block }) => {
     const content = {
+      type: 'bulleted_list_item' as const,
       bulleted_list_item: {
         rich_text: [makeTextPart(date.format('YYYY-MM-DD'))],
+        color: 'default' as const,
       },
     }
 
-    return updateBlock({ notionToken, block: content, blockId: block.id })
+    return updateBlock({ notionToken, block: content, blockId: block.id! })
   })
 }
 
-const updateDateExtrapolation = async () => {
+export default async function updateDateExtrapolation () {
   try {
     // eslint-disable-next-line no-console
     console.log('Updating date extrapolation...')
@@ -117,12 +121,10 @@ const updateDateExtrapolation = async () => {
 
     // eslint-disable-next-line no-console
     console.log('Successfully updated date extrapolation')
-  } catch (error) {
+  } catch (error: any) {
     // eslint-disable-next-line no-console
     console.log('Updating date extrapolation failed:')
     // eslint-disable-next-line no-console
-    console.log(error.stack)
+    console.log(error?.stack || error)
   }
 }
-
-module.exports = updateDateExtrapolation

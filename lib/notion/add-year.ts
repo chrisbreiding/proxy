@@ -1,39 +1,48 @@
-const dayjs = require('dayjs')
-const debug = require('debug')('proxy:scripts')
-const minimist = require('minimist')
+import dayjs from 'dayjs'
+import Debug from 'debug'
+import minimist from 'minimist'
+import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
-const {
+import {
   appendBlockChildren,
+  BlockContent,
   getBlockChildren,
   getBlockChildrenDeep,
   getBlockContent,
   getMonthNameFromIndex,
   getMonths,
-  getPlainText,
+  getBlockPlainText,
   makeBlock,
   textFilter,
-} = require('./util')
-const { clone, compact } = require('../util/collections')
-const { getEnv } = require('../util/env')
+} from './util'
+import { clone, compact } from '../util/collections'
+import { getEnv } from '../util/env'
 
-const notionToken = getEnv('NOTION_TOKEN')
-const futurePageId = getEnv('NOTION_FUTURE_ID')
+const debug = Debug('proxy:scripts')
+
+const notionToken = getEnv('NOTION_TOKEN')!
+const futurePageId = getEnv('NOTION_FUTURE_ID')!
 
 debug('ENV:', {
   notionToken,
   futurePageId,
 })
 
-const getYearTemplate = async (yearTemplateId) => {
+interface YearTemplateItem {
+  rule: string | undefined
+  quests: BlockContent[]
+}
+
+async function getYearTemplate (yearTemplateId: string): Promise<YearTemplateItem[]> {
   const { results } = await getBlockChildren({ notionToken, pageId: yearTemplateId })
 
-  const blocks = results.filter((block) => {
+  const blocks = (results as BlockObjectResponse[]).filter((block) => {
     return block.has_children
   })
 
   return Promise.all(blocks.map(async (block) => {
     return {
-      rule: getPlainText(block),
+      rule: getBlockPlainText(block),
       quests: await getBlockChildrenDeep({
         notionToken,
         pageId: block.id,
@@ -43,12 +52,33 @@ const getYearTemplate = async (yearTemplateId) => {
   }))
 }
 
-const getStartingMonthsData = () => {
+interface DatesObject {
+  [key: string]: BlockContent[]
+}
+
+interface DateAndQuests {
+  date: string
+  quests: BlockContent[]
+}
+
+interface StartingMonthData {
+  name: string
+  index: number
+  dates: DatesObject
+}
+
+interface MonthData {
+  name: string
+  index: number
+  dates: DateAndQuests[]
+}
+
+function getStartingMonthsData (): StartingMonthData[] {
   return getMonths().map((name, index) => {
     return {
       name,
       index,
-      dates: {},
+      dates: {} as DatesObject,
     }
   })
 }
@@ -61,77 +91,86 @@ const monthRegex = new RegExp(monthPattern)
 const monthsRegex = new RegExp(`(${monthPattern}(?:(?:, )${monthPattern})*)`)
 const dateRegex = / on (\d{1,2})[a-z]{2}/
 const numberRegex = /^\d+$/
+const noMatch = { matches: false, date: 0 }
+const matchesFirst = { matches: true, date: 1 }
+const matchesNumber = (numString: string) => ({ matches: true, date: Number(numString) })
 
 const patterns = [
   // Every month [on <date>] (or assume 1st)
-  (templateString) => {
+  (templateString: string) => {
     const match = templateString.match(everyMonthRegex)
 
-    if (!match) return { matches: false }
+    if (!match) return noMatch
 
-    if (!match[2]) return { matches: true, date: 1 }
+    if (!match[2]) return matchesFirst
 
-    return { matches: true, date: Number(match[2]) }
+    return matchesNumber(match[2])
   },
   // Even months [on <date>] (or assume 1st)
-  (templateString, monthIndex) => {
-    if (monthIndex % 2 === 0) return { matches: false }
+  (templateString: string, monthIndex: number) => {
+    if (monthIndex % 2 === 0) return noMatch
 
     const match = templateString.match(evenMonthsRegex)
 
-    if (!match) return { matches: false }
+    if (!match) return noMatch
 
-    if (!match[2]) return { matches: true, date: 1 }
+    if (!match[2]) return matchesFirst
 
-    return { matches: true, date: Number(match[2]) }
+    return matchesNumber(match[2])
   },
   // Odd months [on <date>] (or assume 1st)
-  (templateString, monthIndex) => {
-    if (monthIndex % 2 !== 0) return { matches: false }
+  (templateString: string, monthIndex: number) => {
+    if (monthIndex % 2 !== 0) return noMatch
 
     const match = templateString.match(oddsMonthsRegex)
 
-    if (!match) return { matches: false }
+    if (!match) return noMatch
 
-    if (!match[2]) return { matches: true, date: 1 }
+    if (!match[2]) return matchesFirst
 
-    return { matches: true, date: Number(match[2]) }
+    return matchesNumber(match[2])
   },
   // <month>[, <month>...]
-  (templateString, monthIndex) => {
+  (templateString: string, monthIndex: number) => {
     const monthsMatch = templateString.match(monthsRegex)
     const dateMatch = templateString.match(dateRegex)
 
-    if (!monthsMatch) return { matches: false }
+    if (!monthsMatch) return noMatch
 
     const matchedMonths = monthsMatch[1].split(/\s*,\s*/)
     const monthName = getMonthNameFromIndex(monthIndex)
 
-    if (!matchedMonths.includes(monthName)) return { matches: false }
+    if (!matchedMonths.includes(monthName)) return noMatch
 
-    if (!dateMatch || !dateMatch[1]) return { matches: true, date: 1 }
+    if (!dateMatch || !dateMatch[1]) return matchesFirst
 
-    return { matches: true, date: Number(dateMatch[1]) }
+    return matchesNumber(dateMatch[1])
   },
 ]
 
-const ascending = (a, b) => a - b
+const ascending = (a: string, b: string) => Number(a) - Number(b)
 
-const datesObjectToSortedArray = (dates) => {
+function datesObjectToSortedArray (dates: DatesObject): DateAndQuests[] {
   return Object.keys(dates).sort(ascending).map((date) => {
     return { date, quests: dates[date] }
   })
 }
 
-const getExtras = async (extrasId) => {
+interface Extras {
+  [key: string]: {
+    [key: string]: BlockContent[]
+  }
+}
+
+async function getExtras (extrasId: string) {
   const { results } = await getBlockChildren({ notionToken, pageId: extrasId })
 
-  const months = {}
+  const months = {} as Extras
   let currentMonth
   let currentDate
 
-  for (let block of results) {
-    const text = getPlainText(block)
+  for (const block of (results as BlockObjectResponse[])) {
+    const text = getBlockPlainText(block)
 
     if (!text) {
       currentMonth = undefined
@@ -167,20 +206,20 @@ const getExtras = async (extrasId) => {
     }
 
     const content = await getBlockContent({ notionToken, block, filter: textFilter })
-    months[currentMonth][currentDate].push(content)
+    months[currentMonth][currentDate].push(content!)
   }
 
   return months
 }
 
-const getMonthsData = (yearTemplate, extras) => {
+function getMonthsData (yearTemplateItem: YearTemplateItem[], extras: Extras) {
   return getStartingMonthsData().map((month) => {
-    for (let template of yearTemplate) {
-      for (let matchesPattern of patterns) {
-        const result = matchesPattern(template.rule, month.index)
+    for (const templateItem of yearTemplateItem) {
+      for (const matchesPattern of patterns) {
+        const result = matchesPattern(templateItem.rule || '', month.index)
 
         if (result.matches) {
-          const quests = clone(template.quests)
+          const quests = clone(templateItem.quests)
           month.dates[result.date] = (month.dates[result.date] || []).concat(quests)
         }
       }
@@ -189,7 +228,7 @@ const getMonthsData = (yearTemplate, extras) => {
     const monthExtras = extras[month.name]
 
     if (monthExtras) {
-      for (let date in monthExtras) {
+      for (const date in monthExtras) {
         month.dates[date] = (month.dates[date] || []).concat(monthExtras[date])
       }
     }
@@ -201,11 +240,11 @@ const getMonthsData = (yearTemplate, extras) => {
   })
 }
 
-const getDateString = (year, month, date) => {
+function getDateString (year: string | number, month: string | number, date: string | number) {
   return dayjs(`${year}/${month}/${date}`, 'YYYY/M/D').format('ddd, M/D')
 }
 
-const makeBlocks = (monthsData, year) => {
+const makeBlocks = (monthsData: MonthData[], year: number): BlockContent[] => {
   const blocks = monthsData.map(({ name, index, dates }) => {
     if (!dates.length) return
 
@@ -231,26 +270,33 @@ const makeBlocks = (monthsData, year) => {
         ]
       }),
     ]
-  })
+  }).flat() as (BlockContent | undefined)[]
 
-  return compact(blocks.flat())
+  return compact(blocks)
 }
 
-const findId = (blocks, filter, error) => {
+function findId (
+  blocks: BlockObjectResponse[],
+  filter: (block: BlockObjectResponse) => boolean,
+  error?: string,
+) {
   const block = blocks.find(filter)
+
+  if (block) {
+    return block.id
+  }
 
   if (!block && error) {
     throw new Error(error)
   }
-
-  return block ? block.id : undefined
 }
 
-const getPageIds = async (year) => {
-  const { results } = await getBlockChildren({ notionToken, pageId: futurePageId })
+async function getPageIds (year: number | string) {
+  const response = await getBlockChildren({ notionToken, pageId: futurePageId })
+  const results = response.results as BlockObjectResponse[]
 
   const extrasId = findId(results, (block) => {
-    return block.child_page && block.child_page.title === `${year}`
+    return block.type === 'child_page' && block.child_page.title === `${year}`
   })
 
   const dropZoneId = findId(results, (block) => {
@@ -258,7 +304,7 @@ const getPageIds = async (year) => {
   }, 'Could not find drop zone')
 
   const yearTemplateId = findId(results, (block) => {
-    return block.child_page && block.child_page.title === 'Year Template'
+    return block.type === 'child_page' && block.child_page.title === 'Year Template'
   }, 'Could not find year template')
 
   return {
@@ -270,29 +316,29 @@ const getPageIds = async (year) => {
 
 const addYear = async () => {
   try {
-    const args = minimist(process.argv.slice(2))
+    const args = minimist(process.argv.slice(2)) as { year?: number | string }
 
     if (!args.year) {
       throw new Error('Must specify --year')
     }
 
     const { yearTemplateId, dropZoneId, extrasId } = await getPageIds(args.year)
-    const yearTemplateBlocks = await getYearTemplate(yearTemplateId)
+    const yearTemplateItems = await getYearTemplate(yearTemplateId!)
     const extras = extrasId ? await getExtras(extrasId) : {}
-    const monthsData = getMonthsData(yearTemplateBlocks, extras)
-    const blocks = makeBlocks(monthsData, args.year)
+    const monthsData = getMonthsData(yearTemplateItems, extras)
+    const blocks = makeBlocks(monthsData, Number(args.year))
 
-    await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId })
+    await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId! })
 
     // eslint-disable-next-line no-console
     console.log('Successfully added year')
 
     process.exit(0)
-  } catch (error) {
+  } catch (error: any) {
     // eslint-disable-next-line no-console
     console.log('Adding year failed:')
     // eslint-disable-next-line no-console
-    console.log(error.stack)
+    console.log(error?.stack || error)
 
     process.exit(1)
   }

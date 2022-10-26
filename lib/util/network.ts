@@ -1,6 +1,14 @@
-const axios = require('axios')
+import axios, { Method } from 'axios'
 
-const request = async ({ url, body, headers, params, method = 'get' }) => {
+interface RequestOptions {
+  url: string
+  body?: object
+  headers?: { [key: string]: string }
+  params?: { [key: string]: string }
+  method?: Method
+}
+
+export async function request ({ url, body, headers, params, method = 'get' }: RequestOptions) {
   try {
     const response = await axios({
       method,
@@ -11,12 +19,12 @@ const request = async ({ url, body, headers, params, method = 'get' }) => {
     })
 
     return response.data
-  } catch (error) {
+  } catch (error: any) {
     /* eslint-disable no-console */
     console.log('--- axios error ---')
     console.log({ url, body, headers, params, method })
     console.log()
-    console.log(error.stack)
+    console.log(error?.stack || error)
     console.log()
     console.trace()
     console.log('-------------------')
@@ -24,8 +32,4 @@ const request = async ({ url, body, headers, params, method = 'get' }) => {
 
     throw error
   }
-}
-
-module.exports = {
-  request,
 }

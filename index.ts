@@ -1,20 +1,20 @@
-const bodyParser = require('body-parser')
-const cors = require('cors')
-const express = require('express')
-const handlebars = require('express-handlebars')
-const http = require('http')
-const morgan = require('morgan')
-const socketIO = require('socket.io')
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import express from 'express'
+import { engine as handlebars } from 'express-handlebars'
+import http from 'http'
+import morgan from 'morgan'
+import { Server } from 'socket.io'
 
-const dashboard = require('./lib/dashboard')
-const garage = require('./lib/garage')
-const location = require('./lib/location')
-const notion = require('./lib/notion')
-const weather = require('./lib/weather')
+import * as dashboard from './lib/dashboard'
+import * as garage from './lib/garage'
+import * as location from './lib/location'
+import * as notion from './lib/notion'
+import * as weather from './lib/weather'
 
 const app = express()
 const server = http.createServer(app)
-const io = socketIO(server, {
+const io = new Server(server, {
   serveClient: false,
 })
 
@@ -37,12 +37,12 @@ if (process.env.ALLOW_NGROK === 'TRUE') {
 app.use(express.static('public'))
 app.use(cors({ origin: corsOrigins }))
 app.use(bodyParser.json())
-app.use((req, res, next) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.set('Content-Type', 'application/json')
   next()
 })
 
-const ensureApiKey = (req, res, next) => {
+const ensureApiKey = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (req.params.key !== process.env.API_KEY) {
     return res.sendStatus(403)
   }
@@ -61,16 +61,14 @@ app.get('/location-search', location.search)
 app.get('/location-details', location.details)
 app.get('/weather', weather.get)
 
-app.get('/test', (req, res) => {
+app.get('/test', (req: express.Request, res: express.Response) => {
   res.json({ ok: true })
 })
 
 const port = process.env.PORT || 3333
 
-io.on('connection', (socket) => {
-  notion.onSocket(socket)
-})
+io.on('connection', notion.onSocket)
 
 server.listen(port, () => {
-  console.log(`listening on port ${port}...`) // eslint-disable-line no-console
+  console.log(`listening on http://localhost:${port} ...`) // eslint-disable-line no-console
 })

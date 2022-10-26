@@ -1,0 +1,22 @@
+diff --git a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+index 6b5570d..622b555 100644
+--- a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
++++ b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+@@ -447,7 +447,7 @@ declare type PhoneNumberDatabasePropertyConfigResponse = {
+     id: string;
+     name: string;
+ };
+-declare type DateDatabasePropertyConfigResponse = {
++export declare type DateDatabasePropertyConfigResponse = {
+     type: "date";
+     date: EmptyObject;
+     id: string;
+@@ -544,7 +544,7 @@ export declare type PartialBlockObjectResponse = {
+     object: "block";
+     id: string;
+ };
+-declare type ApiColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red" | "gray_background" | "brown_background" | "orange_background" | "yellow_background" | "green_background" | "blue_background" | "purple_background" | "pink_background" | "red_background";
++export declare type ApiColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red" | "gray_background" | "brown_background" | "orange_background" | "yellow_background" | "green_background" | "blue_background" | "purple_background" | "pink_background" | "red_background";
+ export declare type ParagraphBlockObjectResponse = {
+     type: "paragraph";
+     paragraph: {
