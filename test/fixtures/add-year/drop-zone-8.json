@@ -1,0 +1,445 @@
+{
+  "children": [
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Regular task",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Regular task",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun, 9/10"
+            },
+            "plain_text": "Sun, 9/10"
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 1",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 1",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 2",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 2",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed, 9/20"
+            },
+            "plain_text": "Wed, 9/20"
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 1",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 1",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 2",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 2",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": ""
+            },
+            "plain_text": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "October"
+            },
+            "annotations": {
+              "bold": true
+            },
+            "plain_text": "October"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun, 10/1"
+            },
+            "plain_text": "Sun, 10/1"
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 1",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 1",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 2",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 2",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 1",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 1",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 2",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 2",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Tue, 10/10"
+            },
+            "plain_text": "Tue, 10/10"
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 1",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 1",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Task 2",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Task 2",
+            "href": null
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": ""
+            },
+            "plain_text": ""
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "November"
+            },
+            "annotations": {
+              "bold": true
+            },
+            "plain_text": "November"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed, 11/1"
+            },
+            "plain_text": "Wed, 11/1"
+          }
+        ]
+      }
+    },
+    {
+      "object": "block",
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Toggle task",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Toggle task",
+            "href": null
+          }
+        ]
+      }
+    }
+  ]
+}
