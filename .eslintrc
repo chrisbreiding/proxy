@@ -1,4 +1,6 @@
 {
+  "root": true,
+  "parser": "@typescript-eslint/parser",
   "extends": [
     "plugin:crb/general"
   ],
@@ -7,5 +9,26 @@
   },
   "globals": {
     "Promise": true
-  }
+  },
+  "ignorePatterns": [
+    "*.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "extends": [
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "@typescript-eslint/no-implicit-any": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-empty-function": "off"
+      }
+    }
+  ]
 }

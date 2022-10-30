@@ -1,0 +1,23 @@
+{
+  "include": [
+    "**/*.ts",
+    "./index.ts"
+  ],
+  "exclude": [
+    "./node_modules/",
+    "**/*.js",
+    "./index.js"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "importsNotUsedAsValues": "error",
+    "module": "commonjs",
+    "target": "ES2018",
+    "noImplicitAny": false,
+    "checkJs": false,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}

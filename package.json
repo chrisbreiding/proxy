@@ -9,6 +9,7 @@
     "dev": "nodemon ./index.js",
     "prod": "node ./index.js",
     "lint": "eslint *.js lib/*.js --fix",
+    "test": "vitest",
     "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333",
     "get-block-id": "NODE_ENV=development node ./lib/notion/get-block-id.js",
     "add-year": "NODE_ENV=development node ./lib/notion/add-year.js",
@@ -38,10 +39,19 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-crb": "^2.0.3",
     "foreman": "^3.0.1",
-    "nodemon": "^2.0.20"
+    "get-port": "^6.1.2",
+    "nock": "^13.2.9",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "vitest": "^0.24.3"
   }
 }
