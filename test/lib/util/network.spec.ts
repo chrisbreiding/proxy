@@ -75,17 +75,12 @@ describe('lib/util/network', () => {
     it('re-throws errors', async () => {
       nock('http://api.com')
       .get('/')
-      .reply(500, { some: 'failure' })
+      .replyWithError('request failed')
 
-      try {
-        // @ts-expect-error
-        await request({ url: 'http://api.com' })
-
-        throw new Error('Expected request to fail')
-      } catch (error: any) {
-        expect(error.message).to.equal('Request failed with status code 500')
-        expect(error.code).to.equal('ERR_BAD_RESPONSE')
-      }
+      // @ts-expect-error
+      await expect(request({
+        url: 'http://api.com',
+      })).rejects.toThrow('request failed')
     })
   })
 })

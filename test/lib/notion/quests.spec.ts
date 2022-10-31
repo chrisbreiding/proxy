@@ -32,16 +32,10 @@ describe('lib/notion/quests', () => {
 
       nockGetBlockChildren('page-id', { reply: questBlocks })
 
-      try {
-        await getAll({
-          notionToken: 'notion-token',
-          pageId: 'page-id',
-        })
-
-        throw new Error('Expected upcoming not to be found')
-      } catch (error: any) {
-        expect(error.message).to.equal('Could not find Upcoming block')
-      }
+      await expect(getAll({
+        notionToken: 'notion-token',
+        pageId: 'page-id',
+      })).rejects.toThrow('Could not find Upcoming block')
     })
   })
 })
