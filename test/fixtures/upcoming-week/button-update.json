@@ -1,0 +1,6 @@
+{
+  "type": "embed",
+  "embed": {
+    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?weekTemplatePageId=week-template-id&appendToId=append-to-id&addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-11-13T12:00:00.000Z"
+  }
+}
