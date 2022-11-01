@@ -11,14 +11,15 @@ export function fixture (name: string) {
 interface GetOptions {
   fixture?: string
   reply?: object
+  times?: number
 }
 
 export function nockGetBlockChildren (id: string, options: GetOptions) {
   const scope = nock('https://api.notion.com')
-  .persist()
   .matchHeader('authorization', 'Bearer notion-token')
   .matchHeader('notion-version', notionVersion)
   .get(`/v1/blocks/${id}/children`)
+  .times(options.times || 1)
 
   if (options.fixture) {
     scope.replyWithFile(200, fixture(options.fixture), {

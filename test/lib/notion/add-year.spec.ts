@@ -19,7 +19,7 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('pattern-even-months-id', { fixture: 'blocks' })
     nockGetBlockChildren('pattern-every-month-date-id', { fixture: 'blocks' })
     nockGetBlockChildren('blocks-from-nested-id', { fixture: 'blocks' })
-    nockGetBlockChildren('blocks-from-toggle-id', { fixture: 'blocks' })
+    nockGetBlockChildren('blocks-from-toggle-id', { fixture: 'blocks', times: 2 })
 
     const nestedBody = fs.readJsonSync(fixture('nested-blocks'))
 
