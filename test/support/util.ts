@@ -14,11 +14,21 @@ interface GetOptions {
   times?: number
 }
 
-export function nockGetBlockChildren (id: string, options: GetOptions) {
+interface NockOptions extends GetOptions {
+  body?: object
+  method?: string
+  path: string
+}
+
+export function nockNotion (options: NockOptions) {
   const scope = nock('https://api.notion.com')
   .matchHeader('authorization', 'Bearer notion-token')
   .matchHeader('notion-version', notionVersion)
-  .get(`/v1/blocks/${id}/children`)
+  .intercept(
+    options.path,
+    (options.method || 'get').toUpperCase(),
+    options.body as nock.DataMatcherMap,
+  )
   .times(options.times || 1)
 
   if (options.fixture) {
@@ -28,7 +38,18 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
   } else {
     scope.reply(200, options.reply)
   }
+
+  return scope
 }
+
+export function nockGetBlockChildren (id: string, options: GetOptions) {
+  nockNotion({
+    method: 'get',
+    path: `/v1/blocks/${id}/children`,
+    ...options,
+  })
+}
+
 interface AppendOptions {
   id: string
   body: object
@@ -36,11 +57,11 @@ interface AppendOptions {
 }
 
 export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
-  nock('https://api.notion.com')
-  .matchHeader('authorization', 'Bearer notion-token')
-  .matchHeader('notion-version', notionVersion)
-  .patch(`/v1/blocks/${id}/children`, body as nock.DataMatcherMap)
-  .reply(200, reply)
+  nockNotion({
+    body,
+    reply,
+    path: `/v1/blocks/${id}/children`,
+  })
 }
 
 interface UpdateOptions {
@@ -55,4 +76,75 @@ export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOpt
   .matchHeader('notion-version', notionVersion)
   .patch(`/v1/blocks/${id}`, update as nock.DataMatcherMap)
   .reply(200)
+}
+
+function createUniqueId () {
+  const tracker = {}
+  let defaultCount = 0
+
+  return (prefix?: string) => {
+    if (!prefix) {
+      return `${++defaultCount}`
+    }
+
+    const counter = (tracker[prefix] || 0) + 1
+
+    tracker[prefix] = counter
+
+    return `${prefix}${counter}`
+  }
+}
+
+export const uniqueId = createUniqueId()
+
+interface BlockOptions {
+  id?: string
+  text: string
+  type?: string
+}
+
+export function block ({ id, text, type }: BlockOptions) {
+  return {
+    object: 'block',
+    id: id || uniqueId('block-'),
+    parent: {
+      type: 'page_id',
+      page_id: uniqueId('page-'),
+    },
+    created_time: '2022-0829T23:00.000Z',
+    last_edited_time: '2022-0829T23:00.000Z',
+    created_by: {
+      object: 'user',
+      id: uniqueId('user-'),
+    },
+    last_edited_by: {
+      object: 'user',
+      id: uniqueId('user-'),
+    },
+    has_children: false,
+    archived: false,
+    type: type || 'paragraph',
+    paragraph: {
+      rich_text: [
+        {
+          type: 'text',
+          text: {
+            content: text,
+            link: null,
+          },
+          annotations: {
+            bold: false,
+            italic: false,
+            strikethrough: false,
+            underline: false,
+            code: false,
+            color: 'default',
+          },
+          plain_text: text,
+          href: null,
+        },
+      ],
+      color: 'default',
+    },
+  }
 }
