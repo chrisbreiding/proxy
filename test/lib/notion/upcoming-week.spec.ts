@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { handleServer } from '../../support/setup'
 
-import { fixture, nockAppendBlockChildren, nockGetBlockChildren } from '../../support/util'
+import { fixture, nockAppendBlockChildren, nockGetBlockChildren, nockUpdateBlock } from '../../support/util'
 import { getAll } from '../../../lib/notion/quests'
 import { startServer } from '../../../index'
 import { clone } from '../../../lib/util/collections'
@@ -64,11 +64,7 @@ describe('lib/notion/quests', () => {
         reply: append2Reply,
       })
 
-      const buttonUpdate = fs.readJsonSync(fixture('upcoming-week/button-update'))
-
-      nock('https://api.notion.com')
-      .patch('/v1/blocks/button-id', buttonUpdate)
-      .reply(200)
+      nockUpdateBlock('button-id', { fixture: 'upcoming-week/button-update' })
 
       const query = [
         ['weekTemplatePageId', 'week-template-id'],

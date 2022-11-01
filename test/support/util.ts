@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import nock from 'nock'
 import path from 'path'
 
@@ -39,4 +40,18 @@ export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
   .matchHeader('notion-version', notionVersion)
   .patch(`/v1/blocks/${id}/children`, body as nock.DataMatcherMap)
   .reply(200, reply)
+}
+
+interface UpdateOptions {
+  fixture: string
+}
+
+export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOptions) {
+  const update = fs.readJsonSync(fixture(fixtureName))
+
+  nock('https://api.notion.com')
+  .matchHeader('authorization', 'Bearer notion-token')
+  .matchHeader('notion-version', notionVersion)
+  .patch(`/v1/blocks/${id}`, update as nock.DataMatcherMap)
+  .reply(200)
 }
