@@ -1,0 +1,43 @@
+{
+  "paragraph": {
+    "rich_text": [
+      {
+        "text": {
+          "content": "Thu, 11/3    ☔️ "
+        }
+      },
+      {
+        "text": {
+          "content": "(85%) "
+        },
+        "annotations": {
+          "color": "gray"
+        }
+      },
+      {
+        "text": {
+          "content": "33°"
+        },
+        "annotations": {
+          "color": "blue"
+        }
+      },
+      {
+        "text": {
+          "content": " / "
+        },
+        "annotations": {
+          "color": "gray"
+        }
+      },
+      {
+        "text": {
+          "content": "54°"
+        },
+        "annotations": {
+          "color": "orange"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "paragraph": {
+    "rich_text": [
+      {
+        "text": {
+          "content": "Mon, 10/31    ☀️ "
+        }
+      },
+      {
+        "text": {
+          "content": "33°"
+        },
+        "annotations": {
+          "color": "blue"
+        }
+      },
+      {
+        "text": {
+          "content": " / "
+        },
+        "annotations": {
+          "color": "gray"
+        }
+      },
+      {
+        "text": {
+          "content": "62°"
+        },
+        "annotations": {
+          "color": "orange"
+        }
+      }
+    ]
+  }
+}

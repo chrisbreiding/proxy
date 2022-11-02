@@ -121,10 +121,10 @@ export function block ({ id, text, type }: BlockOptions) {
       object: 'user',
       id: uniqueId('user-'),
     },
-    has_children: false,
+    has_children: type === 'toggle',
     archived: false,
     type: type || 'paragraph',
-    paragraph: {
+    [type || 'paragraph']: {
       rich_text: [
         {
           type: 'text',

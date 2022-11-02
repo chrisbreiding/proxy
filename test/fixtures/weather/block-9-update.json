@@ -1,0 +1,35 @@
+{
+  "paragraph": {
+    "rich_text": [
+      {
+        "text": {
+          "content": "Fri, 11/4    ⛅️ "
+        }
+      },
+      {
+        "text": {
+          "content": "25°"
+        },
+        "annotations": {
+          "color": "blue"
+        }
+      },
+      {
+        "text": {
+          "content": " / "
+        },
+        "annotations": {
+          "color": "gray"
+        }
+      },
+      {
+        "text": {
+          "content": "51°"
+        },
+        "annotations": {
+          "color": "orange"
+        }
+      }
+    ]
+  }
+}
