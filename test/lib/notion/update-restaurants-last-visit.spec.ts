@@ -1,25 +1,20 @@
-import fs from 'fs-extra'
 import { describe, it } from 'vitest'
 
-import { block, fixture, nockGetBlockChildren, nockNotion } from '../../support/util'
+import { block, nockGetBlockChildren, nockNotion } from '../../support/util'
 import restaurantsLastVisit from '../../../lib/notion/update-restaurants-last-visit'
-import { clone } from '../../../lib/util/collections'
 
 describe('lib/notion/update-restaurants-last-visit', () => {
   it('updates changed restaurant last visit dates', async () => {
-    const restaurantBlocks = fs.readJsonSync(fixture('restaurants/restaurant-blocks'))
-
     function blocksWithDate (date) {
-      const blocks = clone(restaurantBlocks)
-      const newBlock = block({ text: date })
-
-      blocks.results = [
-        ...blocks.results.slice(0, 2),
-        newBlock,
-        ...blocks.results.slice(2),
-      ]
-
-      return blocks
+      return {
+        results: [
+          block({ text: 'Note: something to note' }),
+          block({ text: '' }),
+          block({ text: date }),
+          block({ text: 'Things we ate', type: 'bulleted_list_item' }),
+          block({ text: 'And what we thought about it', type: 'bulleted_list_item' }),
+        ],
+      }
     }
 
     function bodyWithDate (date) {
@@ -49,13 +44,13 @@ describe('lib/notion/update-restaurants-last-visit', () => {
     nockNotion({
       body: bodyWithDate('2022-11-02'),
       method: 'patch',
-      path: '/pages/restaurants-2',
+      path: '/v1/pages/restaurant-2',
     })
 
     nockNotion({
       body: bodyWithDate('2022-12-20'),
       method: 'patch',
-      path: '/pages/restaurants-4',
+      path: '/v1/pages/restaurant-4',
     })
 
     await restaurantsLastVisit.updateRestaurantsLastVisit({
