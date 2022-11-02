@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
 import { block, fixture, nockGetBlockChildren, nockNotion } from '../../support/util'
-import weather from '../../../lib/notion/update-upcoming-weather'
+import main from '../../../lib/notion/update-upcoming-weather'
 
 describe('lib/notion/update-current-weather', () => {
   beforeEach(() => {
@@ -56,7 +56,7 @@ describe('lib/notion/update-current-weather', () => {
       })
     })
 
-    await weather.updateWeather({
+    await main.updateWeather({
       notionToken: 'notion-token',
       questsId: 'quests-id',
       location: 'lat,lng',

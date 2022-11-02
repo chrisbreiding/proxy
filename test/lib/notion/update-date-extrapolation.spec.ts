@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest'
 
 import { nockGetBlockChildren, nockUpdateBlock } from '../../support/util'
-import dateExtrapolation from '../../../lib/notion/update-date-extrapolation'
+import main from '../../../lib/notion/update-date-extrapolation'
 
 describe('lib/notion/update-date-extrapolation', () => {
   it('updates extrapolated dates based on historical and recent dates', async () => {
@@ -20,7 +20,7 @@ describe('lib/notion/update-date-extrapolation', () => {
       fixture: 'date-extrapolation/extrapolated-update-3',
     })
 
-    await dateExtrapolation.updateDateExtrapolation({
+    await main.updateDateExtrapolation({
       notionToken: 'notion-token',
       dateExtrapolationId: 'date-extrapolation-id',
     })

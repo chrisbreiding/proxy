@@ -3,7 +3,7 @@ import { describe, it } from 'vitest'
 
 import { fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
 import { clone } from '../../../lib/util/collections'
-import { addYear } from '../../../lib/notion/add-year'
+import main from '../../../lib/notion/add-year'
 
 describe('lib/notion/add-year', () => {
   it('appends blocks in the drop zone based on the year template patterns and year extras', async () => {
@@ -44,7 +44,7 @@ describe('lib/notion/add-year', () => {
       })
     })
 
-    await addYear({
+    await main.addYear({
       notionToken: 'notion-token',
       futurePageId: 'future-page-id',
       year: '2023',

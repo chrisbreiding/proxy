@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest'
 
 import { block, nockGetBlockChildren, nockNotion } from '../../support/util'
-import restaurantsLastVisit from '../../../lib/notion/update-restaurants-last-visit'
+import main from '../../../lib/notion/update-restaurants-last-visit'
 
 describe('lib/notion/update-restaurants-last-visit', () => {
   it('updates changed restaurant last visit dates', async () => {
@@ -53,7 +53,7 @@ describe('lib/notion/update-restaurants-last-visit', () => {
       path: '/v1/pages/restaurant-4',
     })
 
-    await restaurantsLastVisit.updateRestaurantsLastVisit({
+    await main.updateRestaurantsLastVisit({
       notionToken: 'notion-token',
       restaurantsDatabaseId: 'restaurants-id',
     })

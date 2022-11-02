@@ -4,7 +4,7 @@ import { describe, it } from 'vitest'
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
 import { fixture, nockUpdateBlock } from '../../support/util'
-import weather from '../../../lib/notion/update-current-weather'
+import main from '../../../lib/notion/update-current-weather'
 
 describe('lib/notion/update-current-weather', () => {
   it('updates the current weather block with temperature and conditions', async () => {
@@ -18,7 +18,7 @@ describe('lib/notion/update-current-weather', () => {
       fixture: 'weather/current-weather-update',
     })
 
-    await weather.updateWeather({
+    await main.updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
       weatherLocation: 'lat,lng',
