@@ -6,7 +6,7 @@ process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 import { block, fixture, nockGetBlockChildren, nockNotion } from '../../support/util'
 import main from '../../../lib/notion/update-upcoming-weather'
 
-describe('lib/notion/update-current-weather', () => {
+describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
     vi.useFakeTimers()
   })
