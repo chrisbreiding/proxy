@@ -29,7 +29,7 @@ describe('lib/notion/update-upcoming-weather', () => {
       block.bullet({ text: 'A task' }),
       block.p({ text: 'Tue, 11/1' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Upcoming', type: 'toggle', id: 'upcoming-id' }),
+      block.toggle({ text: 'Upcoming', id: 'upcoming-id' }),
     ]
 
     const upcomingBlocks = [

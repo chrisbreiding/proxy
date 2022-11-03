@@ -156,3 +156,7 @@ block.p = ({ id, text }: BlockOptions) => {
 block.bullet = ({ id, text }: BlockOptions) => {
   return block({ id, text, type: 'bulleted_list_item' })
 }
+
+block.toggle = ({ id, text }: BlockOptions) => {
+  return block({ id, text, type: 'toggle' })
+}

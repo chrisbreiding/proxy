@@ -5,11 +5,10 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { handleServer } from '../../support/setup'
 
 import { fixture, nockAppendBlockChildren, nockGetBlockChildren, nockUpdateBlock } from '../../support/util'
-import { getAll } from '../../../lib/notion/quests'
 import { startServer } from '../../../index'
 import { clone } from '../../../lib/util/collections'
 
-describe('lib/notion/quests', () => {
+describe('lib/notion/upcoming-week', () => {
   process.env.API_KEY = 'key'
 
   handleServer(startServer)
