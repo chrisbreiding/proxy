@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { fixture, nockGetBlockChildren } from '../../support/util'
+import { notionFixture as fixture, nockGetBlockChildren } from '../../support/util'
 import { getAll } from '../../../lib/notion/quests'
 
 describe('lib/notion/quests', () => {

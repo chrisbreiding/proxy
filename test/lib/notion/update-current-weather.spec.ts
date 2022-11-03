@@ -3,7 +3,7 @@ import { describe, it } from 'vitest'
 
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
-import { fixture, nockUpdateBlock } from '../../support/util'
+import { notionFixture as fixture, nockUpdateBlock } from '../../support/util'
 import main from '../../../lib/notion/update-current-weather'
 
 describe('lib/notion/update-current-weather', () => {

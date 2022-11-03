@@ -1,13 +1,17 @@
 import fs from 'fs-extra'
 import { describe, it } from 'vitest'
 
-import { fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
+import {
+  notionFixture as fixture,
+  nockGetBlockChildren,
+  nockAppendBlockChildren,
+} from '../../support/util'
 import { clone } from '../../../lib/util/collections'
 import main from '../../../lib/notion/add-year'
 
 describe('lib/notion/add-year', () => {
   it('appends blocks in the drop zone based on the year template patterns and year extras', async () => {
-    nockGetBlockChildren('future-page-id', { fixture: 'add-year/notion-future-blocks' })
+    nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
     nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
 

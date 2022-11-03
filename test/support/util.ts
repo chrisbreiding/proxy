@@ -8,6 +8,10 @@ export function fixture (name: string) {
   return path.join(__dirname, `../fixtures/${name}.json`)
 }
 
+export function notionFixture (name: string) {
+  return fixture(`notion/${name}`)
+}
+
 interface GetOptions {
   fixture?: string
   reply?: object
@@ -32,7 +36,7 @@ export function nockNotion (options: NockOptions) {
   .times(options.times || 1)
 
   if (options.fixture) {
-    scope.replyWithFile(200, fixture(options.fixture), {
+    scope.replyWithFile(200, notionFixture(options.fixture), {
       'Content-Type': 'application/json',
     })
   } else {
@@ -69,7 +73,7 @@ interface UpdateOptions {
 }
 
 export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOptions) {
-  const update = fs.readJsonSync(fixture(fixtureName))
+  const update = fs.readJsonSync(notionFixture(fixtureName))
 
   nock('https://api.notion.com')
   .matchHeader('authorization', 'Bearer notion-token')

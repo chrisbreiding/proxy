@@ -1,14 +1,14 @@
 import fs from 'fs-extra'
 import { describe, expect, it } from 'vitest'
 
-import { fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
+import { notionFixture as fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
 import main from '../../../lib/notion/year-in-review'
 import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
 
 describe('lib/notion/year-in-review', () => {
   it('adds year summmary', async () => {
-    nockGetBlockChildren('done-page-id', { fixture: 'notion/year-in-review/done-blocks' })
-    nockGetBlockChildren('year-id', { fixture: 'notion/year-in-review/year-blocks' })
+    nockGetBlockChildren('done-page-id', { fixture: 'year-in-review/done-blocks' })
+    nockGetBlockChildren('year-id', { fixture: 'year-in-review/year-blocks' })
     nockGetBlockChildren('january-id', { reply: monthBlocks.january })
     nockGetBlockChildren('february-id', { reply: monthBlocks.february })
     nockGetBlockChildren('march-id', { reply: monthBlocks.march })
@@ -24,7 +24,7 @@ describe('lib/notion/year-in-review', () => {
 
     nockAppendBlockChildren({
       id: 'year-id',
-      body: fs.readJsonSync(fixture('notion/year-in-review/result')),
+      body: fs.readJsonSync(fixture('year-in-review/result')),
     })
 
     await main.yearInReview({
@@ -35,7 +35,7 @@ describe('lib/notion/year-in-review', () => {
   })
 
   it('errors if year cannot be found', async () => {
-    nockGetBlockChildren('done-page-id', { fixture: 'notion/year-in-review/done-blocks' })
+    nockGetBlockChildren('done-page-id', { fixture: 'year-in-review/done-blocks' })
 
     await expect(() => main.yearInReview({
       donePageId: 'done-page-id',

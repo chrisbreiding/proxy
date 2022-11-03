@@ -4,7 +4,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { handleServer } from '../../support/setup'
 
-import { fixture, nockAppendBlockChildren, nockGetBlockChildren, nockUpdateBlock } from '../../support/util'
+import {
+  notionFixture as fixture,
+  nockAppendBlockChildren,
+  nockGetBlockChildren,
+  nockUpdateBlock,
+} from '../../support/util'
 import { startServer } from '../../../index'
 import { clone } from '../../../lib/util/collections'
 
