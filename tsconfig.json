@@ -4,7 +4,8 @@
     "./index.ts"
   ],
   "exclude": [
-    "./node_modules/"
+    "./node_modules/",
+    "**/*.js"
   ],
   "compilerOptions": {
     "outDir": "./dist",
@@ -12,6 +13,8 @@
     "importsNotUsedAsValues": "error",
     "module": "commonjs",
     "target": "ES2018",
+    "checkJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "strict": true
   }

@@ -16,23 +16,6 @@ import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
-const notionToken = getEnv('NOTION_TOKEN')!
-const questsId = getEnv('NOTION_QUESTS_ID')!
-const weatherLocation = getEnv('WEATHER_LOCATION')!
-const dryRun = getEnv('DRY_RUN')!
-
-if (dryRun) {
-  // eslint-disable-next-line no-console
-  console.log('--- DRY RUN ---')
-}
-
-debug('ENV:', {
-  notionToken,
-  questsId,
-  weatherLocation,
-  dryRun,
-})
-
 interface DateObject {
   date: string
   dateText: string
@@ -67,8 +50,8 @@ function getDates (questBlocks: BlockObjectResponse[]) {
 
 type WeatherByDate = { [key: string]: DayWeather }
 
-async function getWeather () {
-  const weather = await getWeatherData({ location: weatherLocation })
+async function getWeather ({ location }: { location: string }) {
+  const weather = await getWeatherData({ location })
 
   return weather.daily.data.reduce((memo, dayWeather) => {
     const date = dayjs.unix(dayWeather.time).format('YYYY-MM-DD')
@@ -85,7 +68,13 @@ const makePrecipPart = (condition: boolean, info: string) => {
   return condition ? makeTextPart(`(${info}) `, 'gray') : undefined
 }
 
-async function updateBlockWeather (dateObject: DateObject, weather: DayWeather) {
+interface UpdateBlockWeatherOptions {
+  dateObject: DateObject
+  notionToken: string
+  weather: DayWeather
+}
+
+async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateBlockWeatherOptions) {
   const content = {
     type: 'paragraph' as const,
     paragraph: {
@@ -112,39 +101,60 @@ async function updateBlockWeather (dateObject: DateObject, weather: DayWeather) 
     return
   }
 
-  // eslint-disable-next-line no-console
-  const log = dryRun && !debug.enabled ? console.log : debug
-
-  log(`Update '${dateObject.text}' to '${newText}'`)
-
-  if (dryRun) return
+  debug(`Update "${dateObject.text}" to "${newText}"`)
 
   await updateBlock({ notionToken, block: content, blockId: dateObject.id })
 }
 
-async function updateBlocks (dateObjects: DateObject[], weather: WeatherByDate) {
+interface UpdateBlocksOptions {
+  dateObjects: DateObject[]
+  notionToken: string
+  weather: WeatherByDate
+}
+
+async function updateBlocks ({ dateObjects, notionToken, weather }: UpdateBlocksOptions) {
   for (const dateObject of dateObjects) {
     if (weather[dateObject.date]) {
-      await updateBlockWeather(dateObject, weather[dateObject.date])
+      await updateBlockWeather({ dateObject, notionToken, weather: weather[dateObject.date] })
     } else {
       debug('No weather found for %s', dateObject.dateText)
     }
   }
 }
 
-export default async function updateWeather () {
+interface UpdateWeatherOptions {
+  notionToken: string
+  questsId: string
+  location: string
+}
+
+export async function updateWeather ({ notionToken, questsId, location }: UpdateWeatherOptions) {
+  const questBlocks = await getAllQuests({ notionToken, pageId: questsId })
+  const dateObjects = getDates(questBlocks)
+
+  debug('dateObjects:', dateObjects)
+
+  const weather = await getWeather({ location })
+
+  await updateBlocks({ dateObjects, notionToken, weather })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_TOKEN')!
+  const questsId = getEnv('NOTION_QUESTS_ID')!
+  const location = getEnv('WEATHER_LOCATION')!
+
+  debug('ENV:', {
+    notionToken,
+    questsId,
+    location,
+  })
+
   try {
     // eslint-disable-next-line no-console
     console.log('Updating quests with weather...')
 
-    const questBlocks = await getAllQuests({ notionToken, pageId: questsId })
-    const dateObjects = getDates(questBlocks)
-
-    debug('dateObjects:', dateObjects)
-
-    const weather = await getWeather()
-
-    await updateBlocks(dateObjects, weather)
+    await updateWeather({ notionToken, questsId, location })
 
     // eslint-disable-next-line no-console
     console.log('Successfully updated quests with weather')

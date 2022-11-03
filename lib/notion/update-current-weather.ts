@@ -7,18 +7,8 @@ import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
-const notionToken = getEnv('NOTION_TOKEN')!
-const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
-const weatherLocation = getEnv('WEATHER_LOCATION')!
-
-debug('ENV:', {
-  notionToken,
-  currentWeatherId,
-  weatherLocation,
-})
-
-async function getWeather () {
-  const weather = await getWeatherData({ location: weatherLocation })
+async function getWeather (location: string) {
+  const weather = await getWeatherData({ location })
 
   return weather.currently
 }
@@ -35,7 +25,13 @@ function getColor (temp: number) {
   return 'red'
 }
 
-async function updateBlockWeather (weather: CurrentWeather) {
+interface UpdateBlockWeatherOptions {
+  weather: CurrentWeather
+  notionToken: string
+  currentWeatherId: string
+}
+
+async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: UpdateBlockWeatherOptions) {
   const {
     icon,
     precipProbability,
@@ -68,17 +64,38 @@ async function updateBlockWeather (weather: CurrentWeather) {
   await updateBlock({ notionToken, block: content, blockId: currentWeatherId })
 }
 
-export default async function updateWeather () {
+interface UpdateWeatherOptions {
+  notionToken: string
+  currentWeatherId: string
+  weatherLocation: string
+}
+
+export async function updateWeather ({ notionToken, currentWeatherId, weatherLocation }: UpdateWeatherOptions) {
+  const weather = await getWeather(weatherLocation)
+
+  await updateBlockWeather({ weather, notionToken, currentWeatherId })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_TOKEN')!
+  const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
+  const weatherLocation = getEnv('WEATHER_LOCATION')!
+
+  debug('ENV:', {
+    notionToken,
+    currentWeatherId,
+    weatherLocation,
+  })
+
   try {
     // eslint-disable-next-line no-console
     console.log('Updating current weather...')
 
-    const weather = await getWeather()
-
-    await updateBlockWeather(weather)
-
-    // eslint-disable-next-line no-console
-    console.log('Successfully updated current weather')
+    await updateWeather({
+      notionToken,
+      currentWeatherId,
+      weatherLocation,
+    })
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.log('Updating current weather failed:')

@@ -7,15 +7,12 @@ import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
-const notionToken = getEnv('NOTION_SARAH_TOKEN')!
-const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')!
+interface GetCategoryBlocksOptions {
+  notionToken: string
+  dateExtrapolationId: string
+}
 
-debug('ENV:', {
-  notionToken,
-  dateExtrapolationId,
-})
-
-function getCategoryBlocks () {
+function getCategoryBlocks ({ notionToken, dateExtrapolationId }: GetCategoryBlocksOptions) {
   return getBlockChildrenDeep({
     notionToken,
     pageId: dateExtrapolationId,
@@ -37,7 +34,7 @@ function getHistoricalDates (blocks: BlockContent[]) {
 
     if (!['Historical', 'Recent'].includes(text)) return memo
 
-    const dates = compact(block.children!.map(getDateFromBlock)) as dayjs.Dayjs[]
+    const dates = compact(block[block.type].children!.map(getDateFromBlock)) as dayjs.Dayjs[]
 
     dates.sort((a, b) => a.valueOf() - b.valueOf())
 
@@ -64,13 +61,15 @@ function getAverage (nums: number[]) {
 }
 
 function getExtrapolatedDateBlocks (blocks: BlockContent[]) {
-  const extrapolatedBlock = blocks.find((block) => {
+  const block = blocks.find((block) => {
     const text = getBlockPlainText(block) || ''
 
     return text.includes('Extrapolated')
-  })!
+  }) as BlockContent
 
-  return extrapolatedBlock.children!.filter((b) => b.type === 'bulleted_list_item')
+  return block[block.type].children!.filter((b: BlockContent) => {
+    return b.type === 'bulleted_list_item'
+  })
 }
 
 interface DatesAndBlocks {
@@ -94,7 +93,12 @@ function getExtrapolatedDates (historicalDates: dayjs.Dayjs[], blocks: BlockCont
   }, { lastDate: lastHistoricalDate, dates: [] as DatesAndBlocks[] }).dates
 }
 
-async function updateDates (extrapolatedDates: DatesAndBlocks[]) {
+interface UpdateDatesOptions {
+  extrapolatedDates: DatesAndBlocks[]
+  notionToken: string
+}
+
+async function updateDates ({ extrapolatedDates, notionToken }: UpdateDatesOptions) {
   return mapPromisesSerially(extrapolatedDates, ({ date, block }) => {
     const content = {
       type: 'bulleted_list_item' as const,
@@ -108,16 +112,33 @@ async function updateDates (extrapolatedDates: DatesAndBlocks[]) {
   })
 }
 
-export default async function updateDateExtrapolation () {
+interface UpdateDateExtrapolationOptions {
+  notionToken: string
+  dateExtrapolationId: string
+}
+
+export async function updateDateExtrapolation ({ notionToken, dateExtrapolationId }: UpdateDateExtrapolationOptions) {
+  const blocks = await getCategoryBlocks({ notionToken, dateExtrapolationId })
+  const historicalDates = getHistoricalDates(blocks)
+  const extrapolatedDates = getExtrapolatedDates(historicalDates, blocks)
+
+  await updateDates({ extrapolatedDates, notionToken })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_SARAH_TOKEN')!
+  const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')!
+
+  debug('ENV:', {
+    notionToken,
+    dateExtrapolationId,
+  })
+
   try {
     // eslint-disable-next-line no-console
     console.log('Updating date extrapolation...')
 
-    const blocks = await getCategoryBlocks()
-    const historicalDates = getHistoricalDates(blocks)
-    const extrapolatedDates = getExtrapolatedDates(historicalDates, blocks)
-
-    await updateDates(extrapolatedDates)
+    await updateDateExtrapolation({ notionToken, dateExtrapolationId })
 
     // eslint-disable-next-line no-console
     console.log('Successfully updated date extrapolation')

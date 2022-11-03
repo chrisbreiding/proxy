@@ -68,6 +68,9 @@ export async function get (req: express.Request, res: express.Response) {
 
     res.json(result)
   } catch (error: any) {
-    res.status(500).json({ error })
+    res.status(500).json({
+      error,
+      data: error?.response?.data,
+    })
   }
 }

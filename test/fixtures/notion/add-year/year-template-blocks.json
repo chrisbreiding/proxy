@@ -1,0 +1,310 @@
+{
+  "object": "list",
+  "results": [
+    {
+      "object": "block",
+      "id": "pattern-month-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2021-10-15T02:11:00.000Z",
+      "last_edited_time": "2022-10-22T02:47:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "January",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "January",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-month-date-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2022-10-22T02:47:00.000Z",
+      "last_edited_time": "2022-10-22T02:47:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "January on 24th",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "January on 24th",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-multiple-months-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2021-10-15T02:11:00.000Z",
+      "last_edited_time": "2021-11-14T20:23:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "January, April, July, October",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "January, April, July, October",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-multiple-months-date-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2022-02-01T21:10:00.000Z",
+      "last_edited_time": "2022-02-01T21:11:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "January, September on 20th",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "January, September on 20th",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-odd-months-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2021-10-15T02:11:00.000Z",
+      "last_edited_time": "2021-12-21T18:28:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Odd months",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Odd months",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-even-months-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2021-10-15T02:11:00.000Z",
+      "last_edited_time": "2021-12-21T18:28:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Even months",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Even months",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "pattern-every-month-date-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "02d8511f-7665-46b2-898d-b0ef2f0924a2"
+      },
+      "created_time": "2021-10-15T02:11:00.000Z",
+      "last_edited_time": "2021-10-15T02:11:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": true,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Every month on 10th",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Every month on 10th",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false,
+  "type": "block",
+  "block": {}
+}

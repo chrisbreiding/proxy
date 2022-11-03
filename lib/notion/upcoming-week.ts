@@ -104,7 +104,7 @@ async function getDayBlocks ({ notionToken, weekTemplatePageId, startDate }: Get
         memo.blocks.push(makeBlock({
           text,
           type: block.type,
-          children: block.children,
+          children: block[block.type].children,
         }))
       }
 

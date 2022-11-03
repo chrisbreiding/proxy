@@ -20,20 +20,12 @@ import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
-const notionToken = getEnv('NOTION_TOKEN')!
-const futurePageId = getEnv('NOTION_FUTURE_ID')!
-
-debug('ENV:', {
-  notionToken,
-  futurePageId,
-})
-
 interface YearTemplateItem {
   rule: string | undefined
   quests: BlockContent[]
 }
 
-async function getYearTemplate (yearTemplateId: string): Promise<YearTemplateItem[]> {
+async function getYearTemplate (yearTemplateId: string, notionToken: string): Promise<YearTemplateItem[]> {
   const { results } = await getBlockChildren({ notionToken, pageId: yearTemplateId })
 
   const blocks = (results as BlockObjectResponse[]).filter((block) => {
@@ -162,7 +154,7 @@ interface Extras {
   }
 }
 
-async function getExtras (extrasId: string) {
+async function getExtras (extrasId: string, notionToken: string) {
   const { results } = await getBlockChildren({ notionToken, pageId: extrasId })
 
   const months = {} as Extras
@@ -291,7 +283,7 @@ function findId (
   }
 }
 
-async function getPageIds (year: number | string) {
+async function getPageIds (year: number | string, notionToken: string, futurePageId: string) {
   const response = await getBlockChildren({ notionToken, pageId: futurePageId })
   const results = response.results as BlockObjectResponse[]
 
@@ -314,21 +306,44 @@ async function getPageIds (year: number | string) {
   }
 }
 
-const addYear = async () => {
-  try {
-    const args = minimist(process.argv.slice(2)) as { year?: number | string }
+interface AddYearOptions {
+  futurePageId: string
+  notionToken: string
+  year: number
+}
 
-    if (!args.year) {
+export async function addYear ({ notionToken, futurePageId, year }: AddYearOptions) {
+  const { yearTemplateId, dropZoneId, extrasId } = await getPageIds(year, notionToken, futurePageId)
+
+  const yearTemplateBlocks = await getYearTemplate(yearTemplateId, notionToken)
+  const extras = extrasId ? await getExtras(extrasId, notionToken) : {}
+  const monthsData = getMonthsData(yearTemplateBlocks, extras)
+  const blocks = makeBlocks(monthsData, year)
+
+  await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_TOKEN')!
+  const futurePageId = getEnv('NOTION_FUTURE_ID')!
+  const { year } = minimist(process.argv.slice(2))
+
+  debug('addYear: %o', {
+    notionToken,
+    futurePageId,
+    year,
+  })
+
+  try {
+    if (!year) {
       throw new Error('Must specify --year')
     }
 
-    const { yearTemplateId, dropZoneId, extrasId } = await getPageIds(args.year)
-    const yearTemplateItems = await getYearTemplate(yearTemplateId!)
-    const extras = extrasId ? await getExtras(extrasId) : {}
-    const monthsData = getMonthsData(yearTemplateItems, extras)
-    const blocks = makeBlocks(monthsData, Number(args.year))
-
-    await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId! })
+    await addYear({
+      notionToken,
+      futurePageId,
+      year,
+    })
 
     // eslint-disable-next-line no-console
     console.log('Successfully added year')
@@ -343,5 +358,3 @@ const addYear = async () => {
     process.exit(1)
   }
 }
-
-addYear()

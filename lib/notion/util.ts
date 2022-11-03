@@ -81,17 +81,11 @@ export function makeRequest<T> (options: MakeRequestOptions): Promise<T> {
   })
 }
 
-// TODO: what's best way to get notion types?
-// - https://github.com/makenotion/notion-sdk-js
-// - get types from that somehow?
-// - use that instead of making requests manually
-
 interface GetBlockChildrenOptions {
   notionToken: string
   pageId: string
 }
 
-// TODO: cast this to always be result: BlockObjectResponse[]
 export function getBlockChildren ({ notionToken, pageId }: GetBlockChildrenOptions) {
   return makeRequest<ListBlockChildrenResponse>({ notionToken, path: `blocks/${pageId}/children` })
 }
@@ -106,7 +100,7 @@ interface GetBlockChildrenDeepOptions {
 export async function getBlockChildrenDeep ({ notionToken, pageId, filter, includeId }: GetBlockChildrenDeepOptions): Promise<BlockContent[]> {
   const { results } = await getBlockChildren({ notionToken, pageId })
 
-  const blocks = await Promise.all(results.map((block) => {
+  const blocks = await Promise.all(results.map((block: BlockObjectResponse) => {
     return getBlockContent({
       notionToken,
       block: block as BlockObjectResponse,
@@ -119,7 +113,6 @@ export async function getBlockChildrenDeep ({ notionToken, pageId, filter, inclu
 }
 
 export type BlockContent = Partial<BlockObjectResponse> & {
-  children?: BlockContent[]
   type: BlockObjectResponse['type']
 }
 
@@ -171,6 +164,11 @@ interface GetBlockContentOptions {
   includeId?: boolean
 }
 
+interface BlockTypeObject {
+  children?: BlockContent[]
+  rich_text?: RichTextItemResponse
+}
+
 export async function getBlockContent ({ notionToken, block, filter, includeId = false }: GetBlockContentOptions) {
   if (filter && !filter(block)) return
 
@@ -178,13 +176,16 @@ export async function getBlockContent ({ notionToken, block, filter, includeId =
     ? (await getBlockChildrenDeep({ notionToken, pageId: block.id, includeId }))
     : undefined
   const richText = getRichText(block)
-  const blockTypeObject = richText ? { rich_text: richText } : {}
+  const blockTypeObject = { children } as BlockTypeObject
+
+  if (richText) {
+    blockTypeObject.rich_text = richText
+  }
 
   const content = {
     object: 'block',
     type: block.type,
     [block.type]: blockTypeObject,
-    children,
   } as BlockContent
 
   if (includeId) {
@@ -204,7 +205,7 @@ interface AppendBlockChildrenOptions {
   blocks: BlockContent[]
 }
 
-function makeAppendRequest ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+export function makeAppendRequest ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   return makeRequest<ListBlockChildrenResponse>({
     notionToken,
     method: 'patch',
@@ -215,14 +216,13 @@ function makeAppendRequest ({ notionToken, pageId, blocks }: AppendBlockChildren
   })
 }
 
-
 export async function appendBlockChildren ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   let toAppend: BlockContent[] = []
 
   for (const block of blocks) {
-    if (block.children) {
-      const children = block.children
-      delete block.children
+    if (block[block.type].children) {
+      const children = block[block.type].children
+      delete block[block.type].children
       toAppend.push(block)
 
       const { results } = await makeAppendRequest({ notionToken, pageId, blocks: toAppend })
@@ -273,7 +273,6 @@ export function makeBlock ({ text, type = 'paragraph', annotations, children }: 
   return {
     type,
     object: 'block',
-    children,
     [type]: {
       rich_text: [
         {
@@ -284,6 +283,7 @@ export function makeBlock ({ text, type = 'paragraph', annotations, children }: 
           annotations,
           plain_text: text,
         },
+        children,
       ],
     },
   } as BlockContent

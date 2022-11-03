@@ -15,7 +15,10 @@ export async function details (req: express.Request, res: express.Response) {
 
     res.send(result)
   } catch (error: any) {
-    res.status(500).json({ error })
+    res.status(500).json({
+      error,
+      data: error?.response?.data,
+    })
   }
 }
 
@@ -35,6 +38,9 @@ export async function search (req: express.Request, res: express.Response) {
     locationSearchCache[query] = result
     res.send(result)
   } catch (error: any) {
-    res.status(500).json({ error })
+    res.status(500).json({
+      error,
+      data: error?.response?.data,
+    })
   }
 }

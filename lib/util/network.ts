@@ -24,7 +24,13 @@ export async function request ({ url, body, headers, params, method = 'get' }: R
     console.log('--- axios error ---')
     console.log({ url, body, headers, params, method })
     console.log()
-    console.log(error?.stack || error)
+    console.log({
+      status: error?.response?.status,
+      statusText: error?.response?.statusText,
+      code: error?.data?.code,
+      message: error?.data?.message,
+      stack: error?.stack,
+    })
     console.log()
     console.trace()
     console.log('-------------------')

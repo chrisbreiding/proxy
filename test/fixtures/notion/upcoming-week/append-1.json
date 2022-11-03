@@ -1,0 +1,169 @@
+{
+  "children": [
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun, 11/6"
+            },
+            "plain_text": "Sun, 11/6"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun task 1"
+            },
+            "plain_text": "Sun task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun task 2"
+            },
+            "plain_text": "Sun task 2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun conditional task that matches"
+            },
+            "plain_text": "Sun conditional task that matches"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mon, 11/7"
+            },
+            "plain_text": "Mon, 11/7"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mon task 1"
+            },
+            "plain_text": "Mon task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mon task 2"
+            },
+            "plain_text": "Mon task 2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Tue, 11/8"
+            },
+            "plain_text": "Tue, 11/8"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Tue task 1"
+            },
+            "plain_text": "Tue task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed, 11/9"
+            },
+            "plain_text": "Wed, 11/9"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed task 1 (has children)"
+            },
+            "plain_text": "Wed task 1 (has children)"
+          }
+        ]
+      }
+    }
+  ]
+}

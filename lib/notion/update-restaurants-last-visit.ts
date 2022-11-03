@@ -13,15 +13,12 @@ import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
-const notionToken = getEnv('NOTION_TOKEN')!
-const restaurantsDatabaseId = getEnv('NOTION_NEARBY_RESTAURANTS_TABLE_ID')!
+interface UpdateRestaurantsLastVisitOptions {
+  notionToken: string
+  restaurantsDatabaseId: string
+}
 
-debug('ENV:', {
-  notionToken,
-  restaurantsDatabaseId,
-})
-
-async function getDatabasePages () {
+async function getDatabasePages ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
   const { results } = await makeRequest<ListDatabasesResponse>({
     notionToken,
     method: 'post',
@@ -32,6 +29,7 @@ async function getDatabasePages () {
 }
 
 interface UpdatePageOptions {
+  notionToken: string
   pageId: string
   properties: {
     [key: string]: {
@@ -42,7 +40,7 @@ interface UpdatePageOptions {
   }
 }
 
-function updatePage ({ pageId, properties }: UpdatePageOptions) {
+function updatePage ({ notionToken, pageId, properties }: UpdatePageOptions) {
   return makeRequest<void>({
     notionToken,
     body: { properties },
@@ -57,12 +55,18 @@ interface PageDate {
   date: string
 }
 
-function updatePages (pageDates: PageDate[]) {
+interface UpdatePagesOptions {
+  pageDates: PageDate[]
+  notionToken: string
+}
+
+function updatePages ({ pageDates, notionToken }: UpdatePagesOptions) {
   return Promise.all(pageDates.map(({ date, name, pageId }) => {
     // eslint-disable-next-line no-console
     console.log('Update', name, 'to', date)
 
     return updatePage({
+      notionToken,
       pageId,
       properties: {
         'Last Visit': {
@@ -77,7 +81,13 @@ function updatePages (pageDates: PageDate[]) {
 
 const dateRegex = /(\d{1,2}\/\d{1,2}\/\d{2}).*/
 
-async function getMostRecentVisitDate ({ name, pageId }: { name: string, pageId: string }) {
+interface GetMostRecentVisitDateOptions {
+  name: string
+  notionToken: string
+  pageId: string
+ }
+
+async function getMostRecentVisitDate ({ name, notionToken, pageId }: GetMostRecentVisitDateOptions) {
   const { results } = await getBlockChildren({ notionToken, pageId })
 
   for (const block of results as BlockObjectResponse[]) {
@@ -97,14 +107,19 @@ async function getMostRecentVisitDate ({ name, pageId }: { name: string, pageId:
   }
 }
 
-async function getMostRecentVisitDates (databasePages: DatabaseObjectResponse[]) {
+interface GetMostRecentVisitDatesOptions {
+  databasePages: DatabaseObjectResponse[]
+  notionToken: string
+}
+
+async function getMostRecentVisitDates ({ databasePages, notionToken }: GetMostRecentVisitDatesOptions) {
   const pageDates = await Promise.all(databasePages.map(async (databasePage) => {
     const { id, properties } = databasePage
     const lastVisit = properties['Last Visit'] as DateDatabasePropertyConfigResponse
     const currentDate = lastVisit?.date?.start as string | undefined
     // @ts-ignore
     const name = richTextToPlainText(properties.Name.title)
-    const newDate = await getMostRecentVisitDate({ name, pageId: id })
+    const newDate = await getMostRecentVisitDate({ name, notionToken, pageId: id })
 
     if (currentDate !== newDate?.date) return newDate
   }))
@@ -112,15 +127,30 @@ async function getMostRecentVisitDates (databasePages: DatabaseObjectResponse[])
   return compact(pageDates)
 }
 
-export default async function updateRestaurantsLastVisit () {
+export async function updateRestaurantsLastVisit ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
+  const databasePages = await getDatabasePages({ notionToken, restaurantsDatabaseId })
+  const pageDates = await getMostRecentVisitDates({ databasePages, notionToken })
+
+  await updatePages({ notionToken, pageDates })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_TOKEN')!
+  const restaurantsDatabaseId = getEnv('NOTION_NEARBY_RESTAURANTS_TABLE_ID')!
+
+  debug('ENV:', {
+    notionToken,
+    restaurantsDatabaseId,
+  })
+
   try {
     // eslint-disable-next-line no-console
     console.log('Updating restaurants last visit dates...')
 
-    const databasePages = await getDatabasePages()
-    const pageDates = await getMostRecentVisitDates(databasePages)
-
-    await updatePages(pageDates)
+    await updateRestaurantsLastVisit({
+      notionToken,
+      restaurantsDatabaseId,
+    })
 
     // eslint-disable-next-line no-console
     console.log('Successfully updated restaurants last visit dates')

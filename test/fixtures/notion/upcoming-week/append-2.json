@@ -1,0 +1,124 @@
+{
+  "children": [
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed task 2"
+            },
+            "plain_text": "Wed task 2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Thu, 11/10"
+            },
+            "plain_text": "Thu, 11/10"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Thu task 1"
+            },
+            "plain_text": "Thu task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Fri, 11/11"
+            },
+            "plain_text": "Fri, 11/11"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Fri task 1"
+            },
+            "plain_text": "Fri task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sat, 11/12"
+            },
+            "plain_text": "Sat, 11/12"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sat task 1"
+            },
+            "plain_text": "Sat task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sat task 2"
+            },
+            "plain_text": "Sat task 2"
+          }
+        ]
+      }
+    }
+  ]
+}

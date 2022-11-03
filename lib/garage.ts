@@ -53,11 +53,10 @@ export async function set (req: express.Request, res: express.Response) {
     }
 
     const update = {
-      [`${door}Previous`]: previousState,
       [door]: state,
     }
 
-    await persistentData.set(Object.assign(data, update))
+    await persistentData.set(Object.assign({}, data, update))
   } catch (error: any) {
     // eslint-disable-next-line no-console
     console.log(`Setting garage state (${door} => ${state}) errored:`, error?.stack || error)

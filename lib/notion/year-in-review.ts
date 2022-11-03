@@ -2,20 +2,12 @@ import Debug from 'debug'
 import minimist from 'minimist'
 import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
-import { appendBlockChildren, dateRegex, getBlockChildren, getBlockPlainText, makeBlock } from './util'
+import { appendBlockChildren, dateRegex, getBlockChildren, getBlockPlainText, makeAppendRequest, makeBlock } from './util'
 import { compact } from '../util/collections'
 import { patienceDiffPlus } from '../util/patience-diff'
 import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
-
-const notionToken = getEnv('NOTION_TOKEN')!
-const donePageId = getEnv('NOTION_DONE_ID')!
-
-debug('ENV:', {
-  notionToken,
-  donePageId,
-})
 
 function findId (
   blocks: BlockObjectResponse[],
@@ -43,7 +35,13 @@ interface MonthDataItem {
   quest: string,
 }
 
-async function getPageIds (year: string | number) {
+interface GetPageIdsOptions {
+  donePageId: string
+  notionToken: string
+  year: string | number
+}
+
+async function getPageIds ({ donePageId, notionToken, year }: GetPageIdsOptions) {
   const doneResponse = await getBlockChildren({ notionToken, pageId: donePageId })
   const doneBlocks = doneResponse.results as BlockObjectResponse[]
 
@@ -117,7 +115,13 @@ const findMatching = (data: MonthDataItem[][], quest: string): Match | undefined
   }
 }
 
-async function getMonthData (month: MonthBlock, data: MonthDataItem[][]) {
+interface GetMonthDataOptions {
+  data: MonthDataItem[][]
+  month: MonthBlock
+  notionToken: string
+}
+
+async function getMonthData ({ data, month, notionToken }: GetMonthDataOptions) {
   const response = await getBlockChildren({ notionToken, pageId: month.id })
   const results = response.results as BlockObjectResponse[]
 
@@ -164,11 +168,16 @@ async function getMonthData (month: MonthBlock, data: MonthDataItem[][]) {
 
 const getDates = (quests: MonthDataItem[]) => quests.map((q) => q.dates).flat()
 
-async function getData (months: MonthBlock[]) {
+interface GetDataOptions {
+  months: MonthBlock[]
+  notionToken: string
+}
+
+async function getData ({ months, notionToken }: GetDataOptions) {
   let data: (MonthDataItem[][]) = []
 
   for (const month of months) {
-    data = await getMonthData(month, data)
+    data = await getMonthData({ data, month, notionToken })
   }
 
   return data
@@ -196,7 +205,29 @@ function makeBlocks (data: MonthDataItem[][]) {
   })
 }
 
-async function yearInReview () {
+interface YearInReviewOptions {
+  donePageId: string
+  notionToken: string
+  year: number | string
+}
+
+export async function yearInReview ({ donePageId, notionToken, year }: YearInReviewOptions) {
+  const { months, yearId } = await getPageIds({ donePageId, notionToken, year })
+  const data = await getData({ months, notionToken })
+  const blocks = makeBlocks(data)
+
+  await makeAppendRequest({ blocks, notionToken, pageId: yearId })
+}
+
+export default async function main () {
+  const notionToken = getEnv('NOTION_TOKEN')!
+  const donePageId = getEnv('NOTION_DONE_ID')!
+
+  debug('ENV:', {
+    notionToken,
+    donePageId,
+  })
+
   try {
     const { year } = minimist(process.argv.slice(2)) as { year?: number | string }
 
@@ -204,11 +235,11 @@ async function yearInReview () {
       throw new Error('Must specify --year')
     }
 
-    const { months, yearId } = await getPageIds(year)
-    const data = await getData(months)
-    const blocks = makeBlocks(data)
-
-    await appendBlockChildren({ notionToken, blocks, pageId: yearId })
+    await yearInReview({
+      donePageId,
+      notionToken,
+      year,
+    })
 
     // eslint-disable-next-line no-console
     console.log('Successfully added Year In Review')
@@ -224,4 +255,6 @@ async function yearInReview () {
   }
 }
 
-yearInReview()
+main.yearInReview = yearInReview
+
+module.exports = main

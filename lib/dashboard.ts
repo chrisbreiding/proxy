@@ -34,15 +34,11 @@ export async function get (req: express.Request, res: express.Response) {
     return res.json({ error: 'Must include location in query' })
   }
 
-  try {
-    const [garage, notion, weather] = await Promise.all([
-      wrap('garage', () => getGarageData()),
-      wrap('notion', () => getNotionData({ notionToken, notionPageId })),
-      wrap('weather', () => getWeatherData({ location })),
-    ])
+  const [garage, notion, weather] = await Promise.all([
+    wrap('garage', () => getGarageData()),
+    wrap('notion', () => getNotionData({ notionToken, notionPageId })),
+    wrap('weather', () => getWeatherData({ location })),
+  ])
 
-    res.json({ garage, notion, weather })
-  } catch (error) {
-    res.json({})
-  }
+  res.json({ garage, notion, weather })
 }
