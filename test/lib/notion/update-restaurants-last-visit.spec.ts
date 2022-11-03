@@ -8,11 +8,11 @@ describe('lib/notion/update-restaurants-last-visit', () => {
     function blocksWithDate (date) {
       return {
         results: [
-          block({ text: 'Note: something to note' }),
-          block({ text: '' }),
-          block({ text: date }),
-          block({ text: 'Things we ate', type: 'bulleted_list_item' }),
-          block({ text: 'And what we thought about it', type: 'bulleted_list_item' }),
+          block.p({ text: 'Note: something to note' }),
+          block.p({ text: '' }),
+          block.p({ text: date }),
+          block.bullet({ text: 'Things we ate' }),
+          block.bullet({ text: 'And what we thought about it' }),
         ],
       }
     }

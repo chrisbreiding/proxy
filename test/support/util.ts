@@ -52,7 +52,7 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
 interface AppendOptions {
   id: string
   body: object
-  reply: object
+  reply?: object
 }
 
 export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
@@ -147,4 +147,12 @@ export function block ({ id, text, type }: BlockOptions) {
       color: 'default',
     },
   }
+}
+
+block.p = ({ id, text }: BlockOptions) => {
+  return block({ id, text, type: 'paragraph' })
+}
+
+block.bullet = ({ id, text }: BlockOptions) => {
+  return block({ id, text, type: 'bulleted_list_item' })
 }

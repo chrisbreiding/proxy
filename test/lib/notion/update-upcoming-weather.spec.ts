@@ -25,24 +25,24 @@ describe('lib/notion/update-upcoming-weather', () => {
     })
 
     const questBlocks = [
-      block({ text: 'Mon, 10/31' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Tue, 11/1' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Upcoming', type: 'toggle', id: 'upcoming-id' }),
+      block.p({ text: 'Mon, 10/31' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Tue, 11/1' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Upcoming', type: 'toggle', id: 'upcoming-id' }),
     ]
 
     const upcomingBlocks = [
-      block({ text: 'Wed, 11/2' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Thu, 11/3' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Fri, 11/4' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Sat, 11/5' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
-      block({ text: 'Sun, 11/6' }),
-      block({ text: 'A task', type: 'bulleted_list_item' }),
+      block.p({ text: 'Wed, 11/2' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Thu, 11/3' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Fri, 11/4' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Sat, 11/5' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Sun, 11/6' }),
+      block.bullet({ text: 'A task' }),
     ]
 
     nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
