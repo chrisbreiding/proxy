@@ -1,7 +1,6 @@
-import fs from 'fs-extra'
 import { describe, expect, it } from 'vitest'
 
-import { notionFixture as fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
+import { nockGetBlockChildren, nockAppendBlockChildren, snapshotBody } from '../../support/util'
 import { yearInReview } from '../../../lib/notion/year-in-review'
 import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
 
@@ -22,16 +21,15 @@ describe('lib/notion/year-in-review', () => {
     nockGetBlockChildren('november-id', { reply: monthBlocks.november })
     nockGetBlockChildren('december-id', { reply: monthBlocks.december })
 
-    nockAppendBlockChildren({
-      id: 'year-id',
-      body: fs.readJsonSync(fixture('year-in-review/result')),
-    })
+    const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'year-id' }))
 
     await yearInReview({
       donePageId: 'done-page-id',
       notionToken: 'notion-token',
       year: '2021',
     })
+
+    await snapshot
   })
 
   it('errors if year cannot be found', async () => {

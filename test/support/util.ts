@@ -55,16 +55,14 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
 
 interface AppendOptions {
   id: string
-  body?: object
   reply?: object
 }
 
-export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
+export function nockAppendBlockChildren ({ id, reply }: AppendOptions) {
   return nockNotion({
-    body,
     method: 'patch',
-    reply,
     path: `/v1/blocks/${id}/children`,
+    reply,
   })
 }
 

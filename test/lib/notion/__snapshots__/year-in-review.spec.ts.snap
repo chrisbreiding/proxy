@@ -1,0 +1,196 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/year-in-review > adds year summmary 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "toggle": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "Task 2 (14) [1/4, 3/9, 3/25, 4/5, 4/25, 5/19, 5/27, 6/15, 6/23, 1/4, 9/14, 10/4, 10/12, 11/1]",
+                  "text": {
+                    "content": "Task 2 (14) [1/4, 3/9, 3/25, 4/5, 4/25, 5/19, 5/27, 6/15, 6/23, 1/4, 9/14, 10/4, 10/12, 11/1]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "🍞 Task 2 (17) [1/12, 1/20, 2/1, 4/13, 4/17, 6/15, 6/23, 7/5, 7/29, 1/12, 1/20, 9/6, 9/6, 9/14, 9/22, 10/20, 11/17]",
+                  "text": {
+                    "content": "🍞 Task 2 (17) [1/12, 1/20, 2/1, 4/13, 4/17, 6/15, 6/23, 7/5, 7/29, 1/12, 1/20, 9/6, 9/6, 9/14, 9/22, 10/20, 11/17]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
+        "rich_text": [
+          {
+            "plain_text": "Task 2 (31)",
+            "text": {
+              "content": "Task 2 (31)",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "toggle",
+    },
+    {
+      "object": "block",
+      "toggle": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "Task 1 (10) [1/4, 2/9, 3/25, 4/5, 4/17, 7/5, 7/13, 7/21, 1/4, 9/14]",
+                  "text": {
+                    "content": "Task 1 (10) [1/4, 2/9, 3/25, 4/5, 4/17, 7/5, 7/13, 7/21, 1/4, 9/14]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "🐟 Task 1 (16) [1/20, 3/17, 4/13, 4/25, 7/5, 7/29, 7/29, 1/20, 9/6, 10/20, 10/20, 10/20, 10/28, 11/9, 11/25, 12/6]",
+                  "text": {
+                    "content": "🐟 Task 1 (16) [1/20, 3/17, 4/13, 4/25, 7/5, 7/29, 7/29, 1/20, 9/6, 10/20, 10/20, 10/20, 10/28, 11/9, 11/25, 12/6]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
+        "rich_text": [
+          {
+            "plain_text": "Task 1 (26)",
+            "text": {
+              "content": "Task 1 (26)",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "toggle",
+    },
+    {
+      "object": "block",
+      "toggle": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "Task 3 (11) [1/12, 2/9, 2/17, 3/1, 4/25, 6/7, 6/7, 6/15, 1/12, 11/1, 12/14]",
+                  "text": {
+                    "content": "Task 3 (11) [1/12, 2/9, 2/17, 3/1, 4/25, 6/7, 6/7, 6/15, 1/12, 11/1, 12/14]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "🌲 Task 3 (14) [1/28, 3/9, 3/25, 4/5, 5/3, 5/11, 5/19, 5/19, 6/23, 7/29, 1/28, 9/14, 10/28, 12/14]",
+                  "text": {
+                    "content": "🌲 Task 3 (14) [1/28, 3/9, 3/25, 4/5, 5/3, 5/11, 5/19, 5/19, 6/23, 7/29, 1/28, 9/14, 10/28, 12/14]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
+        "rich_text": [
+          {
+            "plain_text": "Task 3 (25)",
+            "text": {
+              "content": "Task 3 (25)",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "toggle",
+    },
+    {
+      "object": "block",
+      "toggle": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "Task 4 (4) [1/28, 5/19, 6/15, 1/28]",
+                  "text": {
+                    "content": "Task 4 (4) [1/28, 5/19, 6/15, 1/28]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "rich_text": [
+                {
+                  "plain_text": "💬 Task 4 (21) [1/12, 1/20, 2/9, 2/17, 3/1, 3/17, 5/3, 5/11, 5/11, 6/7, 6/7, 7/21, 7/21, 1/12, 1/20, 10/12, 10/28, 11/9, 11/17, 11/25, 12/22]",
+                  "text": {
+                    "content": "💬 Task 4 (21) [1/12, 1/20, 2/9, 2/17, 3/1, 3/17, 5/3, 5/11, 5/11, 6/7, 6/7, 7/21, 7/21, 1/12, 1/20, 10/12, 10/28, 11/9, 11/17, 11/25, 12/22]",
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
+        "rich_text": [
+          {
+            "plain_text": "Task 4 (25)",
+            "text": {
+              "content": "Task 4 (25)",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "toggle",
+    },
+  ],
+}
+`;
