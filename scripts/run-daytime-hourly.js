@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 console.log('Running hourly scripts...')
 
-require('../lib/notion/update-upcoming-weather')()
+require('../dist/lib/notion/update-upcoming-weather').default()
 .then(() => {
   console.log('Successfully ran hourly scripts')
 })

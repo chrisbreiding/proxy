@@ -4,8 +4,8 @@ const { mapPromisesSerially } = require('../lib/util/collections')
 console.log('Running nightly scripts...')
 
 const scripts = [
-  require('../lib/notion/update-restaurants-last-visit'),
-  require('../lib/notion/update-date-extrapolation'),
+  require('../dist/lib/notion/update-restaurants-last-visit').default,
+  require('../dist/lib/notion/update-date-extrapolation').default,
 ]
 
 mapPromisesSerially(scripts, (script) => script())

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const scriptName = process.argv[2]
-const script = require(`../lib/notion/${scriptName}`)
+const script = require(`../dist/lib/notion/${scriptName}`).default
 
 console.log('Running dev script:', scriptName)
 
