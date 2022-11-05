@@ -168,15 +168,9 @@ export function textFilter (block: OwnBlock) {
 }
 
 interface MakeAppendRequestOptions {
-  notionToken: string
-  pageId: string
   blocks: OutgoingBlock[]
-}
-
-interface AppendBlockChildrenOptions {
   notionToken: string
   pageId: string
-  blocks: OwnBlock[]
 }
 
 export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRequestOptions) {
@@ -188,6 +182,12 @@ export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRe
       children: blocks,
     },
   })
+}
+
+interface AppendBlockChildrenOptions {
+  blocks: OwnBlock[]
+  notionToken: string
+  pageId: string
 }
 
 export async function appendBlockChildrenDeep ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
@@ -254,6 +254,19 @@ export function updateBlock ({ notionToken, blockId, block }: UpdateBlockOptions
     method: 'patch',
     path: `blocks/${blockId}`,
     body: convertedBlock,
+  })
+}
+
+interface DeleteBlockOptions {
+  notionToken: string
+  blockId: string
+}
+
+export function deleteBlock ({ notionToken, blockId }: DeleteBlockOptions) {
+  return makeRequest<void>({
+    notionToken,
+    method: 'delete',
+    path: `blocks/${blockId}`,
   })
 }
 

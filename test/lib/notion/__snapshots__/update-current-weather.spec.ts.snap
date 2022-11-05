@@ -1,9 +1,10 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/update-current-weather > updates the current weather block with temperature and conditions 1`] = `
+exports[`lib/notion/update-current-weather > updates the current weather block with temperature and conditions > heading-update 1`] = `
 {
   "heading_1": {
     "color": "default",
+    "is_toggleable": true,
     "rich_text": [
       {
         "text": {
@@ -22,5 +23,415 @@ exports[`lib/notion/update-current-weather > updates the current weather block w
   },
   "object": "block",
   "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > updates the current weather block with temperature and conditions > table-append 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "table": {
+        "children": [
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Mon, 10/31",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "33°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "62°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "☀️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Tue, 11/1",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "45°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "66°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "⛅️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Wed, 11/2",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "43°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "66°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "⛅️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Thu, 11/3",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "33°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "54°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "☔️ ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": "(85%) ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Fri, 11/4",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "25°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "51°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "⛅️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Sat, 11/5",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "26°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "51°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "⛅️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Sun, 11/6",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "29°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "63°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "⛅️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+          {
+            "object": "block",
+            "table_row": {
+              "cells": [
+                [
+                  {
+                    "text": {
+                      "content": "Mon, 11/7",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "annotations": {
+                      "color": "blue",
+                    },
+                    "text": {
+                      "content": "29°",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "gray",
+                    },
+                    "text": {
+                      "content": " / ",
+                    },
+                  },
+                  {
+                    "annotations": {
+                      "color": "orange",
+                    },
+                    "text": {
+                      "content": "66°",
+                    },
+                  },
+                ],
+                [
+                  {
+                    "text": {
+                      "content": "☀️ ",
+                    },
+                  },
+                ],
+              ],
+            },
+            "type": "table_row",
+          },
+        ],
+        "has_column_header": false,
+        "has_row_header": false,
+        "table_width": 3,
+      },
+      "type": "table",
+    },
+  ],
 }
 `;

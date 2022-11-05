@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 
-import { DayWeather, getWeatherData, getWeatherIcon } from '../weather'
 import {
   dateRegex,
   getBlockPlainText,
@@ -10,9 +9,10 @@ import {
   updateBlock,
 } from './util'
 import { getAllQuests } from './quests'
-import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
+import { makeConditionParts, makeTemperatureParts } from './weather'
+import { DayWeather, getWeatherData } from '../weather'
 
 interface DateObject {
   date: string
@@ -46,12 +46,10 @@ function getDates (questBlocks: NotionBlock[]) {
   }, [] as DateObject[])
 }
 
-type WeatherByDate = { [key: string]: DayWeather }
+export type WeatherByDate = { [key: string]: DayWeather }
 
-async function getWeather ({ location }: { location: string }) {
-  const weather = await getWeatherData({ location })
-
-  return weather.daily.data.reduce((memo, dayWeather) => {
+export async function getWeatherByDate (weather: DayWeather[]) {
+  return weather.reduce((memo, dayWeather) => {
     const date = dayjs.unix(dayWeather.time).format('YYYY-MM-DD')
 
     debugVerbose('weather: %o', { timestamp: dayWeather.time, date })
@@ -60,10 +58,6 @@ async function getWeather ({ location }: { location: string }) {
 
     return memo
   }, {} as WeatherByDate)
-}
-
-const makePrecipPart = (condition: boolean, info: string) => {
-  return condition ? makeTextPart(`(${info}) `, 'gray') : undefined
 }
 
 interface UpdateBlockWeatherOptions {
@@ -76,14 +70,11 @@ async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateB
   const block = {
     type: 'paragraph' as const,
     content: {
-      rich_text: compact([
-        makeTextPart(`${dateObject.dateText}    ${getWeatherIcon(weather.icon)} `),
-        makePrecipPart(weather.icon === 'rain' && weather.precipProbability >= 0.01, `${Math.round(weather.precipProbability * 100)}%`),
-        makePrecipPart(weather.icon === 'snow' && weather.precipAccumulation >= 0.1, `${(weather.precipAccumulation || 0).toFixed(2)}in`),
-        makeTextPart(`${Math.round(weather.temperatureLow)}°`, 'blue'),
-        makeTextPart(' / ', 'gray'),
-        makeTextPart(`${Math.round(weather.temperatureHigh)}°`, 'orange'),
-      ]),
+      rich_text: [
+        makeTextPart(`${dateObject.dateText}    `), // Mon, 11/1
+        ...makeConditionParts(weather), // ☀️ | ☔️ (82%)
+        ...makeTemperatureParts(weather), // 33° / 62°
+      ],
       color: 'default' as const,
     },
   }
@@ -132,7 +123,8 @@ export async function updateWeather ({ notionToken, questsId, location }: Update
 
   debugVerbose('dateObjects:', dateObjects)
 
-  const weather = await getWeather({ location })
+  const weatherData = await getWeatherData(location)
+  const weather = await getWeatherByDate(weatherData.daily.data)
 
   await updateBlocks({ dateObjects, notionToken, weather })
 }

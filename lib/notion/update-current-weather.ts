@@ -1,18 +1,18 @@
-import { updateBlock, makeTextPart } from './util'
+import dayjs from 'dayjs'
+
+import {
+  updateBlock,
+  makeTextPart,
+  getBlockChildren,
+  deleteBlock,
+  OwnBlock,
+  appendBlockChildrenDeep,
+} from './util'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import { CurrentWeather, getWeatherData, getWeatherIcon } from '../weather'
-
-async function getWeather (location: string) {
-  const weather = await getWeatherData({ location })
-
-  return weather.currently
-}
-
-function makePrecipPart (condition: boolean, info: string) {
-  return condition ? makeTextPart(`(${info}) `, 'gray') : undefined
-}
+import { DayWeather, getWeatherData, getWeatherIcon } from '../weather'
+import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './weather'
 
 function getColor (temp: number) {
   if (temp <= 32) return 'purple'
@@ -22,19 +22,64 @@ function getColor (temp: number) {
   return 'red'
 }
 
-interface UpdateBlockWeatherOptions {
-  weather: CurrentWeather
-  notionToken: string
-  currentWeatherId: string
+function makeTableCells (weather: DayWeather[]) {
+  return weather.map((dayWeather) => {
+    const date = dayjs.unix(dayWeather.time).format('ddd, M/D')
+
+    return {
+      type: 'table_row',
+      content: {
+        cells: [
+          [makeTextPart(`${date}`)], // Mon, 11/1
+          [...makeTemperatureParts(dayWeather)], // 33° / 62°
+          [...makeConditionParts(dayWeather)], // ☀️ | ☔️ (82%)
+        ],
+      },
+    } as OwnBlock
+  })
 }
 
-async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: UpdateBlockWeatherOptions) {
+interface UpdateTableWeatherOptions {
+  notionToken: string
+  currentWeatherId: string
+  weather: DayWeather[]
+}
+
+async function updateTableWeather ({ notionToken, currentWeatherId, weather }: UpdateTableWeatherOptions) {
+  const children = await getBlockChildren({ notionToken, pageId: currentWeatherId })
+
+  if (children.length) {
+    deleteBlock({ blockId: children[0].id, notionToken })
+  }
+
+  const table = {
+    type: 'table',
+    content: {
+      table_width: 3,
+      has_column_header: false,
+      has_row_header: false,
+    },
+    children: makeTableCells(weather),
+  } as OwnBlock
+
+  await appendBlockChildrenDeep({ blocks: [table], notionToken, pageId: currentWeatherId })
+}
+
+interface UpdateWeatherOptions {
+  currentWeatherId: string
+  location: string
+  notionToken: string
+}
+
+export async function updateWeather ({ currentWeatherId, location, notionToken }: UpdateWeatherOptions) {
+  const weather = await getWeatherData(location)
+
   const {
     icon,
     precipProbability,
     precipAccumulation,
     temperature,
-  } = weather
+  } = weather.currently
   const roundedTemperature = Math.round(temperature)
 
   const block = {
@@ -47,6 +92,7 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
         makeTextPart(`${roundedTemperature}°`, getColor(roundedTemperature)),
       ]),
       color: 'default' as const,
+      is_toggleable: true,
     },
   }
 
@@ -58,38 +104,27 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
   debug(`Update current weather to '${newText}'`)
 
   await updateBlock({ notionToken, block, blockId: currentWeatherId })
-}
-
-interface UpdateWeatherOptions {
-  notionToken: string
-  currentWeatherId: string
-  weatherLocation: string
-}
-
-export async function updateWeather ({ notionToken, currentWeatherId, weatherLocation }: UpdateWeatherOptions) {
-  const weather = await getWeather(weatherLocation)
-
-  await updateBlockWeather({ weather, notionToken, currentWeatherId })
+  await updateTableWeather({ currentWeatherId, notionToken, weather: weather.daily.data })
 }
 
 export default async function main () {
-  const notionToken = getEnv('NOTION_TOKEN')!
   const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
-  const weatherLocation = getEnv('WEATHER_LOCATION')!
+  const location = getEnv('WEATHER_LOCATION')!
+  const notionToken = getEnv('NOTION_TOKEN')!
 
   debugVerbose('ENV:', {
-    notionToken,
     currentWeatherId,
-    weatherLocation,
+    location,
+    notionToken,
   })
 
   try {
     debug('Updating current weather...')
 
     await updateWeather({
-      notionToken,
       currentWeatherId,
-      weatherLocation,
+      location,
+      notionToken,
     })
   } catch (error: any) {
     debug('Updating current weather failed:')

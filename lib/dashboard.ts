@@ -37,7 +37,7 @@ export async function get (req: express.Request, res: express.Response) {
   const [garage, notion, weather] = await Promise.all([
     wrap('garage', () => getGarageData()),
     wrap('notion', () => getNotionData({ notionToken, notionPageId })),
-    wrap('weather', () => getWeatherData({ location })),
+    wrap('weather', () => getWeatherData(location)),
   ])
 
   res.json({ garage, notion, weather })

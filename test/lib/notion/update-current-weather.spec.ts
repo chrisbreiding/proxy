@@ -1,9 +1,16 @@
 import nock from 'nock'
-import { describe, expect, it } from 'vitest'
+import { describe, it } from 'vitest'
 
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
-import { notionFixture as fixture, nockUpdateBlock, snapshotBody } from '../../support/util'
+import {
+  notionFixture as fixture,
+  nockUpdateBlock,
+  snapshotBody,
+  nockNotion,
+  nockGetBlockChildren,
+  nockAppendBlockChildren,
+} from '../../support/util'
 import { updateWeather } from '../../../lib/notion/update-current-weather'
 
 describe('lib/notion/update-current-weather', () => {
@@ -14,15 +21,20 @@ describe('lib/notion/update-current-weather', () => {
       'Content-Type': 'application/json',
     })
 
-    const scope = nockUpdateBlock('current-weather-id')
-    const snapshotUpdate = snapshotBody(scope)
+    nockGetBlockChildren('current-weather-id', { fixture: 'weather/current-weather-children' })
+    nockNotion({ path: '/v1/blocks/table-id', method: 'delete' })
+
+    const snapshots = [
+      snapshotBody(nockUpdateBlock('current-weather-id'), 'heading-update'),
+      snapshotBody(nockAppendBlockChildren({ id: 'current-weather-id' }), 'table-append'),
+    ]
 
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      weatherLocation: 'lat,lng',
+      location: 'lat,lng',
     })
 
-    await snapshotUpdate
+    await Promise.all(snapshots)
   })
 })

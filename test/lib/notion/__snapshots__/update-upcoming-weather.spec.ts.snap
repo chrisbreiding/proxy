@@ -8,7 +8,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Mon, 10/31    ☀️ ",
+          "content": "Mon, 10/31    ",
+        },
+      },
+      {
+        "text": {
+          "content": "☀️ ",
         },
       },
       {
@@ -49,7 +54,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Tue, 11/1    ⛅️ ",
+          "content": "Tue, 11/1    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛅️ ",
         },
       },
       {
@@ -90,7 +100,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Wed, 11/2    ⛅️ ",
+          "content": "Wed, 11/2    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛅️ ",
         },
       },
       {
@@ -131,7 +146,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Thu, 11/3    ☔️ ",
+          "content": "Thu, 11/3    ",
+        },
+      },
+      {
+        "text": {
+          "content": "☔️ ",
         },
       },
       {
@@ -180,7 +200,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Fri, 11/4    ⛅️ ",
+          "content": "Fri, 11/4    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛅️ ",
         },
       },
       {
@@ -221,7 +246,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Sat, 11/5    ⛅️ ",
+          "content": "Sat, 11/5    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛅️ ",
         },
       },
       {
@@ -262,7 +292,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Sun, 11/6    ⛅️ ",
+          "content": "Sun, 11/6    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛅️ ",
         },
       },
       {

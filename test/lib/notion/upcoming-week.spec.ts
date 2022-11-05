@@ -43,20 +43,15 @@ describe('lib/notion/upcoming-week', () => {
       nockGetBlockChildren('week-template-id', { fixture: 'upcoming-week/week-template-blocks' })
       nockGetBlockChildren('nested-parent-id', { fixture: 'blocks' })
 
-      const snapshotAppend1 = snapshotBody(nockAppendBlockChildren({
-        id: 'append-to-id',
-        reply: fs.readJsonSync(fixture('upcoming-week/append-1-result')),
-      }), 'append-1')
-
-      const snapshotNested = snapshotBody(nockAppendBlockChildren({
-        id: 'nested-parent-id',
-      }), 'nested')
-
-      const snapshotAppend2 = snapshotBody(nockAppendBlockChildren({
-        id: 'append-to-id',
-      }), 'append-2')
-
-      const snapshotButtonUpdate = snapshotBody(nockUpdateBlock('button-id'), 'button')
+      const snapshots = [
+        snapshotBody(nockAppendBlockChildren({
+          id: 'append-to-id',
+          reply: fs.readJsonSync(fixture('upcoming-week/append-1-result')),
+        }), 'append-1'),
+        snapshotBody(nockAppendBlockChildren({ id: 'nested-parent-id' }), 'nested'),
+        snapshotBody(nockAppendBlockChildren({ id: 'append-to-id' }), 'append-2'),
+        snapshotBody(nockUpdateBlock('button-id'), 'button'),
+      ]
 
       const query = [
         ['weekTemplatePageId', 'week-template-id'],
@@ -72,12 +67,7 @@ describe('lib/notion/upcoming-week', () => {
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
       expect(res.text).to.include('Following week successfully added!')
 
-      await Promise.all([
-        snapshotAppend1,
-        snapshotNested,
-        snapshotAppend2,
-        snapshotButtonUpdate,
-      ])
+      await Promise.all(snapshots)
     })
 
     it('status 403 if key does not match', async (ctx) => {

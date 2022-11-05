@@ -46,7 +46,7 @@ export interface Weather {
   currently: CurrentWeather
 }
 
-export function getWeatherData ({ location }: { location: string }): Promise<Weather> {
+export function getWeatherData (location: string): Promise<Weather> {
   return request({
     url: `${WEATHER_BASE_URL}/${location}`,
     params: {
@@ -64,7 +64,7 @@ export async function get (req: express.Request, res: express.Response) {
       throw new Error('A value for \'location\' must be provided in the query string')
     }
 
-    const result = await getWeatherData({ location: location as string })
+    const result = await getWeatherData(location as string)
 
     res.json(result)
   } catch (error: any) {

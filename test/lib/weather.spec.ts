@@ -56,7 +56,7 @@ describe('lib/weather', () => {
         the: 'weather data',
       })
 
-      const result = await getWeatherData({ location: 'location' })
+      const result = await getWeatherData('location')
 
       expect(result).to.deep.equal({
         the: 'weather data',
