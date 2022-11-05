@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.build.json",
     "dev": "DEBUG=proxy,proxy:verbose nodemon ./index.ts",
     "lint": "eslint *.ts lib/*.ts lib/**/*.ts lib/**/*.js --fix",
-    "postinstall": "patch-package && npm run build",
+    "postinstall": "patch-package",
     "prod": "node ./dist/index.js",
     "start": "NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
     "test": "vitest",
