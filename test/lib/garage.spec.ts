@@ -4,8 +4,6 @@ import nock from 'nock'
 import path from 'path'
 import { afterAll, beforeEach, describe, expect, it, TestContext } from 'vitest'
 
-process.env.NODE_ENV = 'development'
-
 import { handleServer } from '../support/setup'
 import { startServer } from '../../index'
 import { getGarageData } from '../../lib/garage'
