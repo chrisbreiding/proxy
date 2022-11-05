@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import Debug from 'debug'
 import type {
   DatabaseObjectResponse,
   DateDatabasePropertyConfigResponse,
@@ -13,9 +12,8 @@ import {
   updatePage,
 } from './util'
 import { compact } from '../util/collections'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
 
 interface UpdateRestaurantsLastVisitOptions {
   notionToken: string
@@ -41,8 +39,7 @@ interface UpdatePagesOptions {
 
 function updatePages ({ pageDates, notionToken }: UpdatePagesOptions) {
   return Promise.all(pageDates.map(({ date, name, pageId }) => {
-    // eslint-disable-next-line no-console
-    console.log('Update', name, 'to', date)
+    debug('Update', name, 'to', date)
 
     return updatePage({
       notionToken,
@@ -117,26 +114,22 @@ export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const restaurantsDatabaseId = getEnv('NOTION_NEARBY_RESTAURANTS_TABLE_ID')!
 
-  debug('ENV:', {
+  debugVerbose('ENV:', {
     notionToken,
     restaurantsDatabaseId,
   })
 
   try {
-    // eslint-disable-next-line no-console
-    console.log('Updating restaurants last visit dates...')
+    debug('Updating restaurants last visit dates...')
 
     await updateRestaurantsLastVisit({
       notionToken,
       restaurantsDatabaseId,
     })
 
-    // eslint-disable-next-line no-console
-    console.log('Successfully updated restaurants last visit dates')
+    debug('Successfully updated restaurants last visit dates')
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Updating restaurants last visit dates failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Updating restaurants last visit dates failed:')
+    debug(error?.stack || error)
   }
 }

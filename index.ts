@@ -10,6 +10,7 @@ import * as dashboard from './lib/dashboard'
 import * as garage from './lib/garage'
 import * as location from './lib/location'
 import * as notion from './lib/notion'
+import { debug } from './lib/util/debug'
 import * as weather from './lib/weather'
 
 export function startServer (port: number) {
@@ -69,7 +70,7 @@ export function startServer (port: number) {
   io.on('connection', notion.onSocket)
 
   server.listen(port, () => {
-    console.log(`listening on port ${port}...`) // eslint-disable-line no-console
+    debug(`listening on port ${port}...`)
   })
 
   return server

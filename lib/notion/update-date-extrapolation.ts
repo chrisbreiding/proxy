@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import Debug from 'debug'
 
 import {
   Block,
@@ -11,9 +10,8 @@ import {
   updateBlock,
 } from './util'
 import { compact, mapPromisesSerially } from '../util/collections'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
 
 interface GetCategoryBlocksOptions {
   notionToken: string
@@ -143,23 +141,19 @@ export default async function main () {
   const notionToken = getEnv('NOTION_SARAH_TOKEN')!
   const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')!
 
-  debug('ENV:', {
+  debugVerbose('ENV:', {
     notionToken,
     dateExtrapolationId,
   })
 
   try {
-    // eslint-disable-next-line no-console
-    console.log('Updating date extrapolation...')
+    debug('Updating date extrapolation...')
 
     await updateDateExtrapolation({ notionToken, dateExtrapolationId })
 
-    // eslint-disable-next-line no-console
-    console.log('Successfully updated date extrapolation')
+    debug('Successfully updated date extrapolation')
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Updating date extrapolation failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Updating date extrapolation failed:')
+    debug(error?.stack || error)
   }
 }

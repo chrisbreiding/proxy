@@ -7,16 +7,16 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "dev": "nodemon ./index.ts",
+    "dev": "DEBUG=proxy,proxy:verbose nodemon ./index.ts",
     "lint": "eslint *.ts lib/*.ts lib/**/*.ts lib/**/*.js --fix",
     "postinstall": "patch-package && npm run build",
     "prod": "node ./dist/index.js",
-    "start": "NODE_ENV=development nf start --procfile ./Procfile_dev --port 3333",
+    "start": "NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
     "test": "vitest",
-    "dev-script": "NODE_ENV=development node ./scripts/run-script",
-    "daytime-hourly": "node ./scripts/run-daytime-hourly",
-    "daytime-quarter-hourly": "node ./scripts/run-daytime-quarter-hourly",
-    "nightly": "node ./scripts/run-nightly"
+    "dev-script": "NODE_ENV=development DEBUG=proxy node ./scripts/run-script",
+    "daytime-hourly": "DEBUG=proxy node ./scripts/run-daytime-hourly",
+    "daytime-quarter-hourly": "DEBUG=proxy node ./scripts/run-daytime-quarter-hourly",
+    "nightly": "DEBUG=proxy node ./scripts/run-nightly"
   },
   "nodemonConfig": {
     "ignore": [

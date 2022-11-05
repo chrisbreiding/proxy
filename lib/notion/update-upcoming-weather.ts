@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import Debug from 'debug'
 
 import { DayWeather, getWeatherData, getWeatherIcon } from '../weather'
 import {
@@ -12,9 +11,8 @@ import {
 } from './util'
 import { getAllQuests } from './quests'
 import { compact } from '../util/collections'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
 
 interface DateObject {
   date: string
@@ -56,7 +54,7 @@ async function getWeather ({ location }: { location: string }) {
   return weather.daily.data.reduce((memo, dayWeather) => {
     const date = dayjs.unix(dayWeather.time).format('YYYY-MM-DD')
 
-    debug('weather: %o', { timestamp: dayWeather.time, date })
+    debugVerbose('weather: %o', { timestamp: dayWeather.time, date })
 
     memo[date] = dayWeather
 
@@ -96,12 +94,12 @@ async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateB
   .trim()
 
   if (newText === dateObject.text) {
-    debug(`No weather change for ${dateObject.dateText}`)
+    debugVerbose(`No weather change for ${dateObject.dateText}`)
 
     return
   }
 
-  debug(`Update "${dateObject.text}" to "${newText}"`)
+  debugVerbose(`Update "${dateObject.text}" to "${newText}"`)
 
   await updateBlock({ notionToken, block, blockId: dateObject.id })
 }
@@ -117,7 +115,7 @@ async function updateBlocks ({ dateObjects, notionToken, weather }: UpdateBlocks
     if (weather[dateObject.date]) {
       await updateBlockWeather({ dateObject, notionToken, weather: weather[dateObject.date] })
     } else {
-      debug('No weather found for %s', dateObject.dateText)
+      debugVerbose('No weather found for %s', dateObject.dateText)
     }
   }
 }
@@ -132,7 +130,7 @@ export async function updateWeather ({ notionToken, questsId, location }: Update
   const questBlocks = await getAllQuests({ notionToken, pageId: questsId })
   const dateObjects = getDates(questBlocks)
 
-  debug('dateObjects:', dateObjects)
+  debugVerbose('dateObjects:', dateObjects)
 
   const weather = await getWeather({ location })
 
@@ -144,24 +142,20 @@ export default async function main () {
   const questsId = getEnv('NOTION_QUESTS_ID')!
   const location = getEnv('WEATHER_LOCATION')!
 
-  debug('ENV:', {
+  debugVerbose('ENV:', {
     notionToken,
     questsId,
     location,
   })
 
   try {
-    // eslint-disable-next-line no-console
-    console.log('Updating quests with weather...')
+    debug('Updating quests with weather...')
 
     await updateWeather({ notionToken, questsId, location })
 
-    // eslint-disable-next-line no-console
-    console.log('Successfully updated quests with weather')
+    debug('Successfully updated quests with weather')
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Updating quest weather failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Updating quest weather failed:')
+    debug(error?.stack || error)
   }
 }

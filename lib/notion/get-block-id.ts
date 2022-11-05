@@ -1,10 +1,8 @@
 import minimist from 'minimist'
-import Debug from 'debug'
 
 import { getBlockChildren, getBlockPlainText } from './util'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
 
 const notionToken = getEnv('NOTION_TOKEN')!
 
@@ -21,7 +19,7 @@ async function searchBlocks ({ pageId, text, parent = false }: SearchOptions): P
   for (const block of blocks) {
     const blockText = getBlockPlainText(block)
 
-    debug('Checking block: %o', { text: blockText, children: block.has_children })
+    debugVerbose('Checking block: %o', { text: blockText, children: block.has_children })
 
     if (blockText && blockText.includes(text)) {
       return block.id
@@ -33,7 +31,7 @@ async function searchBlocks ({ pageId, text, parent = false }: SearchOptions): P
   }
 
   for (const blockId of blockWithChildrenIds) {
-    debug('--- Children of %s ---', blockId)
+    debugVerbose('--- Children of %s ---', blockId)
     const id = await searchBlocks({ pageId: blockId, text })
 
     if (id) {
@@ -61,15 +59,12 @@ async function getBlockId () {
     })
     const message = args.parent ? 'Parent block ID is:' : 'Block ID is:'
 
-    // eslint-disable-next-line no-console
-    console.log(message, id)
+    debug(message, id)
 
     process.exit(0)
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Getting blocks failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Getting blocks failed:')
+    debug(error?.stack || error)
 
     process.exit(1)
   }

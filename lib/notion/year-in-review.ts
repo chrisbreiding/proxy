@@ -1,12 +1,17 @@
-import Debug from 'debug'
 import minimist from 'minimist'
 
-import { appendBlockChildrenDeep, dateRegex, getBlockChildren, getBlockPlainText, makeBlock, NotionBlock } from './util'
+import {
+  appendBlockChildrenDeep,
+  dateRegex,
+  getBlockChildren,
+  getBlockPlainText,
+  makeBlock,
+  NotionBlock,
+} from './util'
 import { compact } from '../util/collections'
-import { patienceDiffPlus } from '../util/patience-diff'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
+import { patienceDiffPlus } from '../util/patience-diff'
 
 function findId (
   blocks: NotionBlock[],
@@ -223,7 +228,7 @@ export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const donePageId = getEnv('NOTION_DONE_ID')!
 
-  debug('ENV:', {
+  debugVerbose('ENV:', {
     notionToken,
     donePageId,
   })
@@ -241,15 +246,12 @@ export default async function main () {
       year,
     })
 
-    // eslint-disable-next-line no-console
-    console.log('Successfully added Year In Review')
+    debug('Successfully added Year In Review')
 
     process.exit(0)
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Adding Year In Review failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Adding Year In Review failed:')
+    debug(error?.stack || error)
 
     process.exit(1)
   }

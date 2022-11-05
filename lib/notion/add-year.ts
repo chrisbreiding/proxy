@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import Debug from 'debug'
 import minimist from 'minimist'
 
 import {
@@ -15,9 +14,8 @@ import {
   textFilter,
 } from './util'
 import { compact } from '../util/collections'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
 
 interface YearTemplateItem {
   rule: string | undefined
@@ -336,7 +334,7 @@ export default async function main () {
   const futurePageId = getEnv('NOTION_FUTURE_ID')!
   const { year } = minimist(process.argv.slice(2))
 
-  debug('addYear: %o', {
+  debugVerbose('addYear: %o', {
     notionToken,
     futurePageId,
     year,
@@ -353,15 +351,12 @@ export default async function main () {
       year,
     })
 
-    // eslint-disable-next-line no-console
-    console.log('Successfully added year')
+    debug('Successfully added year')
 
     process.exit(0)
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Adding year failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Adding year failed:')
+    debug(error?.stack || error)
 
     process.exit(1)
   }

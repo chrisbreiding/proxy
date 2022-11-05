@@ -39,8 +39,9 @@ import type {
   VideoBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
-import { request } from '../util/network'
 import { clone, compact } from '../util/collections'
+import { debug } from '../util/debug'
+import { request } from '../util/network'
 
 export const dateRegex = /(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{1,2}\/\d{1,2})/
 
@@ -430,7 +431,6 @@ function getDisplayText (block: NotionBlock) {
 // displays block for logging/debugging purposes
 export function displayBlocks (blocks: NotionBlock[]) {
   blocks.forEach((block) => {
-    // eslint-disable-next-line no-console
-    console.log(`[${block.id}] ${getDisplayText(block)}${block.has_children ? ' (parent)' : ''}`)
+    debug(`[${block.id}] ${getDisplayText(block)}${block.has_children ? ' (parent)' : ''}`)
   })
 }

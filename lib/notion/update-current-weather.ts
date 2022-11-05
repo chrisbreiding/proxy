@@ -1,11 +1,8 @@
-import Debug from 'debug'
-
-import { CurrentWeather, getWeatherData, getWeatherIcon } from '../weather'
 import { updateBlock, makeTextPart } from './util'
 import { compact } from '../util/collections'
+import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-
-const debug = Debug('proxy:scripts')
+import { CurrentWeather, getWeatherData, getWeatherIcon } from '../weather'
 
 async function getWeather (location: string) {
   const weather = await getWeatherData({ location })
@@ -58,8 +55,7 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
   .join('')
   .trim()
 
-  // eslint-disable-next-line no-console
-  console.log(`Update current weather to '${newText}'`)
+  debug(`Update current weather to '${newText}'`)
 
   await updateBlock({ notionToken, block, blockId: currentWeatherId })
 }
@@ -81,15 +77,14 @@ export default async function main () {
   const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
   const weatherLocation = getEnv('WEATHER_LOCATION')!
 
-  debug('ENV:', {
+  debugVerbose('ENV:', {
     notionToken,
     currentWeatherId,
     weatherLocation,
   })
 
   try {
-    // eslint-disable-next-line no-console
-    console.log('Updating current weather...')
+    debug('Updating current weather...')
 
     await updateWeather({
       notionToken,
@@ -97,9 +92,7 @@ export default async function main () {
       weatherLocation,
     })
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Updating current weather failed:')
-    // eslint-disable-next-line no-console
-    console.log(error?.stack || error)
+    debug('Updating current weather failed:')
+    debug(error?.stack || error)
   }
 }

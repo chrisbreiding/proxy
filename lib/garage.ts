@@ -1,4 +1,6 @@
 import type express from 'express'
+
+import { debug } from './util/debug'
 import { request } from './util/network'
 import { GarageState, PersistentData } from './util/persistent-data'
 
@@ -30,8 +32,7 @@ async function notify (message: string) {
   try {
     await request({ url })
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('IFTTT webhook request errored:', error?.stack || error)
+    debug('IFTTT webhook request errored:', error?.stack || error)
   }
 }
 
@@ -58,8 +59,7 @@ export async function set (req: express.Request, res: express.Response) {
 
     await persistentData.set(Object.assign({}, data, update))
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log(`Setting garage state (${door} => ${state}) errored:`, error?.stack || error)
+    debug(`Setting garage state (${door} => ${state}) errored:`, error?.stack || error)
   } finally {
     res.json({})
   }
@@ -73,8 +73,7 @@ export async function setNotifyOnOpen (req: express.Request, res: express.Respon
 
     await persistentData.set(Object.assign(data, { notifyOnOpen }))
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log(`Setting notifyOnOpen to ${notifyOnOpen} errored:`, error?.stack || error)
+    debug(`Setting notifyOnOpen to ${notifyOnOpen} errored:`, error?.stack || error)
   } finally {
     res.json({})
   }

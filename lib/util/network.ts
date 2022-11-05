@@ -1,4 +1,7 @@
 import axios, { Method } from 'axios'
+import Debug from 'debug'
+
+import { debug } from './debug'
 
 interface RequestOptions {
   url: string
@@ -20,21 +23,19 @@ export async function request ({ url, body, headers, params, method = 'get' }: R
 
     return response.data
   } catch (error: any) {
-    /* eslint-disable no-console */
-    console.log('--- axios error ---')
-    console.log({ url, body, headers, params, method })
-    console.log()
-    console.log({
+    debug('--- axios error ---')
+    debug({ url, body, headers, params, method })
+    debug('')
+    debug({
       status: error?.response?.status,
       statusText: error?.response?.statusText,
       code: error?.data?.code,
       message: error?.data?.message,
       stack: error?.stack,
     })
-    console.log()
-    console.trace()
-    console.log('-------------------')
-    /* eslint-enable no-console */
+    debug('')
+    Debug.enabled('proxy') && console.trace() // eslint-disable-line no-console
+    debug('-------------------')
 
     throw error
   }

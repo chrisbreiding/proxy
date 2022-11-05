@@ -2,6 +2,7 @@ import type express from 'express'
 
 import { getGarageData } from './garage'
 import { getNotionData } from './notion'
+import { debug } from './util/debug'
 import { getWeatherData } from './weather'
 
 async function wrap (who: string, fn: () => Promise<any>) {
@@ -10,8 +11,7 @@ async function wrap (who: string, fn: () => Promise<any>) {
 
     return { data }
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log('Getting', who, 'data errored:', error.stack)
+    debug('Getting', who, 'data errored:', error.stack)
 
     return {
       name: error.name,
