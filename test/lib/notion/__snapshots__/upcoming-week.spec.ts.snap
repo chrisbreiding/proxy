@@ -1,0 +1,370 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-1 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 11/6",
+            "text": {
+              "content": "Sun, 11/6",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sun task 1",
+            "text": {
+              "content": "Sun task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sun task 2",
+            "text": {
+              "content": "Sun task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sun conditional task that matches",
+            "text": {
+              "content": "Sun conditional task that matches",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Mon, 11/7",
+            "text": {
+              "content": "Mon, 11/7",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Mon task 1",
+            "text": {
+              "content": "Mon task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Mon task 2",
+            "text": {
+              "content": "Mon task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Tue, 11/8",
+            "text": {
+              "content": "Tue, 11/8",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Tue task 1",
+            "text": {
+              "content": "Tue task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Wed, 11/9",
+            "text": {
+              "content": "Wed, 11/9",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Wed task 1 (has children)",
+            "text": {
+              "content": "Wed task 1 (has children)",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-2 1`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Wed task 2",
+            "text": {
+              "content": "Wed task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Thu, 11/10",
+            "text": {
+              "content": "Thu, 11/10",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Thu task 1",
+            "text": {
+              "content": "Thu task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Fri, 11/11",
+            "text": {
+              "content": "Fri, 11/11",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Fri task 1",
+            "text": {
+              "content": "Fri task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sat, 11/12",
+            "text": {
+              "content": "Sat, 11/12",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sat task 1",
+            "text": {
+              "content": "Sat task 1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sat task 2",
+            "text": {
+              "content": "Sat task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > button 1`] = `
+{
+  "embed": {
+    "caption": [],
+    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?weekTemplatePageId=week-template-id&appendToId=append-to-id&addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-11-13T12:00:00.000Z",
+  },
+  "object": "block",
+  "type": "embed",
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested 1`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Task 1",
+            "text": {
+              "content": "Task 1",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Task 2",
+            "text": {
+              "content": "Task 2",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;

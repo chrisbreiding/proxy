@@ -1,0 +1,296 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-1-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Mon, 10/31    ☀️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "33°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "62°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-3-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Tue, 11/1    ⛅️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "45°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "66°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-5-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Wed, 11/2    ⛅️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "43°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "66°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-7-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Thu, 11/3    ☔️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": "(85%) ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "33°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "54°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-9-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Fri, 11/4    ⛅️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "25°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "51°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-11-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Sat, 11/5    ⛅️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "26°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "51°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-13-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Sun, 11/6    ⛅️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "29°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "63°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;

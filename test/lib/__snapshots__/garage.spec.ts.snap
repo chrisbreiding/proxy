@@ -1,0 +1,97 @@
+// Vitest Snapshot v1
+
+exports[`lib/garage > GET /garage/:key > renders error view if error 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=\\"utf-8\\">
+  <title>Server Error</title>
+  <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge,chrome=1\\">
+  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+  <style>
+    html {
+      background: #333;
+    }
+    body {
+      color: #f8f8f8;
+      font-family: sans-serif;
+      padding: 2em;
+    }
+
+    p, pre {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>An Error Occurred</h1>
+  <h2>Error Message</h2>
+  <p>ENOENT, no such file or directory &#x27;./data/garage-data.json&#x27;</p>
+  <h2>Error Stack</h2>
+  <pre>Error: ENOENT, no such file or directory &#x27;./data/garage-data.json&#x27;
+    [stack lines]</pre>
+</body>
+</html>"
+`;
+
+exports[`lib/garage > GET /garage/:key > renders garage view 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=\\"utf-8\\">
+  <title>Garage States</title>
+  <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge,chrome=1\\">
+  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+  <style>
+    html {
+      background: #333;
+    }
+    body {
+      color: #f8f8f8;
+      display: flex;
+      font-family: sans-serif;
+      justify-content: center;
+      padding-top: 2em;
+    }
+    .state {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 1em 0.4em;
+      min-width: 140px;
+    }
+    .state-icon {
+      background-color: blue;
+      height: 100px;
+      -webkit-mask-size: 100px;
+      mask-size: 100px;
+      width: 100px;
+    }
+    .state-icon-open { background-color: #FDA4A3 }
+    .state-icon-closed { background-color: #E5FFB2 }
+    .state-icon-unknown { background-color: #E6E6E6 }
+    .state p {
+      text-align: center;
+      margin: 0.5em 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class=\\"state\\">
+    <div
+      class=\\"state-icon state-icon-closed\\"
+      style=\\"mask-image: url(/garage-closed.png); -webkit-mask-image: url(/garage-closed.png);\\"
+    ></div>
+    <p>Left: closed</p>
+  </div>
+  <div class=\\"state\\">
+    <div
+      class=\\"state-icon state-icon-open\\"
+      style=\\"mask-image: url(/garage-open.png); -webkit-mask-image: url(/garage-open.png);\\"
+    ></div>
+    <p>Right: open</p>
+  </div>
+</body>
+</html>"
+`;

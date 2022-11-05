@@ -1,43 +1,42 @@
+import { readJSONSync } from 'fs-extra'
+import mockFs from 'mock-fs'
 import nock from 'nock'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import path from 'path'
+import { afterAll, beforeEach, describe, expect, it, TestContext } from 'vitest'
 
-const { PersistentData } = require('../../lib/util/persistent-data')
+process.env.NODE_ENV = 'development'
 
 import { handleServer } from '../support/setup'
 import { startServer } from '../../index'
-import { getData } from '../../lib/garage'
+import { getGarageData } from '../../lib/garage'
+import type { GarageState, PersistentDataStructure } from '../../lib/util/persistent-data'
+import { replaceStackLines } from '../support/util'
 
 process.env.API_KEY = 'key'
 
 const defaultData = {
-  left: 'closed',
-  right: 'closed',
+  left: 'closed' as const,
+  right: 'closed' as const,
 }
 
-function resolveGetData (value) {
-  PersistentData.prototype.get = vi
-  .fn()
-  .mockResolvedValue(value)
-}
-
-function rejectGetData () {
-  PersistentData.prototype.get = vi
-  .fn()
-  .mockRejectedValue(new Error('fail'))
-}
-
-function resolveSetData () {
-  PersistentData.prototype.set = vi
-  .fn()
-  .mockImplementation((value) => {
-    return Promise.resolve(value)
+function mockData (data: PersistentDataStructure) {
+  mockFs({
+    'data': {
+      'garage-data.json': JSON.stringify(data),
+    },
+    'views': mockFs.load(path.resolve(__dirname, '../../views')),
   })
 }
 
-function rejectSetData () {
-  PersistentData.prototype.set = vi
-  .fn()
-  .mockRejectedValue(new Error('fail'))
+function mockEmptyData () {
+  mockFs({
+    'data': {},
+    'views': mockFs.load(path.resolve(__dirname, '../../views')),
+  })
+}
+
+function getData () {
+  return readJSONSync('./data/garage-data.json')
 }
 
 describe('lib/garage', () => {
@@ -47,9 +46,13 @@ describe('lib/garage', () => {
     nock.cleanAll()
   })
 
+  afterAll(() => {
+    mockFs.restore()
+  })
+
   describe('GET /garage-states/:key', () => {
     it('returns garage states from persistent data', async (ctx) => {
-      resolveGetData(defaultData)
+      mockData(defaultData)
 
       const res = await ctx.request.get('/garage-states/key')
 
@@ -58,7 +61,7 @@ describe('lib/garage', () => {
     })
 
     it('returns unknown states if no data', async (ctx) => {
-      resolveGetData(undefined)
+      mockData({})
 
       const res = await ctx.request.get('/garage-states/key')
 
@@ -70,7 +73,7 @@ describe('lib/garage', () => {
     })
 
     it('returns unknown states if error', async (ctx) => {
-      rejectGetData()
+      mockEmptyData()
 
       const res = await ctx.request.get('/garage-states/key')
 
@@ -89,7 +92,7 @@ describe('lib/garage', () => {
   })
 
   describe('POST /garage-states/:door/:state/:key', () => {
-    function mockNotify (message, optional = false) {
+    function nockNotify (message: string, optional = false) {
       process.env.IFTTT_WEBHOOK_KEY = 'iftttkey'
 
       return nock('https://maker.ifttt.com')
@@ -98,12 +101,11 @@ describe('lib/garage', () => {
       .reply(200)
     }
 
-    async function assertNoNotifications (ctx, states, newState) {
-      const notifyFailed = mockNotify('The left garage door failed to close!')
-      const notifyOpened = mockNotify('The left garage door opened')
+    async function assertNoNotifications (ctx: TestContext, states: PersistentDataStructure, newState: GarageState) {
+      const notifyFailed = nockNotify('The left garage door failed to close!')
+      const notifyOpened = nockNotify('The left garage door opened')
 
-      resolveGetData(states)
-      resolveSetData()
+      mockData(states)
 
       await ctx.request.post(`/garage-states/left/${newState}/key`)
 
@@ -114,8 +116,7 @@ describe('lib/garage', () => {
     }
 
     it('returns an empty object', async (ctx) => {
-      resolveGetData(defaultData)
-      resolveSetData()
+      mockData(defaultData)
 
       const res = await ctx.request.post('/garage-states/left/open/key')
 
@@ -124,8 +125,7 @@ describe('lib/garage', () => {
     })
 
     it('returns an empty object if error', async (ctx) => {
-      resolveGetData(defaultData)
-      rejectSetData()
+      mockEmptyData()
 
       const res = await ctx.request.post('/garage-states/left/open/key')
 
@@ -134,25 +134,23 @@ describe('lib/garage', () => {
     })
 
     it('sets garage states in persistent data', async (ctx) => {
-      resolveGetData(defaultData)
-      resolveSetData()
+      mockData(defaultData)
 
       await ctx.request.post('/garage-states/left/open/key')
 
-      expect(PersistentData.prototype.set).toBeCalledWith({
+      expect(getData()).to.deep.equal({
         left: 'open',
         right: 'closed',
       })
     })
 
     it('notifies if new and previous states are open', async (ctx) => {
-      const notifyFailed = mockNotify('The left garage door failed to close!')
+      const notifyFailed = nockNotify('The left garage door failed to close!')
 
-      resolveGetData({
+      mockData({
         left: 'open',
         right: 'open',
       })
-      resolveSetData()
 
       await ctx.request.post('/garage-states/left/open/key')
 
@@ -160,14 +158,13 @@ describe('lib/garage', () => {
     })
 
     it('notifies if open and notifyOnOpen: true', async (ctx) => {
-      const notifyOpened = mockNotify('The left garage door opened')
+      const notifyOpened = nockNotify('The left garage door opened')
 
-      resolveGetData({
+      mockData({
         left: 'closed',
         right: 'open',
         notifyOnOpen: true,
       })
-      resolveSetData()
 
       await ctx.request.post('/garage-states/left/open/key')
 
@@ -199,12 +196,11 @@ describe('lib/garage', () => {
 
   describe('POST /garage/notify-on-open/:notifyOnOpen/:key', () => {
     it('set notifyOnOpen in persistent data', async (ctx) => {
-      resolveGetData(defaultData)
-      resolveSetData()
+      mockData(defaultData)
 
       await ctx.request.post('/garage/notify-on-open/true/key')
 
-      expect(PersistentData.prototype.set).toBeCalledWith({
+      expect(getData()).to.deep.equal({
         left: 'closed',
         right: 'closed',
         notifyOnOpen: true,
@@ -212,7 +208,7 @@ describe('lib/garage', () => {
 
       await ctx.request.post('/garage/notify-on-open/false/key')
 
-      expect(PersistentData.prototype.set).toBeCalledWith({
+      expect(getData()).to.deep.equal({
         left: 'closed',
         right: 'closed',
         notifyOnOpen: false,
@@ -220,8 +216,7 @@ describe('lib/garage', () => {
     })
 
     it('returns empty object', async (ctx) => {
-      resolveGetData(undefined)
-      resolveSetData()
+      mockEmptyData()
 
       const res = await ctx.request.post('/garage/notify-on-open/true/key')
 
@@ -230,8 +225,7 @@ describe('lib/garage', () => {
     })
 
     it('returns empty object if error', async (ctx) => {
-      rejectGetData()
-      resolveSetData()
+      mockEmptyData()
 
       const res = await ctx.request.post('/garage/notify-on-open/true/key')
 
@@ -248,7 +242,7 @@ describe('lib/garage', () => {
 
   describe('GET /garage/:key', () => {
     it('renders garage view', async (ctx) => {
-      resolveGetData({
+      mockData({
         left: 'closed',
         right: 'open',
       })
@@ -257,24 +251,21 @@ describe('lib/garage', () => {
 
       expect(res.status).to.equal(200)
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
-      expect(res.text).to.include('state-icon-closed')
-      expect(res.text).to.include('url(/garage-closed.png)')
-      expect(res.text).to.include('state-icon-open')
-      expect(res.text).to.include('url(/garage-open.png)')
+
+      mockFs.restore()
+      expect(res.text).toMatchSnapshot()
     })
 
     it('renders error view if error', async (ctx) => {
-      rejectGetData()
+      mockEmptyData()
 
       const res = await ctx.request.get('/garage/key')
 
       expect(res.status).to.equal(200)
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
-      expect(res.text).to.include('<h1>An Error Occurred</h1>')
-      expect(res.text).to.include('<h2>Error Message</h2>')
-      expect(res.text).to.include('<p>fail</p>')
-      expect(res.text).to.include('<h2>Error Stack</h2>')
-      expect(res.text).to.include('<pre>Error: fail')
+
+      mockFs.restore()
+      expect(replaceStackLines(res.text)).toMatchSnapshot()
     })
 
     it('status 403 if key does not match', async (ctx) => {
@@ -284,11 +275,11 @@ describe('lib/garage', () => {
     })
   })
 
-  describe('#getData', () => {
+  describe('#getGarageData', () => {
     it('returns persistent data', async () => {
-      resolveGetData(defaultData)
+      mockData(defaultData)
 
-      const res = await getData()
+      const res = await getGarageData()
 
       expect(res).to.deep.equal(defaultData)
     })

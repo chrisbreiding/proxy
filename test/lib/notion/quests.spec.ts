@@ -3,7 +3,7 @@ import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { notionFixture as fixture, nockGetBlockChildren } from '../../support/util'
-import { getAll } from '../../../lib/notion/quests'
+import { getAllQuests } from '../../../lib/notion/quests'
 
 describe('lib/notion/quests', () => {
   afterEach(() => {
@@ -15,14 +15,12 @@ describe('lib/notion/quests', () => {
       nockGetBlockChildren('page-id', { fixture: 'quests/quests-blocks' })
       nockGetBlockChildren('upcoming-id', { fixture: 'quests/upcoming-blocks' })
 
-      const result = await getAll({
+      const result = await getAllQuests({
         notionToken: 'notion-token',
         pageId: 'page-id',
       })
 
-      const expected = fs.readJsonSync(fixture('quests/get-all-result'))
-
-      expect(result).to.deep.equal(expected)
+      expect(result).toMatchSnapshot()
     })
 
     it('errors if no upcoming block found', async () => {
@@ -32,7 +30,7 @@ describe('lib/notion/quests', () => {
 
       nockGetBlockChildren('page-id', { reply: questBlocks })
 
-      await expect(getAll({
+      await expect(getAllQuests({
         notionToken: 'notion-token',
         pageId: 'page-id',
       })).rejects.toThrow('Could not find Upcoming block')

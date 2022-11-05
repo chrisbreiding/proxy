@@ -1,0 +1,628 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
+[
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 1 task one",
+          "text": {
+            "content": "Day 1 task one",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "aeb55ad0-de19-4f6a-8c8a-b00b6b006e25",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 1 task two",
+          "text": {
+            "content": "Day 1 task two",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "7ff8f624-1aa1-4cec-9a2f-b0d4d0cffed5",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Mon, 10/31    ☔️ ",
+          "text": {
+            "content": "Mon, 10/31    ☔️ ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "(55%) ",
+          "text": {
+            "content": "(55%) ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "blue",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "57°",
+          "text": {
+            "content": "57°",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": " / ",
+          "text": {
+            "content": " / ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "orange",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "65°",
+          "text": {
+            "content": "65°",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "d6679deb-4419-4d39-8e63-5a65a5c3d3de",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 2 task one",
+          "text": {
+            "content": "Day 2 task one",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "4238e2e9-4a5b-4954-b9b9-6b5909401533",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 2 task two",
+          "text": {
+            "content": "Day 2 task two",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "ec5b7337-30df-4a7d-a6d3-e313cb097b0c",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "🗓️ 1: Day 2 event",
+          "text": {
+            "content": "🗓️ 1: Day 2 event",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "aa5f3dec-e418-459b-b5ff-bad3f204977c",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 2 task three",
+          "text": {
+            "content": "Day 2 task three",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "2a2c118a-9929-4e9c-b054-67ba777e44a0",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {},
+    "has_children": false,
+    "id": "fb8eb4c1-dc6e-4eb5-bb43-4f6d398d2685",
+    "type": "divider",
+  },
+  {
+    "content": {
+      "title": "Done",
+    },
+    "has_children": true,
+    "id": "941bf143-a1ce-4baf-8d07-fb5328cedc63",
+    "type": "child_page",
+  },
+  {
+    "content": {},
+    "has_children": false,
+    "id": "4dae0678-dfb3-4baf-ad2b-ac4865c2169c",
+    "type": "divider",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": true,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Upcoming",
+          "text": {
+            "content": "Upcoming",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": true,
+    "id": "upcoming-id",
+    "type": "toggle",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Tue, 11/1    ☔️ ",
+          "text": {
+            "content": "Tue, 11/1    ☔️ ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "(84%) ",
+          "text": {
+            "content": "(84%) ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "blue",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "53°",
+          "text": {
+            "content": "53°",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": " / ",
+          "text": {
+            "content": " / ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "orange",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "67°",
+          "text": {
+            "content": "67°",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "dfbd2f12-eeff-4c16-8f72-5570b98a0751",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 3 task one",
+          "text": {
+            "content": "Day 3 task one",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "31357e81-a95f-4ef3-996e-40cc1fa7d90b",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 3 task two",
+          "text": {
+            "content": "Day 3 task two",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "01308fcf-c6c4-41c0-a41d-54e8fbb60101",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 3 task three",
+          "text": {
+            "content": "Day 3 task three",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "c47fb2b8-4a56-4317-8b55-4824ad449e0a",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Wed, 11/2    ☀️ ",
+          "text": {
+            "content": "Wed, 11/2    ☀️ ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "blue",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "52°",
+          "text": {
+            "content": "52°",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": " / ",
+          "text": {
+            "content": " / ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "orange",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "70°",
+          "text": {
+            "content": "70°",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "7e8b86d0-b8a4-4904-9cbe-a565be11f048",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Day 4 task",
+          "text": {
+            "content": "Day 4 task",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "5a2a7729-a742-4985-b0ab-ed039f420144",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "caption": [],
+      "url": "https://proxy.crbapps.com/notion/upcoming-week/",
+    },
+    "has_children": false,
+    "id": "3fbb71da-f4c6-4bd9-960f-1be37256084f",
+    "type": "embed",
+  },
+  {
+    "content": {},
+    "has_children": false,
+    "id": "2c715df6-e475-4151-8e19-41afab14a367",
+    "type": "divider",
+  },
+  {
+    "content": {},
+    "has_children": false,
+    "id": "c0097bb8-72be-4369-98f8-aaf6fe1ab584",
+    "type": "divider",
+  },
+  {
+    "content": {
+      "title": "Week Template",
+    },
+    "has_children": true,
+    "id": "1a7837b5-bee5-4812-8906-25bdc50e99ab",
+    "type": "child_page",
+  },
+  {
+    "content": {
+      "title": "Future",
+    },
+    "has_children": true,
+    "id": "8024ae92-01f4-47f4-8496-0f0db2a95af4",
+    "type": "child_page",
+  },
+]
+`;

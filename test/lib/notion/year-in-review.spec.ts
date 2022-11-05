@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import { describe, expect, it } from 'vitest'
 
 import { notionFixture as fixture, nockGetBlockChildren, nockAppendBlockChildren } from '../../support/util'
-import main from '../../../lib/notion/year-in-review'
+import { yearInReview } from '../../../lib/notion/year-in-review'
 import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
 
 describe('lib/notion/year-in-review', () => {
@@ -27,7 +27,7 @@ describe('lib/notion/year-in-review', () => {
       body: fs.readJsonSync(fixture('year-in-review/result')),
     })
 
-    await main.yearInReview({
+    await yearInReview({
       donePageId: 'done-page-id',
       notionToken: 'notion-token',
       year: '2021',
@@ -37,7 +37,7 @@ describe('lib/notion/year-in-review', () => {
   it('errors if year cannot be found', async () => {
     nockGetBlockChildren('done-page-id', { fixture: 'year-in-review/done-blocks' })
 
-    await expect(() => main.yearInReview({
+    await expect(() => yearInReview({
       donePageId: 'done-page-id',
       notionToken: 'notion-token',
       year: '2025',

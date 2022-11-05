@@ -2,7 +2,7 @@ import type express from 'express'
 import { request } from './util/network'
 import { GarageState, PersistentData } from './util/persistent-data'
 
-const errorResult = {
+const defaultData = {
   left: 'unknown',
   right: 'unknown',
 }
@@ -14,12 +14,12 @@ export async function get (req: express.Request, res: express.Response) {
     const data = await persistentData.get()
 
     if (data) {
-      res.json(data)
+      res.json(Object.assign({}, defaultData, data))
     } else {
-      res.json(errorResult)
+      res.json(defaultData)
     }
   } catch (error) {
-    res.json(errorResult)
+    res.json(defaultData)
   }
 }
 
@@ -41,7 +41,7 @@ export async function set (req: express.Request, res: express.Response) {
   const { door, state } = req.params as { door: Door, state: GarageState }
 
   try {
-    const data = await persistentData.get()
+    const data = (await persistentData.get()) || {}
     const previousState = data[door]
 
     if (previousState === 'open' && state === 'open') {
@@ -69,7 +69,7 @@ export async function setNotifyOnOpen (req: express.Request, res: express.Respon
   const notifyOnOpen = req.params.notifyOnOpen === 'true'
 
   try {
-    const data = await persistentData.get()
+    const data = (await persistentData.get()) || {}
 
     await persistentData.set(Object.assign(data, { notifyOnOpen }))
   } catch (error: any) {
@@ -84,7 +84,7 @@ export async function view (req: express.Request, res: express.Response) {
   res.set('Content-Type', 'text/html')
 
   try {
-    const data = persistentData.get()
+    const data = Object.assign({}, defaultData, (await persistentData.get()) || {})
 
     res.render('garages', { states: data, layout: false })
   } catch (error: any) {
@@ -92,4 +92,4 @@ export async function view (req: express.Request, res: express.Response) {
   }
 }
 
-export const getGarageData = persistentData.get
+export const getGarageData = persistentData.get.bind(persistentData)

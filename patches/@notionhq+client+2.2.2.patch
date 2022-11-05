@@ -1,5 +1,5 @@
 diff --git a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
-index 1c7ebed..cb019d4 100644
+index 1c7ebed..6e9d6f7 100644
 --- a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
 +++ b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
 @@ -447,7 +447,7 @@ declare type PhoneNumberDatabasePropertyConfigResponse = {
@@ -20,3 +20,12 @@ index 1c7ebed..cb019d4 100644
  export declare type ParagraphBlockObjectResponse = {
      type: "paragraph";
      paragraph: {
+@@ -6176,7 +6176,7 @@ export declare const getBlock: {
+ declare type UpdateBlockPathParameters = {
+     block_id: IdRequest;
+ };
+-declare type UpdateBlockBodyParameters = {
++export declare type UpdateBlockBodyParameters = {
+     embed: {
+         url?: string;
+         caption?: Array<RichTextItemRequest>;

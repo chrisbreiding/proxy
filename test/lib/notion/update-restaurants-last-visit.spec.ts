@@ -1,34 +1,34 @@
 import { describe, it } from 'vitest'
 
-import { block, nockGetBlockChildren, nockNotion } from '../../support/util'
-import main from '../../../lib/notion/update-restaurants-last-visit'
+import { block, nockGetBlockChildren, nockNotion, snapshotBody } from '../../support/util'
+import { updateRestaurantsLastVisit } from '../../../lib/notion/update-restaurants-last-visit'
+
+function blocksWithDate (date: string) {
+  return {
+    results: [
+      block.p({ text: 'Note: something to note' }),
+      block.p({ text: '' }),
+      block.p({ text: date }),
+      block.bullet({ text: 'Things we ate' }),
+      block.bullet({ text: 'And what we thought about it' }),
+    ],
+  }
+}
+
+function bodyWithDate (date: string) {
+  return {
+    properties: {
+      'Last Visit': {
+        date: {
+          start: date,
+        },
+      },
+    },
+  }
+}
 
 describe('lib/notion/update-restaurants-last-visit', () => {
   it('updates changed restaurant last visit dates', async () => {
-    function blocksWithDate (date) {
-      return {
-        results: [
-          block.p({ text: 'Note: something to note' }),
-          block.p({ text: '' }),
-          block.p({ text: date }),
-          block.bullet({ text: 'Things we ate' }),
-          block.bullet({ text: 'And what we thought about it' }),
-        ],
-      }
-    }
-
-    function bodyWithDate (date) {
-      return {
-        properties: {
-          'Last Visit': {
-            date: {
-              start: date,
-            },
-          },
-        },
-      }
-    }
-
     nockNotion({
       method: 'post',
       path: '/v1/databases/restaurants-id/query',
@@ -41,21 +41,22 @@ describe('lib/notion/update-restaurants-last-visit', () => {
     nockGetBlockChildren('restaurant-4', { reply: blocksWithDate('12/20/22') })
     nockGetBlockChildren('restaurant-5', { reply: blocksWithDate('6/10/22') })
 
-    nockNotion({
-      body: bodyWithDate('2022-11-02'),
-      method: 'patch',
-      path: '/v1/pages/restaurant-2',
-    })
+    const snapshotUpdates = [
+      snapshotBody(nockNotion({
+        method: 'patch',
+        path: '/v1/pages/restaurant-2',
+      }), 'restaurant-2'),
+      snapshotBody(nockNotion({
+        method: 'patch',
+        path: '/v1/pages/restaurant-4',
+      }), 'restaurant-4'),
+    ]
 
-    nockNotion({
-      body: bodyWithDate('2022-12-20'),
-      method: 'patch',
-      path: '/v1/pages/restaurant-4',
-    })
-
-    await main.updateRestaurantsLastVisit({
+    await updateRestaurantsLastVisit({
       notionToken: 'notion-token',
       restaurantsDatabaseId: 'restaurants-id',
     })
+
+    await Promise.all(snapshotUpdates)
   })
 })

@@ -1,7 +1,15 @@
 import dayjs from 'dayjs'
 import Debug from 'debug'
 
-import { BlockContent, getBlockChildrenDeep, getBlockPlainText, makeTextPart, updateBlock } from './util'
+import {
+  Block,
+  getBlockChildrenDeep,
+  getBlockPlainText,
+  makeTextPart,
+  NotionBlock,
+  OwnBlock,
+  updateBlock,
+} from './util'
 import { compact, mapPromisesSerially } from '../util/collections'
 import { getEnv } from '../util/env'
 
@@ -21,20 +29,23 @@ function getCategoryBlocks ({ notionToken, dateExtrapolationId }: GetCategoryBlo
   })
 }
 
-function getDateFromBlock (block: BlockContent) {
+function getDateFromBlock (block: Block) {
   const text = (getBlockPlainText(block) || '').trim()
   const date = dayjs(text)
 
   return date.isValid() ? date : undefined
 }
 
-function getHistoricalDates (blocks: BlockContent[]) {
+function getHistoricalDates (blocks: NotionBlock[]) {
   return blocks.reduce((memo, block) => {
     const text = (getBlockPlainText(block) || '').trim()
 
     if (!['Historical', 'Recent'].includes(text)) return memo
 
-    const dates = compact(block[block.type].children!.map(getDateFromBlock)) as dayjs.Dayjs[]
+    if (!block.children) return memo
+
+    const maybeDates = block.children.map(getDateFromBlock)
+    const dates = compact(maybeDates) as dayjs.Dayjs[]
 
     dates.sort((a, b) => a.valueOf() - b.valueOf())
 
@@ -60,24 +71,28 @@ function getAverage (nums: number[]) {
   return Math.round(getSum(nums) / nums.length)
 }
 
-function getExtrapolatedDateBlocks (blocks: BlockContent[]) {
+function getExtrapolatedDateBlocks (blocks: NotionBlock[]) {
   const block = blocks.find((block) => {
     const text = getBlockPlainText(block) || ''
 
     return text.includes('Extrapolated')
-  }) as BlockContent
-
-  return block[block.type].children!.filter((b: BlockContent) => {
-    return b.type === 'bulleted_list_item'
   })
+
+  if (!block || !block.children) {
+    return []
+  }
+
+  return block.children.filter((child) => {
+    return child.type === 'bulleted_list_item'
+  }) as NotionBlock[]
 }
 
 interface DatesAndBlocks {
   date: dayjs.Dayjs
-  block: BlockContent
+  block: NotionBlock
 }
 
-function getExtrapolatedDates (historicalDates: dayjs.Dayjs[], blocks: BlockContent[]) {
+function getExtrapolatedDates (historicalDates: dayjs.Dayjs[], blocks: NotionBlock[]) {
   const extrapolatedDateBlocks = getExtrapolatedDateBlocks(blocks)
   const intervals = getIntervals(historicalDates)
   const averageInterval = getAverage(intervals)
@@ -102,11 +117,10 @@ async function updateDates ({ extrapolatedDates, notionToken }: UpdateDatesOptio
   return mapPromisesSerially(extrapolatedDates, ({ date, block }) => {
     const content = {
       type: 'bulleted_list_item' as const,
-      bulleted_list_item: {
+      content: {
         rich_text: [makeTextPart(date.format('YYYY-MM-DD'))],
-        color: 'default' as const,
       },
-    }
+    } as OwnBlock
 
     return updateBlock({ notionToken, block: content, blockId: block.id! })
   })

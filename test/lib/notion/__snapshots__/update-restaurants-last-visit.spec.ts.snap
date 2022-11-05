@@ -1,0 +1,25 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/update-restaurants-last-visit > updates changed restaurant last visit dates > restaurant-2 1`] = `
+{
+  "properties": {
+    "Last Visit": {
+      "date": {
+        "start": "2022-11-02",
+      },
+    },
+  },
+}
+`;
+
+exports[`lib/notion/update-restaurants-last-visit > updates changed restaurant last visit dates > restaurant-4 1`] = `
+{
+  "properties": {
+    "Last Visit": {
+      "date": {
+        "start": "2022-12-20",
+      },
+    },
+  },
+}
+`;

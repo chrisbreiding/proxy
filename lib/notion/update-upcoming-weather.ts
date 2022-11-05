@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
 import Debug from 'debug'
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
 import { DayWeather, getWeatherData, getWeatherIcon } from '../weather'
 import {
   dateRegex,
-  getDateFromText,
   getBlockPlainText,
+  getDateFromText,
   makeTextPart,
+  NotionBlock,
   updateBlock,
 } from './util'
 import { getAllQuests } from './quests'
@@ -23,7 +23,7 @@ interface DateObject {
   text: string
 }
 
-function getDates (questBlocks: BlockObjectResponse[]) {
+function getDates (questBlocks: NotionBlock[]) {
   return questBlocks.reduce((memo, block) => {
     if (block.type !== 'paragraph') return memo
 
@@ -75,9 +75,9 @@ interface UpdateBlockWeatherOptions {
 }
 
 async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateBlockWeatherOptions) {
-  const content = {
+  const block = {
     type: 'paragraph' as const,
-    paragraph: {
+    content: {
       rich_text: compact([
         makeTextPart(`${dateObject.dateText}    ${getWeatherIcon(weather.icon)} `),
         makePrecipPart(weather.icon === 'rain' && weather.precipProbability >= 0.01, `${Math.round(weather.precipProbability * 100)}%`),
@@ -90,7 +90,7 @@ async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateB
     },
   }
 
-  const newText = content.paragraph.rich_text
+  const newText = block.content.rich_text
   .map(({ text }) => text.content)
   .join('')
   .trim()
@@ -103,7 +103,7 @@ async function updateBlockWeather ({ dateObject, notionToken, weather }: UpdateB
 
   debug(`Update "${dateObject.text}" to "${newText}"`)
 
-  await updateBlock({ notionToken, block: content, blockId: dateObject.id })
+  await updateBlock({ notionToken, block, blockId: dateObject.id })
 }
 
 interface UpdateBlocksOptions {

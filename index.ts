@@ -43,7 +43,7 @@ export function startServer (port: number) {
     next()
   })
 
-  const ensureApiKey = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  function ensureApiKey (req: express.Request, res: express.Response, next: express.NextFunction) {
     if (req.params.key !== process.env.API_KEY) {
       return res.sendStatus(403)
     }

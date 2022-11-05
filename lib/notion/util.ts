@@ -1,45 +1,46 @@
 import type { Method } from 'axios'
 import dayjs from 'dayjs'
 import type {
+  ApiColor,
   BlockObjectResponse,
-  ListBlockChildrenResponse,
-  ParagraphBlockObjectResponse,
-  RichTextItemResponse,
-  Heading2BlockObjectResponse,
-  Heading1BlockObjectResponse,
-  Heading3BlockObjectResponse,
+  BookmarkBlockObjectResponse,
   BulletedListItemBlockObjectResponse,
+  CalloutBlockObjectResponse,
+  ChildDatabaseBlockObjectResponse,
+  ChildPageBlockObjectResponse,
+  ColumnBlockObjectResponse,
+  ColumnListBlockObjectResponse,
+  DividerBlockObjectResponse,
+  EmbedBlockObjectResponse,
+  EquationBlockObjectResponse,
+  FileBlockObjectResponse,
+  Heading1BlockObjectResponse,
+  Heading2BlockObjectResponse,
+  Heading3BlockObjectResponse,
+  ImageBlockObjectResponse,
+  LinkPreviewBlockObjectResponse,
+  LinkToPageBlockObjectResponse,
+  ListBlockChildrenResponse,
+  ListDatabasesResponse,
   NumberedListItemBlockObjectResponse,
+  ParagraphBlockObjectResponse,
+  PdfBlockObjectResponse,
+  QuoteBlockObjectResponse,
+  RichTextItemResponse,
+  SyncedBlockBlockObjectResponse,
+  TableBlockObjectResponse,
+  TableOfContentsBlockObjectResponse,
+  TableRowBlockObjectResponse,
+  TemplateBlockObjectResponse,
   ToDoBlockObjectResponse,
   ToggleBlockObjectResponse,
-  ChildPageBlockObjectResponse,
-  ChildDatabaseBlockObjectResponse,
-  EmbedBlockObjectResponse,
-  ImageBlockObjectResponse,
-  VideoBlockObjectResponse,
-  FileBlockObjectResponse,
-  PdfBlockObjectResponse,
-  BookmarkBlockObjectResponse,
-  CalloutBlockObjectResponse,
-  QuoteBlockObjectResponse,
-  EquationBlockObjectResponse,
-  DividerBlockObjectResponse,
-  TableOfContentsBlockObjectResponse,
-  ColumnListBlockObjectResponse,
-  ColumnBlockObjectResponse,
-  LinkPreviewBlockObjectResponse,
-  SyncedBlockBlockObjectResponse,
-  TemplateBlockObjectResponse,
-  LinkToPageBlockObjectResponse,
-  TableBlockObjectResponse,
-  TableRowBlockObjectResponse,
   UnsupportedBlockObjectResponse,
-  ApiColor,
-  TextRichTextItemResponse,
+  UpdateBlockBodyParameters,
+  VideoBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
 import { request } from '../util/network'
-import { compact } from '../util/collections'
+import { clone, compact } from '../util/collections'
 
 export const dateRegex = /(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{1,2}\/\d{1,2})/
 
@@ -67,7 +68,7 @@ interface MakeRequestOptions {
   path: string
 }
 
-export function makeRequest<T> (options: MakeRequestOptions): Promise<T> {
+function makeRequest<T> (options: MakeRequestOptions): Promise<T> {
   const { notionToken, body, path, method = 'get' } = options
 
   return request({
@@ -86,126 +87,98 @@ interface GetBlockChildrenOptions {
   pageId: string
 }
 
-export function getBlockChildren ({ notionToken, pageId }: GetBlockChildrenOptions) {
-  return makeRequest<ListBlockChildrenResponse>({ notionToken, path: `blocks/${pageId}/children` })
+export async function getBlockChildren ({ notionToken, pageId }: GetBlockChildrenOptions) {
+  const { results } = await makeRequest<ListBlockChildrenResponse>({ notionToken, path: `blocks/${pageId}/children` }) as { results: BlockObjectResponse[] }
+
+  return results.map(convertNotionBlockToOwnBlock)
 }
 
 interface GetBlockChildrenDeepOptions {
-  filter?: (block: BlockObjectResponse) => boolean
+  filter?: (block: NotionBlock) => boolean
   includeId?: boolean
   notionToken: string
   pageId: string
 }
 
-export async function getBlockChildrenDeep ({ notionToken, pageId, filter, includeId }: GetBlockChildrenDeepOptions): Promise<BlockContent[]> {
-  const { results } = await getBlockChildren({ notionToken, pageId })
+export async function getBlockChildrenDeep ({ notionToken, pageId, filter, includeId }: GetBlockChildrenDeepOptions): Promise<NotionBlock[]> {
+  const blocks = await getBlockChildren({ notionToken, pageId })
+  const filteredBlocks = filter ? blocks.filter(filter) : blocks
+  const blocksWithChildren = await Promise.all(filteredBlocks.map(async (block) => {
+    if (block.has_children) {
+      block.children = await getBlockChildrenDeep({ notionToken, pageId: block.id, includeId })
+    }
 
-  const blocks = await Promise.all(results.map((block: BlockObjectResponse) => {
-    return getBlockContent({
-      notionToken,
-      block: block as BlockObjectResponse,
-      filter,
-      includeId,
-    })
+    return block
   }))
 
-  return compact(blocks)
+  return compact(blocksWithChildren)
 }
 
-export type BlockContent = Partial<BlockObjectResponse> & {
+type Content = ParagraphBlockObjectResponse['paragraph']
+| Heading1BlockObjectResponse['heading_1']
+| Heading2BlockObjectResponse['heading_2']
+| Heading3BlockObjectResponse['heading_3']
+| BulletedListItemBlockObjectResponse['bulleted_list_item']
+| NumberedListItemBlockObjectResponse['numbered_list_item']
+| ToDoBlockObjectResponse['to_do']
+| ToggleBlockObjectResponse['toggle']
+| ChildPageBlockObjectResponse['child_page']
+| ChildDatabaseBlockObjectResponse['child_database']
+| EmbedBlockObjectResponse['embed']
+| ImageBlockObjectResponse['image']
+| VideoBlockObjectResponse['video']
+| FileBlockObjectResponse['file']
+| PdfBlockObjectResponse['pdf']
+| BookmarkBlockObjectResponse['bookmark']
+| CalloutBlockObjectResponse['callout']
+| QuoteBlockObjectResponse['quote']
+| EquationBlockObjectResponse['equation']
+| DividerBlockObjectResponse['divider']
+| TableOfContentsBlockObjectResponse['table_of_contents']
+| ColumnBlockObjectResponse['column']
+| ColumnListBlockObjectResponse['column_list']
+| LinkPreviewBlockObjectResponse['link_preview']
+| SyncedBlockBlockObjectResponse['synced_block']
+| TemplateBlockObjectResponse['template']
+| LinkToPageBlockObjectResponse['link_to_page']
+| TableBlockObjectResponse['table']
+| TableRowBlockObjectResponse['table_row']
+| UnsupportedBlockObjectResponse['unsupported']
+
+export interface OwnBlock {
+  children?: OwnBlock[] | NotionBlock[]
   type: BlockObjectResponse['type']
+  content: Content
 }
 
-function getBlockTypeObject (block: BlockObjectResponse | BlockContent) {
-  switch (block.type) {
-    case 'paragraph': return (block as ParagraphBlockObjectResponse).paragraph
-    case 'heading_1': return (block as Heading1BlockObjectResponse).heading_1
-    case 'heading_2': return (block as Heading2BlockObjectResponse).heading_2
-    case 'heading_3': return (block as Heading3BlockObjectResponse).heading_3
-    case 'bulleted_list_item': return (block as BulletedListItemBlockObjectResponse).bulleted_list_item
-    case 'numbered_list_item': return (block as NumberedListItemBlockObjectResponse).numbered_list_item
-    case 'to_do': return (block as ToDoBlockObjectResponse).to_do
-    case 'toggle': return (block as ToggleBlockObjectResponse).toggle
-    case 'child_page': return (block as ChildPageBlockObjectResponse).child_page
-    case 'child_database': return (block as ChildDatabaseBlockObjectResponse).child_database
-    case 'embed': return (block as EmbedBlockObjectResponse).embed
-    case 'image': return (block as ImageBlockObjectResponse).image
-    case 'video': return (block as VideoBlockObjectResponse).video
-    case 'file': return (block as FileBlockObjectResponse).file
-    case 'pdf': return (block as PdfBlockObjectResponse).pdf
-    case 'bookmark': return (block as BookmarkBlockObjectResponse).bookmark
-    case 'callout': return (block as CalloutBlockObjectResponse).callout
-    case 'quote': return (block as QuoteBlockObjectResponse).quote
-    case 'equation': return (block as EquationBlockObjectResponse).equation
-    case 'divider': return (block as DividerBlockObjectResponse).divider
-    case 'table_of_contents': return (block as TableOfContentsBlockObjectResponse).table_of_contents
-    case 'column': return (block as ColumnBlockObjectResponse).column
-    case 'column_list': return (block as ColumnListBlockObjectResponse).column_list
-    case 'link_preview': return (block as LinkPreviewBlockObjectResponse).link_preview
-    case 'synced_block': return (block as SyncedBlockBlockObjectResponse).synced_block
-    case 'template': return (block as TemplateBlockObjectResponse).template
-    case 'link_to_page': return (block as LinkToPageBlockObjectResponse).link_to_page
-    case 'table': return (block as TableBlockObjectResponse).table
-    case 'table_row': return (block as TableRowBlockObjectResponse).table_row
-    default: return (block as UnsupportedBlockObjectResponse).unsupported
-  }
+export interface NotionBlock extends OwnBlock {
+  has_children: boolean
+  id: string
 }
 
-function getRichText (block: BlockObjectResponse | BlockContent): RichTextItemResponse[] | undefined {
-  const blockTypeObject = getBlockTypeObject(block)
+export type Block = OwnBlock | NotionBlock
 
-  return 'rich_text' in blockTypeObject ? blockTypeObject.rich_text : undefined
+function getRichText (block: OwnBlock): RichTextItemResponse[] | undefined {
+  return 'rich_text' in block.content ? block.content.rich_text : undefined
 }
 
-interface GetBlockContentOptions {
-  notionToken: string
-  block: BlockObjectResponse
-  filter?: (block: BlockObjectResponse) => boolean
-  includeId?: boolean
-}
-
-interface BlockTypeObject {
-  children?: BlockContent[]
-  rich_text?: RichTextItemResponse
-}
-
-export async function getBlockContent ({ notionToken, block, filter, includeId = false }: GetBlockContentOptions) {
-  if (filter && !filter(block)) return
-
-  const children = block.has_children
-    ? (await getBlockChildrenDeep({ notionToken, pageId: block.id, includeId }))
-    : undefined
-  const richText = getRichText(block)
-  const blockTypeObject = { children } as BlockTypeObject
-
-  if (richText) {
-    blockTypeObject.rich_text = richText
-  }
-
-  const content = {
-    object: 'block',
-    type: block.type,
-    [block.type]: blockTypeObject,
-  } as BlockContent
-
-  if (includeId) {
-    content.id = block.id
-  }
-
-  return content
-}
-
-export function textFilter (block: BlockObjectResponse) {
+export function textFilter (block: OwnBlock) {
   return !!(getRichText(block) || [])[0].plain_text.trim()
+}
+
+interface MakeAppendRequestOptions {
+  notionToken: string
+  pageId: string
+  blocks: OutgoingBlock[]
 }
 
 interface AppendBlockChildrenOptions {
   notionToken: string
   pageId: string
-  blocks: BlockContent[]
+  blocks: OwnBlock[]
 }
 
-export function makeAppendRequest ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRequestOptions) {
   return makeRequest<ListBlockChildrenResponse>({
     notionToken,
     method: 'patch',
@@ -216,14 +189,33 @@ export function makeAppendRequest ({ notionToken, pageId, blocks }: AppendBlockC
   })
 }
 
+export async function appendBlockChildrenDeep ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+  function moveChildren (blocks: NotionBlock[] | OwnBlock[]) {
+    return blocks.map((block) => {
+      const convertedBlock = convertBlockToOutgoingBlock(block)
+
+      if (!block.children) return convertedBlock
+
+      // @ts-ignore
+      convertedBlock[block.type].children = moveChildren(block.children)
+
+      return convertedBlock
+    })
+  }
+
+  return makeAppendRequest({ notionToken, pageId, blocks: moveChildren(blocks) })
+}
+
 export async function appendBlockChildren ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
-  let toAppend: BlockContent[] = []
+  let toAppend: OutgoingBlock[] = []
 
   for (const block of blocks) {
-    if (block[block.type].children) {
-      const children = block[block.type].children
-      delete block[block.type].children
-      toAppend.push(block)
+    const convertedBlock = convertBlockToOutgoingBlock(block)
+
+    if (block.children) {
+      const children = block.children
+
+      toAppend.push(convertedBlock)
 
       const { results } = await makeAppendRequest({ notionToken, pageId, blocks: toAppend })
       toAppend = []
@@ -234,7 +226,7 @@ export async function appendBlockChildren ({ notionToken, pageId, blocks }: Appe
         blocks: children,
       })
     } else {
-      toAppend.push(block)
+      toAppend.push(convertedBlock)
     }
   }
 
@@ -250,30 +242,91 @@ export async function appendBlockChildren ({ notionToken, pageId, blocks }: Appe
 interface UpdateBlockOptions {
   notionToken: string
   blockId: string
-  block: BlockContent
+  block: Block
 }
 
 export function updateBlock ({ notionToken, blockId, block }: UpdateBlockOptions) {
+  const convertedBlock = convertBlockToOutgoingBlock(block)
+
   return makeRequest<void>({
     notionToken,
     method: 'patch',
     path: `blocks/${blockId}`,
-    body: block,
+    body: convertedBlock,
   })
+}
+
+interface UpdatePageOptions {
+  notionToken: string
+  pageId: string
+  properties: {
+    [key: string]: {
+      date: {
+        start: string
+      }
+    }
+  }
+}
+
+export function updatePage ({ notionToken, pageId, properties }: UpdatePageOptions) {
+  return makeRequest<void>({
+    notionToken,
+    body: { properties },
+    method: 'patch',
+    path: `pages/${pageId}`,
+  })
+}
+
+interface QueryDatabasesOptions {
+  notionToken: string
+  databaseId: string
+}
+
+export function queryDatabases ({ notionToken, databaseId }: QueryDatabasesOptions) {
+  return makeRequest<ListDatabasesResponse>({
+    notionToken,
+    method: 'post',
+    path: `databases/${databaseId}/query`,
+  })
+}
+
+export function convertNotionBlockToOwnBlock (block: BlockObjectResponse): NotionBlock {
+  const type = block.type
+
+  return {
+    // @ts-ignore
+    content: clone(block[type] as Content),
+    has_children: block.has_children,
+    id: block.id,
+    type,
+  }
+}
+
+type OutgoingBlock = UpdateBlockBodyParameters & {
+  object: string
+  type: BlockObjectResponse['type']
+}
+
+export function convertBlockToOutgoingBlock (block: Block): OutgoingBlock {
+  return {
+    object: 'block',
+    type: block.type,
+    [block.type]: block.content,
+  }
 }
 
 interface MakeBlockOptions {
   annotations?: Partial<RichTextItemResponse['annotations']>
-  children?: BlockContent[]
+  children?: OwnBlock[] | NotionBlock[]
   text: string
-  type: BlockContent['type']
+  type: BlockObjectResponse['type']
 }
 
-export function makeBlock ({ text, type = 'paragraph', annotations, children }: MakeBlockOptions): BlockContent {
+export function makeBlock ({ text, type = 'paragraph', annotations, children }: MakeBlockOptions) {
   return {
     type,
-    object: 'block',
-    [type]: {
+    children,
+    content: {
       rich_text: [
         {
           type: 'text',
@@ -283,10 +336,9 @@ export function makeBlock ({ text, type = 'paragraph', annotations, children }: 
           annotations,
           plain_text: text,
         },
-        children,
       ],
     },
-  } as BlockContent
+  } as OwnBlock
 }
 
 export function richTextToPlainText (richText: RichTextItemResponse[]) {
@@ -296,7 +348,7 @@ export function richTextToPlainText (richText: RichTextItemResponse[]) {
   .trim()
 }
 
-export function getBlockPlainText (block: BlockObjectResponse | BlockContent) {
+export function getBlockPlainText (block: Block) {
   if (!block) return
 
   const richText = getRichText(block)
@@ -306,24 +358,30 @@ export function getBlockPlainText (block: BlockObjectResponse | BlockContent) {
   return richTextToPlainText(richText)
 }
 
-export function makeTextPart (content: string, color?: ApiColor): TextRichTextItemResponse {
-  return {
-    type: 'text',
-    text: {
-      content,
-      link: null,
-    },
-    annotations: {
-      bold: false,
-      italic: false,
-      strikethrough: false,
-      underline: false,
-      code: false,
-      color: color || 'default',
-    },
-    plain_text: content,
-    href: null,
+interface RichTextItem {
+  text: {
+    content: string
+    link?: { url: string } | null
   }
+  type?: 'text'
+  annotations?: {
+    bold?: boolean
+    italic?: boolean
+    strikethrough?: boolean
+    underline?: boolean
+    code?: boolean
+    color?: ApiColor
+  }
+}
+
+export function makeTextPart (content: string, color?: ApiColor) {
+  const textPart = { text: { content } } as RichTextItem
+
+  if (color) {
+    textPart.annotations = { color }
+  }
+
+  return textPart
 }
 
 export function getMonthNameFromIndex (monthIndex: number, short = false) {
@@ -336,13 +394,13 @@ export function getMonths ({ short }: { short?: boolean } = {}) {
   })
 }
 
-const getDisplayPrefix = (block: BlockObjectResponse) => {
+const getDisplayPrefix = (block: NotionBlock) => {
   switch (block.type) {
     case 'paragraph': return ''
     case 'heading_1': return '# '
     case 'heading_2': return '## '
     case 'heading_3': return '### '
-    case 'to_do': return `[${block.to_do.checked ? '✓' : ' '}] `
+    case 'to_do': return `[${'checked' in block.content && block.content.checked ? '✓' : ' '}] `
     case 'bulleted_list_item': return '• '
     case 'numbered_list_item': return '1. '
     case 'toggle': return '> '
@@ -353,9 +411,9 @@ const getDisplayPrefix = (block: BlockObjectResponse) => {
   }
 }
 
-function getDisplayText (block: BlockObjectResponse) {
+function getDisplayText (block: NotionBlock) {
   if (block.type === 'child_page') {
-    return `[${block.child_page.title}]`
+    return `[${'title' in block.content ? block.content.title : '<untitled>'}]`
   }
 
   if (block.type === 'divider') {
@@ -370,7 +428,7 @@ function getDisplayText (block: BlockObjectResponse) {
 }
 
 // displays block for logging/debugging purposes
-export function displayBlocks (blocks: BlockObjectResponse[]) {
+export function displayBlocks (blocks: NotionBlock[]) {
   blocks.forEach((block) => {
     // eslint-disable-next-line no-console
     console.log(`[${block.id}] ${getDisplayText(block)}${block.has_children ? ' (parent)' : ''}`)

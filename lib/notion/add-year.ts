@@ -1,38 +1,37 @@
 import dayjs from 'dayjs'
 import Debug from 'debug'
 import minimist from 'minimist'
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
 import {
   appendBlockChildren,
-  BlockContent,
   getBlockChildren,
   getBlockChildrenDeep,
-  getBlockContent,
+  getBlockPlainText,
   getMonthNameFromIndex,
   getMonths,
-  getBlockPlainText,
   makeBlock,
+  NotionBlock,
+  OwnBlock,
   textFilter,
 } from './util'
-import { clone, compact } from '../util/collections'
+import { compact } from '../util/collections'
 import { getEnv } from '../util/env'
 
 const debug = Debug('proxy:scripts')
 
 interface YearTemplateItem {
   rule: string | undefined
-  quests: BlockContent[]
+  quests: OwnBlock[]
 }
 
 async function getYearTemplate (yearTemplateId: string, notionToken: string): Promise<YearTemplateItem[]> {
-  const { results } = await getBlockChildren({ notionToken, pageId: yearTemplateId })
+  const blocks = await getBlockChildren({ notionToken, pageId: yearTemplateId })
 
-  const blocks = (results as BlockObjectResponse[]).filter((block) => {
+  const blocksWithChildren = blocks.filter((block) => {
     return block.has_children
   })
 
-  return Promise.all(blocks.map(async (block) => {
+  return Promise.all(blocksWithChildren.map(async (block) => {
     return {
       rule: getBlockPlainText(block),
       quests: await getBlockChildrenDeep({
@@ -45,12 +44,12 @@ async function getYearTemplate (yearTemplateId: string, notionToken: string): Pr
 }
 
 interface DatesObject {
-  [key: string]: BlockContent[]
+  [key: string]: OwnBlock[]
 }
 
 interface DateAndQuests {
   date: string
-  quests: BlockContent[]
+  quests: OwnBlock[]
 }
 
 interface StartingMonthData {
@@ -150,18 +149,18 @@ function datesObjectToSortedArray (dates: DatesObject): DateAndQuests[] {
 
 interface Extras {
   [key: string]: {
-    [key: string]: BlockContent[]
+    [key: string]: OwnBlock[]
   }
 }
 
 async function getExtras (extrasId: string, notionToken: string) {
-  const { results } = await getBlockChildren({ notionToken, pageId: extrasId })
+  const blocks = await getBlockChildrenDeep({ notionToken, pageId: extrasId })
 
   const months = {} as Extras
   let currentMonth
   let currentDate
 
-  for (const block of (results as BlockObjectResponse[])) {
+  for (const block of blocks) {
     const text = getBlockPlainText(block)
 
     if (!text) {
@@ -197,8 +196,9 @@ async function getExtras (extrasId: string, notionToken: string) {
       throw new Error(`Tried to add the following quest, but could not determine the date: '${text}'`)
     }
 
-    const content = await getBlockContent({ notionToken, block, filter: textFilter })
-    months[currentMonth][currentDate].push(content!)
+    if (textFilter(block)) {
+      months[currentMonth][currentDate].push(block)
+    }
   }
 
   return months
@@ -211,8 +211,9 @@ function getMonthsData (yearTemplateItem: YearTemplateItem[], extras: Extras) {
         const result = matchesPattern(templateItem.rule || '', month.index)
 
         if (result.matches) {
-          const quests = clone(templateItem.quests)
-          month.dates[result.date] = (month.dates[result.date] || []).concat(quests)
+          month.dates[result.date] = (
+            month.dates[result.date] || []
+          ).concat(templateItem.quests)
         }
       }
     }
@@ -236,7 +237,7 @@ function getDateString (year: string | number, month: string | number, date: str
   return dayjs(`${year}/${month}/${date}`, 'YYYY/M/D').format('ddd, M/D')
 }
 
-const makeBlocks = (monthsData: MonthData[], year: number): BlockContent[] => {
+const makeBlocks = (monthsData: MonthData[], year: number): OwnBlock[] => {
   const blocks = monthsData.map(({ name, index, dates }) => {
     if (!dates.length) return
 
@@ -262,14 +263,14 @@ const makeBlocks = (monthsData: MonthData[], year: number): BlockContent[] => {
         ]
       }),
     ]
-  }).flat() as (BlockContent | undefined)[]
+  }).flat() as (OwnBlock | undefined)[]
 
   return compact(blocks)
 }
 
 function findId (
-  blocks: BlockObjectResponse[],
-  filter: (block: BlockObjectResponse) => boolean,
+  blocks: NotionBlock[],
+  filter: (block: NotionBlock) => boolean,
   error?: string,
 ) {
   const block = blocks.find(filter)
@@ -284,20 +285,27 @@ function findId (
 }
 
 async function getPageIds (year: number | string, notionToken: string, futurePageId: string) {
-  const response = await getBlockChildren({ notionToken, pageId: futurePageId })
-  const results = response.results as BlockObjectResponse[]
+  const blocks = await getBlockChildren({ notionToken, pageId: futurePageId })
 
-  const extrasId = findId(results, (block) => {
-    return block.type === 'child_page' && block.child_page.title === `${year}`
+  const extrasId = findId(blocks, (block) => {
+    return (
+      block.type === 'child_page'
+      && 'title' in block.content
+      && block.content.title === `${year}`
+    )
   })
 
-  const dropZoneId = findId(results, (block) => {
+  const dropZoneId = findId(blocks, (block) => {
     return block.type === 'synced_block'
-  }, 'Could not find drop zone')
+  }, 'Could not find drop zone')!
 
-  const yearTemplateId = findId(results, (block) => {
-    return block.type === 'child_page' && block.child_page.title === 'Year Template'
-  }, 'Could not find year template')
+  const yearTemplateId = findId(blocks, (block) => {
+    return (
+      block.type === 'child_page'
+      && 'title' in block.content
+      && block.content.title === 'Year Template'
+    )
+  }, 'Could not find year template')!
 
   return {
     extrasId,

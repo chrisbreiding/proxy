@@ -1,8 +1,6 @@
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import { getBlockChildren, getBlockPlainText, NotionBlock } from './util'
 
-import { getBlockChildren, getBlockPlainText } from './util'
-
-async function findUpcomingId (blocks: BlockObjectResponse[]) {
+async function findUpcomingId (blocks: NotionBlock[]) {
   const block = blocks.find((block) => {
     return block.type === 'toggle' && getBlockPlainText(block) === 'Upcoming'
   })
@@ -20,11 +18,9 @@ interface GetAllOptions {
 }
 
 export async function getAllQuests ({ notionToken, pageId }: GetAllOptions) {
-  const questResponse = await getBlockChildren({ notionToken, pageId })
-  const questBlocks = questResponse.results as BlockObjectResponse[]
+  const questBlocks = await getBlockChildren({ notionToken, pageId })
   const upcomingId = await findUpcomingId(questBlocks)
-  const upcomingResponse = await getBlockChildren({ notionToken, pageId: upcomingId })
-  const upcomingBlocks = upcomingResponse.results as BlockObjectResponse[]
+  const upcomingBlocks = await getBlockChildren({ notionToken, pageId: upcomingId })
 
   return [...questBlocks, ...upcomingBlocks]
 }

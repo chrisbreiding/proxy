@@ -1,6 +1,8 @@
+import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import fs from 'fs-extra'
 import nock from 'nock'
 import path from 'path'
+import { expect } from 'vitest'
 
 const notionVersion = '2022-06-28'
 
@@ -36,14 +38,12 @@ export function nockNotion (options: NockOptions) {
   .times(options.times || 1)
 
   if (options.fixture) {
-    scope.replyWithFile(200, notionFixture(options.fixture), {
+    return scope.replyWithFile(200, notionFixture(options.fixture), {
       'Content-Type': 'application/json',
     })
-  } else {
-    scope.reply(200, options.reply)
   }
 
-  return scope
+  return scope.reply(200, options.reply)
 }
 
 export function nockGetBlockChildren (id: string, options: GetOptions) {
@@ -55,12 +55,12 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
 
 interface AppendOptions {
   id: string
-  body: object
+  body?: object
   reply?: object
 }
 
 export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
-  nockNotion({
+  return nockNotion({
     body,
     method: 'patch',
     reply,
@@ -69,21 +69,21 @@ export function nockAppendBlockChildren ({ id, body, reply }: AppendOptions) {
 }
 
 interface UpdateOptions {
-  fixture: string
+  fixture?: string
 }
 
-export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOptions) {
-  const update = fs.readJsonSync(notionFixture(fixtureName))
+export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOptions = {}) {
+  const update = fixtureName ? fs.readJsonSync(notionFixture(fixtureName)) : undefined
 
-  nock('https://api.notion.com')
+  return nock('https://api.notion.com')
   .matchHeader('authorization', 'Bearer notion-token')
   .matchHeader('notion-version', notionVersion)
-  .patch(`/v1/blocks/${id}`, update as nock.DataMatcherMap)
+  .patch(`/v1/blocks/${id}`, update)
   .reply(200)
 }
 
 function createUniqueId () {
-  const tracker = {}
+  const tracker: { [key: string]: number } = {}
   let defaultCount = 0
 
   return (prefix?: string) => {
@@ -150,7 +150,7 @@ export function block ({ id, text, type }: BlockOptions) {
       ],
       color: 'default',
     },
-  }
+  } as BlockObjectResponse
 }
 
 block.p = ({ id, text }: BlockOptions) => {
@@ -163,4 +163,24 @@ block.bullet = ({ id, text }: BlockOptions) => {
 
 block.toggle = ({ id, text }: BlockOptions) => {
   return block({ id, text, type: 'toggle' })
+}
+
+export function snapshotBody (scope: nock.Scope, message?: string) {
+  new Promise<void>((resolve, reject) => {
+    scope.on('request', (_, __, body) => {
+      try {
+        expect(JSON.parse(body)).toMatchSnapshot(message)
+      } catch (error: any) {
+        reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const stackLineRegex = /at\s.*(?::\d+:\d+|\s\((?:.*:\d+:\d+|<unknown>)\))\)?/s
+
+export function replaceStackLines (value: string) {
+  return value.replace(stackLineRegex, '[stack lines]')
 }

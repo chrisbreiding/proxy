@@ -3,11 +3,12 @@ import type express from 'express'
 
 import {
   appendBlockChildren,
-  BlockContent,
   getBlockChildrenDeep,
-  getMonths,
   getBlockPlainText,
+  getMonths,
   makeBlock,
+  NotionBlock,
+  OwnBlock,
   updateBlock,
 } from './util'
 
@@ -38,7 +39,7 @@ function getDates (startDate: string): DatesTracker {
 }
 
 interface GetTextOptions {
-  block: BlockContent
+  block: NotionBlock
   dates: DatesTracker
   currentDate: string
 }
@@ -82,7 +83,7 @@ interface GetDayBlocksOptions {
 
 interface BlocksMemo {
   currentDate?: dayjs.Dayjs
-  blocks: BlockContent[]
+  blocks: OwnBlock[]
 }
 
 async function getDayBlocks ({ notionToken, weekTemplatePageId, startDate }: GetDayBlocksOptions) {
@@ -104,7 +105,7 @@ async function getDayBlocks ({ notionToken, weekTemplatePageId, startDate }: Get
         memo.blocks.push(makeBlock({
           text,
           type: block.type,
-          children: block[block.type].children,
+          children: block.children,
         }))
       }
 
@@ -143,7 +144,7 @@ function updateAddFollowingWeekButton ({ query, params, dates }: UpdateAddFollow
   const url = `https://proxy.crbapps.com/notion/upcoming-week/${params.key}?${urlQuery}`
   const block = {
     type: 'embed' as const,
-    embed: {
+    content: {
       url,
       caption: [],
     },

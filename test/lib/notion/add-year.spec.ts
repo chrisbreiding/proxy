@@ -5,9 +5,10 @@ import {
   notionFixture as fixture,
   nockGetBlockChildren,
   nockAppendBlockChildren,
+  snapshotBody,
 } from '../../support/util'
 import { clone } from '../../../lib/util/collections'
-import main from '../../../lib/notion/add-year'
+import { addYear } from '../../../lib/notion/add-year'
 
 describe('lib/notion/add-year', () => {
   it('appends blocks in the drop zone based on the year template patterns and year extras', async () => {
@@ -25,33 +26,26 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('blocks-from-nested-id', { fixture: 'blocks' })
     nockGetBlockChildren('blocks-from-toggle-id', { fixture: 'blocks', times: 2 })
 
-    const nestedBody = fs.readJsonSync(fixture('nested-blocks'))
-
-    ;(new Array(9)).fill(0).forEach((_, index) => {
+    const snapshots = (new Array(9)).fill(0).map((_, index) => {
       const num = index + 1
 
-      const dropZoneBody = fs.readJsonSync(fixture(`add-year/drop-zone-${num}`))
-      const dropZoneReply = { results: clone(dropZoneBody).children }
-      dropZoneReply.results[dropZoneReply.results.length - 1].id = `drop-zone-${num}-id`
+      return [
+        snapshotBody(nockAppendBlockChildren({
+          id: 'drop-zone-id',
+          reply: fs.readJsonSync(fixture(`add-year/drop-zone-${num}`)),
+        }), `drop-zone-${num}`),
+        snapshotBody(nockAppendBlockChildren({
+          id: `drop-zone-${num}-id`,
+        }), `drop-zone-${num}-nested`),
+      ]
+    }).flat()
 
-      const dropZoneNestedResult = { results: clone(nestedBody).children }
-
-      nockAppendBlockChildren({
-        id: 'drop-zone-id',
-        body: dropZoneBody,
-        reply: dropZoneReply,
-      })
-      nockAppendBlockChildren({
-        id: `drop-zone-${num}-id`,
-        body: nestedBody,
-        reply: dropZoneNestedResult,
-      })
-    })
-
-    await main.addYear({
+    await addYear({
       notionToken: 'notion-token',
       futurePageId: 'future-page-id',
-      year: '2023',
+      year: 2023,
     })
+
+    await Promise.all(snapshots)
   })
 })

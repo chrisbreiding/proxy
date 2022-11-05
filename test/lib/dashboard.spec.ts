@@ -7,9 +7,37 @@ import {
 
 import { handleServer } from '../support/setup'
 
-const garage = require('../../lib/garage')
-const notion = require('../../lib/notion')
-const weather = require('../../lib/weather')
+import { getGarageData } from '../../lib/garage'
+import { getNotionData } from '../../lib/notion'
+import { getWeatherData } from '../../lib/weather'
+
+// TODO: use nock instead of mocking
+
+vi.mock('../../lib/garage', () => {
+  return {
+    getGarageData: vi.fn(),
+    get: () => {},
+    set: () => {},
+    setNotifyOnOpen: () => {},
+    view: () => {},
+  }
+})
+
+vi.mock('../../lib/notion', () => {
+  return {
+    getNotionData: vi.fn(),
+    upcomingWeekView: () => {},
+    addUpcomingWeek: () => {},
+    onSocket: () => {},
+  }
+})
+
+vi.mock('../../lib/weather', () => {
+  return {
+    getWeatherData: vi.fn(),
+    get: () => {},
+  }
+})
 
 import { startServer } from '../../index'
 
@@ -24,11 +52,14 @@ describe('lib/dashboard', () => {
       const notionData = {}
       const weatherData = {}
 
-      garage.getData = vi.fn().mockResolvedValue(garageData)
-      notion.getData = vi.fn().mockResolvedValue(notionData)
-      weather.getData = vi.fn().mockResolvedValue(weatherData)
+      // @ts-ignore
+      getGarageData.mockResolvedValue(garageData)
+      // @ts-ignore
+      getNotionData.mockResolvedValue(notionData)
+      // @ts-ignore
+      getWeatherData.mockResolvedValue(weatherData)
 
-      const res = await ctx.request.get('/dashboard/key')
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=token&notionPageId=page-id')
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
@@ -49,11 +80,14 @@ describe('lib/dashboard', () => {
       const notionData = {}
       const weatherData = {}
 
-      garage.getData = vi.fn().mockRejectedValue(garageError)
-      notion.getData = vi.fn().mockResolvedValue(notionData)
-      weather.getData = vi.fn().mockResolvedValue(weatherData)
+      // @ts-ignore
+      getGarageData.mockRejectedValue(garageError)
+      // @ts-ignore
+      getNotionData.mockResolvedValue(notionData)
+      // @ts-ignore
+      getWeatherData.mockResolvedValue(weatherData)
 
-      const res = await ctx.request.get('/dashboard/key')
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=token&notionPageId=page-id')
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({

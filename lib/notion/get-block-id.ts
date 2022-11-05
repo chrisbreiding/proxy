@@ -1,6 +1,5 @@
 import minimist from 'minimist'
 import Debug from 'debug'
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
 import { getBlockChildren, getBlockPlainText } from './util'
 import { getEnv } from '../util/env'
@@ -16,10 +15,10 @@ interface SearchOptions {
 }
 
 async function searchBlocks ({ pageId, text, parent = false }: SearchOptions): Promise<string | undefined> {
-  const response = await getBlockChildren({ notionToken, pageId })
+  const blocks = await getBlockChildren({ notionToken, pageId })
   const blockWithChildrenIds: string[] = []
 
-  for (const block of (response.results as BlockObjectResponse[])) {
+  for (const block of blocks) {
     const blockText = getBlockPlainText(block)
 
     debug('Checking block: %o', { text: blockText, children: block.has_children })

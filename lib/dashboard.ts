@@ -28,10 +28,10 @@ export async function get (req: express.Request, res: express.Response) {
     return res.json({ error: 'Must include location in query' })
   }
   if (!notionToken || typeof notionToken !== 'string') {
-    return res.json({ error: 'Must include location in query' })
+    return res.json({ error: 'Must include notionToken in query' })
   }
   if (!notionPageId || typeof notionPageId !== 'string') {
-    return res.json({ error: 'Must include location in query' })
+    return res.json({ error: 'Must include notionPageId in query' })
   }
 
   const [garage, notion, weather] = await Promise.all([

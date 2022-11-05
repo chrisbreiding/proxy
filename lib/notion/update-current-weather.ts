@@ -40,9 +40,9 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
   } = weather
   const roundedTemperature = Math.round(temperature)
 
-  const content = {
+  const block = {
     type: 'heading_1' as const,
-    heading_1: {
+    content: {
       rich_text: compact([
         makeTextPart(`${getWeatherIcon(icon)} `),
         makePrecipPart(icon === 'rain' && precipProbability >= 0.01, `${Math.round(precipProbability * 100)}%`),
@@ -53,7 +53,7 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
     },
   }
 
-  const newText = content.heading_1.rich_text
+  const newText = block.content.rich_text
   .map(({ text }) => text.content)
   .join('')
   .trim()
@@ -61,7 +61,7 @@ async function updateBlockWeather ({ weather, notionToken, currentWeatherId }: U
   // eslint-disable-next-line no-console
   console.log(`Update current weather to '${newText}'`)
 
-  await updateBlock({ notionToken, block: content, blockId: currentWeatherId })
+  await updateBlock({ notionToken, block, blockId: currentWeatherId })
 }
 
 interface UpdateWeatherOptions {

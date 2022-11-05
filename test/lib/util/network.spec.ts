@@ -10,7 +10,6 @@ describe('lib/util/network', () => {
       .get('/')
       .reply(200, { the: 'data' })
 
-      // @ts-expect-error
       const result = await request({ url: 'http://api.com' })
 
       expect(result).to.deep.equal({ the: 'data' })
@@ -21,7 +20,6 @@ describe('lib/util/network', () => {
       .post('/')
       .reply(200)
 
-      // @ts-expect-error
       await request({
         url: 'http://api.com',
         method: 'post',
@@ -34,7 +32,6 @@ describe('lib/util/network', () => {
       .matchHeader('X-My-Header', 'value')
       .reply(200)
 
-      // @ts-expect-error
       await request({
         url: 'http://api.com',
         headers: {
@@ -48,7 +45,6 @@ describe('lib/util/network', () => {
       .get('/?query=value')
       .reply(200)
 
-      // @ts-expect-error
       await request({
         url: 'http://api.com',
         params: {
@@ -62,7 +58,6 @@ describe('lib/util/network', () => {
       .post('/', { data: 'value' })
       .reply(200)
 
-      // @ts-expect-error
       await request({
         url: 'http://api.com',
         method: 'post',
@@ -77,7 +72,6 @@ describe('lib/util/network', () => {
       .get('/')
       .replyWithError('request failed')
 
-      // @ts-expect-error
       await expect(request({
         url: 'http://api.com',
       })).rejects.toThrow('request failed')

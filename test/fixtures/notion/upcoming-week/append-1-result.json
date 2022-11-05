@@ -1,5 +1,20 @@
 {
-  "children": [
+  "results": [
+    {
+      "type": "paragraph",
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun, 11/6"
+            },
+            "plain_text": "Sun, 11/6"
+          }
+        ]
+      }
+    },
     {
       "type": "bulleted_list_item",
       "object": "block",
@@ -8,9 +23,39 @@
           {
             "type": "text",
             "text": {
-              "content": "Wed task 2"
+              "content": "Sun task 1"
             },
-            "plain_text": "Wed task 2"
+            "plain_text": "Sun task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun task 2"
+            },
+            "plain_text": "Sun task 2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Sun conditional task that matches"
+            },
+            "plain_text": "Sun conditional task that matches"
           }
         ]
       }
@@ -23,9 +68,9 @@
           {
             "type": "text",
             "text": {
-              "content": "Thu, 11/10"
+              "content": "Mon, 11/7"
             },
-            "plain_text": "Thu, 11/10"
+            "plain_text": "Mon, 11/7"
           }
         ]
       }
@@ -38,9 +83,24 @@
           {
             "type": "text",
             "text": {
-              "content": "Thu task 1"
+              "content": "Mon task 1"
             },
-            "plain_text": "Thu task 1"
+            "plain_text": "Mon task 1"
+          }
+        ]
+      }
+    },
+    {
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mon task 2"
+            },
+            "plain_text": "Mon task 2"
           }
         ]
       }
@@ -53,9 +113,9 @@
           {
             "type": "text",
             "text": {
-              "content": "Fri, 11/11"
+              "content": "Tue, 11/8"
             },
-            "plain_text": "Fri, 11/11"
+            "plain_text": "Tue, 11/8"
           }
         ]
       }
@@ -68,9 +128,9 @@
           {
             "type": "text",
             "text": {
-              "content": "Fri task 1"
+              "content": "Tue task 1"
             },
-            "plain_text": "Fri task 1"
+            "plain_text": "Tue task 1"
           }
         ]
       }
@@ -83,14 +143,15 @@
           {
             "type": "text",
             "text": {
-              "content": "Sat, 11/12"
+              "content": "Wed, 11/9"
             },
-            "plain_text": "Sat, 11/12"
+            "plain_text": "Wed, 11/9"
           }
         ]
       }
     },
     {
+      "id": "nested-parent-id",
       "type": "bulleted_list_item",
       "object": "block",
       "bulleted_list_item": {
@@ -98,24 +159,9 @@
           {
             "type": "text",
             "text": {
-              "content": "Sat task 1"
+              "content": "Wed task 1 (has children)"
             },
-            "plain_text": "Sat task 1"
-          }
-        ]
-      }
-    },
-    {
-      "type": "bulleted_list_item",
-      "object": "block",
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "type": "text",
-            "text": {
-              "content": "Sat task 2"
-            },
-            "plain_text": "Sat task 2"
+            "plain_text": "Wed task 1 (has children)"
           }
         ]
       }

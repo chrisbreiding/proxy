@@ -8,8 +8,9 @@ import {
   notionFixture as fixture,
   nockGetBlockChildren,
   nockNotion,
+  snapshotBody,
 } from '../../support/util'
-import main from '../../../lib/notion/update-upcoming-weather'
+import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
@@ -53,18 +54,19 @@ describe('lib/notion/update-upcoming-weather', () => {
     nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
     nockGetBlockChildren('upcoming-id', { reply: { results: upcomingBlocks } })
 
-    ;[1, 3, 5, 7, 9, 11, 13].forEach((num) => {
-      nockNotion({
-        fixture: `weather/block-${num}-update`,
+    const snapshotUpdates = [1, 3, 5, 7, 9, 11, 13].map((num) => {
+      return snapshotBody(nockNotion({
         method: 'patch',
         path: `/v1/blocks/block-${num}`,
-      })
+      }), `block-${num}-update`)
     })
 
-    await main.updateWeather({
+    await updateWeather({
       notionToken: 'notion-token',
       questsId: 'quests-id',
       location: 'lat,lng',
     })
+
+    await Promise.all(snapshotUpdates)
   })
 })

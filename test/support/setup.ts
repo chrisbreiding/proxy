@@ -1,7 +1,9 @@
+import fs from 'fs-extra'
+import path from 'path'
 import getPort from 'get-port'
 import type http from 'http'
 import supertest from 'supertest'
-import { afterAll, beforeAll, beforeEach } from 'vitest'
+import { afterAll, beforeAll, beforeEach, expect } from 'vitest'
 
 declare module 'vitest' {
   export interface TestContext {

@@ -1,3 +1,4 @@
+import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import { block } from '../../../support/util'
 
 const t = {
@@ -23,11 +24,11 @@ const t = {
   },
 }
 
-function results (blocks) {
+function results (blocks: BlockObjectResponse[]) {
   return { results: blocks }
 }
 
-function d (date, ...bullets) {
+function d (date: string, ...bullets: string[]): BlockObjectResponse[] {
   return [
     block.p({ text: date }),
     ...bullets.map((text) => block.bullet({ text })),

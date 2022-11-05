@@ -1,11 +1,11 @@
 {
   "include": [
     "**/*.ts",
-    "./index.ts"
+    "./index.ts",
+    "lib/**/*.js"
   ],
   "exclude": [
-    "./node_modules/",
-    "**/*.js"
+    "./node_modules/"
   ],
   "compilerOptions": {
     "outDir": "./dist",

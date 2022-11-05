@@ -1,5 +1,5 @@
 {
-  "children": [
+  "results": [
     {
       "object": "block",
       "type": "bulleted_list_item",
@@ -22,7 +22,8 @@
             "plain_text": "Task 1",
             "href": null
           }
-        ]
+        ],
+        "color": "default"
       }
     },
     {
@@ -47,7 +48,8 @@
             "plain_text": "Task 2",
             "href": null
           }
-        ]
+        ],
+        "color": "default"
       }
     }
   ]

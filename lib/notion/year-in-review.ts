@@ -1,8 +1,7 @@
 import Debug from 'debug'
 import minimist from 'minimist'
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
-import { appendBlockChildren, dateRegex, getBlockChildren, getBlockPlainText, makeAppendRequest, makeBlock } from './util'
+import { appendBlockChildrenDeep, dateRegex, getBlockChildren, getBlockPlainText, makeBlock, NotionBlock } from './util'
 import { compact } from '../util/collections'
 import { patienceDiffPlus } from '../util/patience-diff'
 import { getEnv } from '../util/env'
@@ -10,8 +9,8 @@ import { getEnv } from '../util/env'
 const debug = Debug('proxy:scripts')
 
 function findId (
-  blocks: BlockObjectResponse[],
-  filter: (block: BlockObjectResponse) => boolean,
+  blocks: NotionBlock[],
+  filter: (block: NotionBlock) => boolean,
   error?: string,
 ) {
   const block = blocks.find(filter)
@@ -42,22 +41,24 @@ interface GetPageIdsOptions {
 }
 
 async function getPageIds ({ donePageId, notionToken, year }: GetPageIdsOptions) {
-  const doneResponse = await getBlockChildren({ notionToken, pageId: donePageId })
-  const doneBlocks = doneResponse.results as BlockObjectResponse[]
+  const doneBlocks = await getBlockChildren({ notionToken, pageId: donePageId })
 
   const yearId = findId(doneBlocks, (block) => {
-    return block.type === 'child_page' && block.child_page.title === `${year}`
+    return (
+      block.type === 'child_page'
+      && 'title' in block.content
+      && block.content.title === `${year}`
+    )
   }, `Could not find page for year: ${year}`)!
 
-  const yearResponse = await getBlockChildren({ notionToken, pageId: yearId })
-  const yearBlocks = yearResponse.results as BlockObjectResponse[]
+  const yearBlocks = await getBlockChildren({ notionToken, pageId: yearId })
 
   const months = compact(yearBlocks.map((block) => {
     if (block.type !== 'child_page') return
 
     return {
       id: block.id,
-      name: block.child_page.title,
+      name: 'title' in block.content ? block.content.title : '',
     } as MonthBlock
   }))
 
@@ -122,12 +123,11 @@ interface GetMonthDataOptions {
 }
 
 async function getMonthData ({ data, month, notionToken }: GetMonthDataOptions) {
-  const response = await getBlockChildren({ notionToken, pageId: month.id })
-  const results = response.results as BlockObjectResponse[]
+  const blocks = await getBlockChildren({ notionToken, pageId: month.id })
 
   let date: string | undefined = undefined
 
-  for (const block of results) {
+  for (const block of blocks) {
     const text = getBlockPlainText(block)
 
     if (!text) continue
@@ -216,7 +216,7 @@ export async function yearInReview ({ donePageId, notionToken, year }: YearInRev
   const data = await getData({ months, notionToken })
   const blocks = makeBlocks(data)
 
-  await makeAppendRequest({ blocks, notionToken, pageId: yearId })
+  await appendBlockChildrenDeep({ blocks, notionToken, pageId: yearId })
 }
 
 export default async function main () {
@@ -254,7 +254,3 @@ export default async function main () {
     process.exit(1)
   }
 }
-
-main.yearInReview = yearInReview
-
-module.exports = main

@@ -1,10 +1,10 @@
 import nock from 'nock'
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
-import { notionFixture as fixture, nockUpdateBlock } from '../../support/util'
-import main from '../../../lib/notion/update-current-weather'
+import { notionFixture as fixture, nockUpdateBlock, snapshotBody } from '../../support/util'
+import { updateWeather } from '../../../lib/notion/update-current-weather'
 
 describe('lib/notion/update-current-weather', () => {
   it('updates the current weather block with temperature and conditions', async () => {
@@ -14,14 +14,15 @@ describe('lib/notion/update-current-weather', () => {
       'Content-Type': 'application/json',
     })
 
-    nockUpdateBlock('current-weather-id', {
-      fixture: 'weather/current-weather-update',
-    })
+    const scope = nockUpdateBlock('current-weather-id')
+    const snapshotUpdate = snapshotBody(scope)
 
-    await main.updateWeather({
+    await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
       weatherLocation: 'lat,lng',
     })
+
+    await snapshotUpdate
   })
 })

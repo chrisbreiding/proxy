@@ -1,5 +1,5 @@
 {
-  "children": [
+  "results": [
     {
       "type": "paragraph",
       "object": "block",
@@ -149,6 +149,7 @@
       }
     },
     {
+      "id": "drop-zone-1-id",
       "object": "block",
       "type": "toggle",
       "toggle": {

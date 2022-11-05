@@ -1,13 +1,17 @@
 import dayjs from 'dayjs'
 import Debug from 'debug'
 import type {
-  BlockObjectResponse,
   DatabaseObjectResponse,
   DateDatabasePropertyConfigResponse,
-  ListDatabasesResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
-import { getBlockChildren, getBlockPlainText, makeRequest, richTextToPlainText } from './util'
+import {
+  getBlockChildren,
+  getBlockPlainText,
+  queryDatabases,
+  richTextToPlainText,
+  updatePage,
+} from './util'
 import { compact } from '../util/collections'
 import { getEnv } from '../util/env'
 
@@ -19,34 +23,9 @@ interface UpdateRestaurantsLastVisitOptions {
 }
 
 async function getDatabasePages ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
-  const { results } = await makeRequest<ListDatabasesResponse>({
-    notionToken,
-    method: 'post',
-    path: `databases/${restaurantsDatabaseId}/query`,
-  })
+  const { results } = await queryDatabases({ notionToken, databaseId: restaurantsDatabaseId })
 
   return results as DatabaseObjectResponse[]
-}
-
-interface UpdatePageOptions {
-  notionToken: string
-  pageId: string
-  properties: {
-    [key: string]: {
-      date: {
-        start: string
-      }
-    }
-  }
-}
-
-function updatePage ({ notionToken, pageId, properties }: UpdatePageOptions) {
-  return makeRequest<void>({
-    notionToken,
-    body: { properties },
-    method: 'patch',
-    path: `pages/${pageId}`,
-  })
 }
 
 interface PageDate {
@@ -88,9 +67,9 @@ interface GetMostRecentVisitDateOptions {
  }
 
 async function getMostRecentVisitDate ({ name, notionToken, pageId }: GetMostRecentVisitDateOptions) {
-  const { results } = await getBlockChildren({ notionToken, pageId })
+  const blocks = await getBlockChildren({ notionToken, pageId })
 
-  for (const block of results as BlockObjectResponse[]) {
+  for (const block of blocks) {
     const text = getBlockPlainText(block)
 
     if (!text) continue

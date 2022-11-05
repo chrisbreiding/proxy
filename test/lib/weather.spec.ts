@@ -10,7 +10,7 @@ import { handleServer } from '../support/setup'
 process.env.DARK_SKY_API_KEY = 'key'
 
 import { startServer } from '../../index'
-import { getData } from '../../lib/weather'
+import { getWeatherData } from '../../lib/weather'
 
 describe('lib/weather', () => {
   describe('GET /weather', () => {
@@ -48,7 +48,7 @@ describe('lib/weather', () => {
     })
   })
 
-  describe('#getData', () => {
+  describe('#getWeatherData', () => {
     it('returns weather data from DarkSky', async () => {
       nock('https://api.darksky.net')
       .get('/forecast/key/location?exclude=minutely,flags&extend=hourly')
@@ -56,7 +56,7 @@ describe('lib/weather', () => {
         the: 'weather data',
       })
 
-      const result = await getData({ location: 'location' })
+      const result = await getWeatherData({ location: 'location' })
 
       expect(result).to.deep.equal({
         the: 'weather data',
