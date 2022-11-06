@@ -1,4 +1,4 @@
-import { readJSONSync } from 'fs-extra'
+import { readJsonSync } from 'fs-extra'
 import mockFs from 'mock-fs'
 import nock from 'nock'
 import path from 'path'
@@ -34,7 +34,7 @@ function mockEmptyData () {
 }
 
 function getData () {
-  return readJSONSync('./data/garage-data.json')
+  return readJsonSync('./data/garage-data.json')
 }
 
 describe('lib/garage', () => {

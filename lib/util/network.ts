@@ -11,7 +11,9 @@ interface RequestOptions {
   method?: Method
 }
 
-export async function request ({ url, body, headers, params, method = 'get' }: RequestOptions) {
+export async function request (options: RequestOptions) {
+  const { url, body, headers, params, method = 'get' } = options
+
   try {
     const response = await axios({
       method,
@@ -23,15 +25,21 @@ export async function request ({ url, body, headers, params, method = 'get' }: R
 
     return response.data
   } catch (error: any) {
+    if (typeof error === 'object') {
+      error.callStack = (new Error(error.message)).stack
+    }
+
     debug('--- axios error ---')
     debug({ url, body, headers, params, method })
     debug('')
     debug({
+      stack: error?.stack,
+      callStack: error?.callStack,
+      message: error?.data?.message || error?.message,
+
+      code: error?.data?.code,
       status: error?.response?.status,
       statusText: error?.response?.statusText,
-      code: error?.data?.code,
-      message: error?.data?.message,
-      stack: error?.stack,
     })
     debug('')
     Debug.enabled('proxy') && console.trace() // eslint-disable-line no-console

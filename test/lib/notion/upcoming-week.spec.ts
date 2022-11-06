@@ -1,11 +1,8 @@
-import fs from 'fs-extra'
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { handleServer } from '../../support/setup'
-
 import {
-  notionFixture as fixture,
   nockAppendBlockChildren,
   nockGetBlockChildren,
   nockUpdateBlock,
@@ -13,8 +10,9 @@ import {
 } from '../../support/util'
 import { startServer } from '../../../index'
 
+process.env.API_KEY = 'key'
+
 describe('lib/notion/upcoming-week', () => {
-  process.env.API_KEY = 'key'
 
   handleServer(startServer)
 
@@ -46,7 +44,7 @@ describe('lib/notion/upcoming-week', () => {
       const snapshots = [
         snapshotBody(nockAppendBlockChildren({
           id: 'append-to-id',
-          reply: fs.readJsonSync(fixture('upcoming-week/append-1-result')),
+          fixture: 'upcoming-week/append-1-result',
         }), 'append-1'),
         snapshotBody(nockAppendBlockChildren({ id: 'nested-parent-id' }), 'nested'),
         snapshotBody(nockAppendBlockChildren({ id: 'append-to-id' }), 'append-2'),

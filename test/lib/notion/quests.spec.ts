@@ -1,4 +1,4 @@
-import fs from 'fs-extra'
+import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -12,19 +12,19 @@ describe('lib/notion/quests', () => {
 
   describe('#getAll', () => {
     it('returns all quest blocks', async () => {
-      nockGetBlockChildren('page-id', { fixture: 'quests/quests-blocks' })
+      nockGetBlockChildren('quests-id', { fixture: 'quests/quests-blocks' })
       nockGetBlockChildren('upcoming-id', { fixture: 'quests/upcoming-blocks' })
 
       const result = await getAllQuests({
         notionToken: 'notion-token',
-        pageId: 'page-id',
+        pageId: 'quests-id',
       })
 
       expect(result).toMatchSnapshot()
     })
 
     it('errors if no upcoming block found', async () => {
-      const questBlocks = fs.readJsonSync(fixture('quests/quests-blocks'))
+      const questBlocks = readJsonSync(fixture('quests/quests-blocks'))
 
       questBlocks.results = questBlocks.results.slice(0, questBlocks.results.length - 1)
 

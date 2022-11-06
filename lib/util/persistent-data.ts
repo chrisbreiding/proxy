@@ -1,4 +1,4 @@
-import fs from 'fs-extra'
+import { outputJSON, readJSON } from 'fs-extra'
 
 // In production, this is mounted with dokku's persistent storage
 // https://github.com/dokku/dokku/blob/master/docs/advanced-usage/persistent-storage.md
@@ -21,10 +21,10 @@ export class PersistentData {
   }
 
   get (): Promise<PersistentDataStructure | undefined> {
-    return fs.readJSON(this.dataPath)
+    return readJSON(this.dataPath)
   }
 
   set (newData: Partial<PersistentDataStructure>) {
-    return fs.outputJSON(this.dataPath, newData, { spaces: 2 })
+    return outputJSON(this.dataPath, newData, { spaces: 2 })
   }
 }

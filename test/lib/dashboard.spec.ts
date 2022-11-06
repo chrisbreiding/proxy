@@ -1,105 +1,75 @@
+import mockFs from 'mock-fs'
+import nock from 'nock'
 import {
+  afterAll,
   describe,
-  it,
   expect,
-  vi,
+  it,
 } from 'vitest'
 
-import { handleServer } from '../support/setup'
-
-import { getGarageData } from '../../lib/garage'
-import { getNotionData } from '../../lib/notion'
-import { getWeatherData } from '../../lib/weather'
-
-// TODO: use nock instead of mocking
-
-vi.mock('../../lib/garage', () => {
-  return {
-    getGarageData: vi.fn(),
-    get: () => {},
-    set: () => {},
-    setNotifyOnOpen: () => {},
-    view: () => {},
-  }
-})
-
-vi.mock('../../lib/notion', () => {
-  return {
-    getNotionData: vi.fn(),
-    upcomingWeekView: () => {},
-    addUpcomingWeek: () => {},
-    onSocket: () => {},
-  }
-})
-
-vi.mock('../../lib/weather', () => {
-  return {
-    getWeatherData: vi.fn(),
-    get: () => {},
-  }
-})
+process.env.API_KEY = 'key'
+process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
 import { startServer } from '../../index'
+import { nockGetBlockChildren } from '../support/util'
+import { handleServer } from '../support/setup'
 
 describe('lib/dashboard', () => {
   describe('GET /dashboard/:key', () => {
     handleServer(startServer)
 
+    afterAll(() => {
+      mockFs.restore()
+    })
+
     it('returns garage, notion, and weather data', async (ctx) => {
-      process.env.API_KEY = 'key'
+      nockGetBlockChildren('quests-id', { reply: { results: [] } })
 
-      const garageData = {}
-      const notionData = {}
-      const weatherData = {}
+      nock('https://api.darksky.net')
+      .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
+      .reply(200, { weather: 'data' })
 
-      // @ts-ignore
-      getGarageData.mockResolvedValue(garageData)
-      // @ts-ignore
-      getNotionData.mockResolvedValue(notionData)
-      // @ts-ignore
-      getWeatherData.mockResolvedValue(weatherData)
+      mockFs({
+        'data': {
+          'garage-data.json': JSON.stringify({ garage: 'data' }),
+        },
+      })
 
-      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=token&notionPageId=page-id')
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=notion-token&notionPageId=quests-id')
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({
-        garage: { data: garageData },
-        notion: { data: notionData },
-        weather: { data: weatherData },
-      })
+      expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
+      expect(res.body.notion).to.deep.equal({ data: [] })
+      expect(res.body.weather).to.deep.equal({ data: { weather: 'data' } })
     })
 
     it('returns individual error instead of data', async (ctx) => {
-      process.env.API_KEY = 'key'
+      nockGetBlockChildren('quests-id', { reply: { results: [] } })
 
-      const garageError = {
-        name: 'Error',
-        message: 'failed',
-        stack: 'the stack',
-      }
-      const notionData = {}
-      const weatherData = {}
+      nock('https://api.darksky.net')
+      .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
+      .reply(500, {
+        message: 'could not get weather',
+      })
 
-      // @ts-ignore
-      getGarageData.mockRejectedValue(garageError)
-      // @ts-ignore
-      getNotionData.mockResolvedValue(notionData)
-      // @ts-ignore
-      getWeatherData.mockResolvedValue(weatherData)
+      mockFs({
+        'data': {
+          'garage-data.json': JSON.stringify({ garage: 'data' }),
+        },
+      })
 
-      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=token&notionPageId=page-id')
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=notion-token&notionPageId=quests-id')
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({
-        garage: garageError,
-        notion: { data: notionData },
-        weather: { data: weatherData },
-      })
+      expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
+      expect(res.body.notion).to.deep.equal({ data: [] })
+
+      expect(res.body.weather.message).to.equal('Request failed with status code 500')
+      expect(res.body.weather.status).to.equal(500)
+      expect(res.body.weather.response).to.deep.equal({ message: 'could not get weather' })
     })
 
     it('status 403 if key does not match', async (ctx) => {
-      process.env.API_KEY = 'key'
-
       const res = await ctx.request.get('/dashboard/nope')
 
       expect(res.status).to.equal(403)

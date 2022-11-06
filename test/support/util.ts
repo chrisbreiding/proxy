@@ -1,5 +1,5 @@
 import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-import fs from 'fs-extra'
+import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import path from 'path'
 import { expect } from 'vitest'
@@ -37,13 +37,11 @@ export function nockNotion (options: NockOptions) {
   )
   .times(options.times || 1)
 
-  if (options.fixture) {
-    return scope.replyWithFile(200, notionFixture(options.fixture), {
-      'Content-Type': 'application/json',
-    })
-  }
+  const reply = options.fixture
+    ? readJsonSync(notionFixture(options.fixture))
+    : options.reply
 
-  return scope.reply(200, options.reply)
+  return scope.reply(200, reply)
 }
 
 export function nockGetBlockChildren (id: string, options: GetOptions) {
@@ -55,11 +53,13 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
 
 interface AppendOptions {
   id: string
+  fixture?: string
   reply?: object
 }
 
-export function nockAppendBlockChildren ({ id, reply }: AppendOptions) {
+export function nockAppendBlockChildren ({ id, fixture, reply }: AppendOptions) {
   return nockNotion({
+    fixture,
     method: 'patch',
     path: `/v1/blocks/${id}/children`,
     reply,
@@ -71,7 +71,7 @@ interface UpdateOptions {
 }
 
 export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOptions = {}) {
-  const update = fixtureName ? fs.readJsonSync(notionFixture(fixtureName)) : undefined
+  const update = fixtureName ? readJsonSync(notionFixture(fixtureName)) : undefined
 
   return nock('https://api.notion.com')
   .matchHeader('authorization', 'Bearer notion-token')

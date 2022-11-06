@@ -1,13 +1,10 @@
-import fs from 'fs-extra'
 import { describe, it } from 'vitest'
 
 import {
-  notionFixture as fixture,
   nockGetBlockChildren,
   nockAppendBlockChildren,
   snapshotBody,
 } from '../../support/util'
-import { clone } from '../../../lib/util/collections'
 import { addYear } from '../../../lib/notion/add-year'
 
 describe('lib/notion/add-year', () => {
@@ -32,7 +29,7 @@ describe('lib/notion/add-year', () => {
       return [
         snapshotBody(nockAppendBlockChildren({
           id: 'drop-zone-id',
-          reply: fs.readJsonSync(fixture(`add-year/drop-zone-${num}`)),
+          fixture: `add-year/drop-zone-${num}`,
         }), `drop-zone-${num}`),
         snapshotBody(nockAppendBlockChildren({
           id: `drop-zone-${num}-id`,

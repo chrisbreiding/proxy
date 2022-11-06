@@ -13,10 +13,25 @@ async function wrap (who: string, fn: () => Promise<any>) {
   } catch (error: any) {
     debug('Getting', who, 'data errored:', error.stack)
 
+    if (!error) {
+      return { error: 'An unknown error occurred' }
+    }
+
+    if (typeof error !== 'object') {
+      return { error }
+    }
+
     return {
       name: error.name,
       message: error.message,
       stack: error.stack,
+      callStack: error.callStack,
+
+      code: error.data?.code,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+
+      response: error.response?.data,
     }
   }
 }
