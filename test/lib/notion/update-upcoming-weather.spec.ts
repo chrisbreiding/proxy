@@ -3,14 +3,14 @@ import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
 process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
+import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
+import { snapshotBody } from '../../util'
 import {
   block,
   notionFixture as fixture,
   nockGetBlockChildren,
   nockNotion,
-  snapshotBody,
 } from './util'
-import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {

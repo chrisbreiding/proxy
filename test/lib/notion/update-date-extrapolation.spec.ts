@@ -1,7 +1,8 @@
 import { describe, it } from 'vitest'
 
-import { nockGetBlockChildren, nockUpdateBlock, snapshotBody } from './util'
 import { updateDateExtrapolation } from '../../../lib/notion/update-date-extrapolation'
+import { snapshotBody } from '../../util'
+import { nockGetBlockChildren, nockUpdateBlock } from './util'
 
 describe('lib/notion/update-date-extrapolation', () => {
   it('updates extrapolated dates based on historical and recent dates', async () => {

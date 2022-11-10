@@ -6,12 +6,12 @@ process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 import {
   notionFixture as fixture,
   nockUpdateBlock,
-  snapshotBody,
   nockNotion,
   nockGetBlockChildren,
   nockAppendBlockChildren,
 } from './util'
 import { updateWeather } from '../../../lib/notion/update-current-weather'
+import { snapshotBody } from '../../util'
 
 describe('lib/notion/update-current-weather', () => {
   it('updates the current weather block with temperature and conditions', async () => {

@@ -4,11 +4,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
 
-import { baseUrl } from '../../../../lib/tv/source/util'
-import { fixtureContents } from '../../notion/util'
-import { nockLogin } from '../util'
 import { startServer } from '../../../../index'
-import { handleServer } from '../../../util'
+import { baseUrl } from '../../../../lib/tv/source/util'
 import {
   addCollectionToDoc,
   addDoc,
@@ -18,6 +15,8 @@ import {
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { clone } from '../../../../lib/util/collections'
+import { fixtureContents, handleServer } from '../../../util'
+import { nockLogin } from '../util'
 
 function makeSearchResultShow (num: number) {
   return {

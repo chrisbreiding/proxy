@@ -1,11 +1,8 @@
 import { describe, it } from 'vitest'
 
-import {
-  nockGetBlockChildren,
-  nockAppendBlockChildren,
-  snapshotBody,
-} from './util'
 import { addYear } from '../../../lib/notion/add-year'
+import { snapshotBody } from '../../util'
+import { nockGetBlockChildren, nockAppendBlockChildren } from './util'
 
 describe('lib/notion/add-year', () => {
   it('appends blocks in the drop zone based on the year template patterns and year extras', async () => {

@@ -1,14 +1,13 @@
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { handleServer } from '../../util'
+import { startServer } from '../../../index'
 import {
   nockAppendBlockChildren,
   nockGetBlockChildren,
   nockUpdateBlock,
-  snapshotBody,
 } from './util'
-import { startServer } from '../../../index'
+import { handleServer, snapshotBody } from '../../util'
 
 process.env.API_KEY = 'key'
 

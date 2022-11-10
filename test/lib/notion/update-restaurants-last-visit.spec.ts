@@ -1,7 +1,8 @@
 import { describe, it } from 'vitest'
 
-import { block, nockGetBlockChildren, nockNotion, snapshotBody } from './util'
 import { updateRestaurantsLastVisit } from '../../../lib/notion/update-restaurants-last-visit'
+import { snapshotBody } from '../../util'
+import { block, nockGetBlockChildren, nockNotion } from './util'
 
 function blocksWithDate (date: string) {
   return {
@@ -12,18 +13,6 @@ function blocksWithDate (date: string) {
       block.bullet({ text: 'Things we ate' }),
       block.bullet({ text: 'And what we thought about it' }),
     ],
-  }
-}
-
-function bodyWithDate (date: string) {
-  return {
-    properties: {
-      'Last Visit': {
-        date: {
-          start: date,
-        },
-      },
-    },
   }
 }
 

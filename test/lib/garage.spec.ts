@@ -4,11 +4,10 @@ import nock from 'nock'
 import path from 'path'
 import { afterAll, beforeEach, describe, expect, it, TestContext } from 'vitest'
 
-import { handleServer } from '../util'
+import { handleServer, replaceStackLines } from '../util'
 import { startServer } from '../../index'
 import { getGarageData } from '../../lib/garage'
 import type { GarageState, PersistentDataStructure } from '../../lib/util/persistent-data'
-import { replaceStackLines } from './notion/util'
 
 process.env.API_KEY = 'key'
 
@@ -22,14 +21,14 @@ function mockData (data: PersistentDataStructure) {
     'data': {
       'garage-data.json': JSON.stringify(data),
     },
-    'views': mockFs.load(path.resolve(__dirname, '../../views')),
+    'views': mockFs.load(path.resolve(process.cwd(), 'views')),
   })
 }
 
 function mockEmptyData () {
   mockFs({
     'data': {},
-    'views': mockFs.load(path.resolve(__dirname, '../../views')),
+    'views': mockFs.load(path.resolve(process.cwd(), 'views')),
   })
 }
 
