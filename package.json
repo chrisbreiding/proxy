@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "TZ='America/New_York' DEBUG=proxy,proxy:verbose nodemon ./index.ts",
-    "lint": "eslint *.ts lib/*.ts lib/**/*.ts lib/**/*.js --fix",
+    "lint": "eslint *.ts lib/*.ts lib/**/*.ts lib/**/*.js",
+    "lint:fix": "npm run lint -- --fix",
     "postinstall": "patch-package",
     "prod": "TZ='America/New_York' node ./dist/index.js",
     "start": "TZ='America/New_York' NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
