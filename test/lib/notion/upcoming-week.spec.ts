@@ -1,7 +1,7 @@
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { handleServer } from '../../support/util'
+import { handleServer } from '../../util'
 import {
   nockAppendBlockChildren,
   nockGetBlockChildren,

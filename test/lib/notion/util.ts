@@ -14,6 +14,46 @@ export function fixtureContents (name: string) {
   return readJsonSync(fixture(name))
 }
 
+function createUniqueId () {
+  const tracker: { [key: string]: number } = {}
+  let defaultCount = 0
+
+  return (prefix?: string) => {
+    if (!prefix) {
+      return `${++defaultCount}`
+    }
+
+    const counter = (tracker[prefix] || 0) + 1
+
+    tracker[prefix] = counter
+
+    return `${prefix}${counter}`
+  }
+}
+
+export const uniqueId = createUniqueId()
+
+export function snapshotBody (scope: nock.Scope, message?: string) {
+  new Promise<void>((resolve, reject) => {
+    scope.on('request', (_, __, body) => {
+      try {
+        expect(JSON.parse(body)).toMatchSnapshot(message)
+      } catch (error: any) {
+        reject(error)
+      }
+
+      resolve()
+    })
+  })
+}
+
+const stackLineRegex = /at\s.*(?::\d+:\d+|\s\((?:.*:\d+:\d+|<unknown>)\))\)?/s
+
+export function replaceStackLines (value: string) {
+  return value.replace(stackLineRegex, '[stack lines]')
+}
+
+
 export function notionFixture (name: string) {
   return fixture(`notion/${name}`)
 }
@@ -88,25 +128,6 @@ export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOpt
   .reply(200)
 }
 
-function createUniqueId () {
-  const tracker: { [key: string]: number } = {}
-  let defaultCount = 0
-
-  return (prefix?: string) => {
-    if (!prefix) {
-      return `${++defaultCount}`
-    }
-
-    const counter = (tracker[prefix] || 0) + 1
-
-    tracker[prefix] = counter
-
-    return `${prefix}${counter}`
-  }
-}
-
-export const uniqueId = createUniqueId()
-
 interface BlockOptions {
   id?: string
   text: string
@@ -169,24 +190,4 @@ block.bullet = ({ id, text }: BlockOptions) => {
 
 block.toggle = ({ id, text }: BlockOptions) => {
   return block({ id, text, type: 'toggle' })
-}
-
-export function snapshotBody (scope: nock.Scope, message?: string) {
-  new Promise<void>((resolve, reject) => {
-    scope.on('request', (_, __, body) => {
-      try {
-        expect(JSON.parse(body)).toMatchSnapshot(message)
-      } catch (error: any) {
-        reject(error)
-      }
-
-      resolve()
-    })
-  })
-}
-
-const stackLineRegex = /at\s.*(?::\d+:\d+|\s\((?:.*:\d+:\d+|<unknown>)\))\)?/s
-
-export function replaceStackLines (value: string) {
-  return value.replace(stackLineRegex, '[stack lines]')
 }

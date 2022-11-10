@@ -4,7 +4,7 @@ import nock from 'nock'
 import path from 'path'
 import { afterAll, beforeEach, describe, expect, it, TestContext } from 'vitest'
 
-import { handleServer } from '../support/util'
+import { handleServer } from '../util'
 import { startServer } from '../../index'
 import { getGarageData } from '../../lib/garage'
 import type { GarageState, PersistentDataStructure } from '../../lib/util/persistent-data'

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 process.env.GOOGLE_API_KEY = 'key'
 
-import { handleServer } from '../support/util'
+import { handleServer } from '../util'
 import { startServer } from '../../index'
 
 describe('lib/location', () => {

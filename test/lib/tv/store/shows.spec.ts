@@ -8,7 +8,7 @@ import { baseUrl } from '../../../../lib/tv/source/util'
 import { fixtureContents } from '../../notion/util'
 import { nockLogin } from '../util'
 import { startServer } from '../../../../index'
-import { handleServer } from '../../../support/util'
+import { handleServer } from '../../../util'
 import {
   addCollectionToDoc,
   addDoc,

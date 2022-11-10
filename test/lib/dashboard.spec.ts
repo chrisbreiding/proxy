@@ -12,7 +12,7 @@ process.env.DARK_SKY_API_KEY = 'dark-sky-key'
 
 import { startServer } from '../../index'
 import { nockGetBlockChildren } from './notion/util'
-import { handleServer } from '../support/util'
+import { handleServer } from '../util'
 
 describe('lib/dashboard', () => {
   describe('GET /dashboard/:key', () => {

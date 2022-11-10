@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { handleServer } from './support/util'
+import { handleServer } from './util'
 import { startServer } from '../index'
 
 describe('/test', () => {
