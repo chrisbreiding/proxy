@@ -155,7 +155,7 @@ export async function addShow (sourceShow: SearchResultShow, user: User): Promis
 }
 
 export async function updateShow (id: string, showUpdate: EditableShowProps, user: User) {
-  const showDatum = await getDoc<Show>(`shows/${id}`)
+  const showDatum = await getDoc<ShowProps>(`shows/${id}`)
 
   if (!showDatum) return
 

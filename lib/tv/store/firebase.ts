@@ -55,12 +55,16 @@ function getDataFromSnapshot<T> (snapshot: Snapshot): Promise<T[]> {
 }
 
 export async function getCollection<T> (collectionName: string): Promise<T[]> {
+  if (!db) return []
+
   const snapshot = await db.collection(collectionName).get()
 
   return getDataFromSnapshot<T>(snapshot)
 }
 
-export async function getDoc<T> (docPath: string): Promise<T> {
+export async function getDoc<T> (docPath: string): Promise<T | undefined> {
+  if (!db) return
+
   const doc = await db.doc(docPath).get()
 
   return doc.data() as T
@@ -69,6 +73,8 @@ export async function getDoc<T> (docPath: string): Promise<T> {
 type Condition = [string, admin.firestore.WhereFilterOp, any]
 
 export async function getDocWhere<T> (collectionName: string, condition: Condition): Promise<T | undefined> {
+  if (!db) return
+
   const ref = db.collection(collectionName)
   const [fieldPath, opStr, value] = condition
   const snapshot = await ref.where(fieldPath, opStr, value).get()
@@ -81,10 +87,14 @@ export async function getDocWhere<T> (collectionName: string, condition: Conditi
 }
 
 export async function addDoc (docPath: string, value: any) {
+  if (!db) return
+
   await db.doc(docPath).set(value)
 }
 
 export async function addCollectionToDoc (collectionPath: string, values: any[]) {
+  if (!db) return
+
   const batch = db.batch()
 
   values.forEach((value) => {
@@ -96,9 +106,13 @@ export async function addCollectionToDoc (collectionPath: string, values: any[])
 }
 
 export async function updateDoc (docPath: string, value: any) {
+  if (!db) return
+
   await db.doc(docPath).update(value)
 }
 
 export async function deleteDoc (docPath: string) {
+  if (!db) return
+
   await db.doc(docPath).delete()
 }
