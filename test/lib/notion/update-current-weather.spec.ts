@@ -10,7 +10,7 @@ import {
   nockNotion,
   nockGetBlockChildren,
   nockAppendBlockChildren,
-} from '../../support/util'
+} from './util'
 import { updateWeather } from '../../../lib/notion/update-current-weather'
 
 describe('lib/notion/update-current-weather', () => {

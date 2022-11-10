@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 
-import { block, nockGetBlockChildren, nockNotion, snapshotBody } from '../../support/util'
+import { block, nockGetBlockChildren, nockNotion, snapshotBody } from './util'
 import { updateRestaurantsLastVisit } from '../../../lib/notion/update-restaurants-last-visit'
 
 function blocksWithDate (date: string) {

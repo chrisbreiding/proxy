@@ -7,7 +7,7 @@ import {
   nockGetBlockChildren,
   nockUpdateBlock,
   snapshotBody,
-} from '../../support/util'
+} from './util'
 import { startServer } from '../../../index'
 
 process.env.API_KEY = 'key'

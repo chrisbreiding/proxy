@@ -5,7 +5,7 @@ const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
 
 import { baseUrl } from '../../../../lib/tv/source/util'
-import { fixtureContents } from '../../../support/util'
+import { fixtureContents } from '../../notion/util'
 import { nockLogin } from '../util'
 import { startServer } from '../../../../index'
 import { handleServer } from '../../../support/setup'

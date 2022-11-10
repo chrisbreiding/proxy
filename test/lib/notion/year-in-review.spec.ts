@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { nockGetBlockChildren, nockAppendBlockChildren, snapshotBody } from '../../support/util'
+import { nockGetBlockChildren, nockAppendBlockChildren, snapshotBody } from './util'
 import { yearInReview } from '../../../lib/notion/year-in-review'
 import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
 

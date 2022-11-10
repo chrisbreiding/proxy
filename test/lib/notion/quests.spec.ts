@@ -2,7 +2,7 @@ import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { notionFixture as fixture, nockGetBlockChildren } from '../../support/util'
+import { notionFixture as fixture, nockGetBlockChildren } from './util'
 import { getAllQuests } from '../../../lib/notion/quests'
 
 describe('lib/notion/quests', () => {

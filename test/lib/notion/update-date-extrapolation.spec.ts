@@ -1,6 +1,6 @@
 import { describe, it } from 'vitest'
 
-import { nockGetBlockChildren, nockUpdateBlock, snapshotBody } from '../../support/util'
+import { nockGetBlockChildren, nockUpdateBlock, snapshotBody } from './util'
 import { updateDateExtrapolation } from '../../../lib/notion/update-date-extrapolation'
 
 describe('lib/notion/update-date-extrapolation', () => {

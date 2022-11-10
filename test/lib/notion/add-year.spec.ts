@@ -4,7 +4,7 @@ import {
   nockGetBlockChildren,
   nockAppendBlockChildren,
   snapshotBody,
-} from '../../support/util'
+} from './util'
 import { addYear } from '../../../lib/notion/add-year'
 
 describe('lib/notion/add-year', () => {

@@ -6,7 +6,7 @@ const pin = process.env.THETVDB_PIN = 'pin'
 
 import { baseUrl } from '../../../../lib/tv/source/util'
 import { getShowsUpdatedSince, searchShows } from '../../../../lib/tv/source/shows'
-import { fixtureContents } from '../../../support/util'
+import { fixtureContents } from '../../notion/util'
 import { nockLogin } from '../util'
 
 describe('lib/tv/source/shows', () => {

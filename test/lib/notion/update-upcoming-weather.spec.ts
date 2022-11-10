@@ -9,7 +9,7 @@ import {
   nockGetBlockChildren,
   nockNotion,
   snapshotBody,
-} from '../../support/util'
+} from './util'
 import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
 
 describe('lib/notion/update-upcoming-weather', () => {

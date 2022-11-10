@@ -8,7 +8,7 @@ import { handleServer } from '../support/setup'
 import { startServer } from '../../index'
 import { getGarageData } from '../../lib/garage'
 import type { GarageState, PersistentDataStructure } from '../../lib/util/persistent-data'
-import { replaceStackLines } from '../support/util'
+import { replaceStackLines } from './notion/util'
 
 process.env.API_KEY = 'key'
 

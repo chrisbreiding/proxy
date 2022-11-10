@@ -1,5 +1,5 @@
 import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-import { block } from '../../../support/util'
+import { block } from '../../../lib/notion/util'
 
 const t = {
   a: {
