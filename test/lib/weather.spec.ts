@@ -5,7 +5,7 @@ import {
   it,
 } from 'vitest'
 
-import { handleServer } from '../support/setup'
+import { handleServer } from '../support/util'
 
 process.env.DARK_SKY_API_KEY = 'key'
 
