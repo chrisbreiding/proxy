@@ -1,0 +1,181 @@
+{
+  "status": "success",
+  "data": {
+    "series": {
+      "id": 81189,
+      "name": "Breaking Bad",
+      "slug": "breaking-bad",
+      "image": "https://artworks.thetvdb.com/banners/posters/81189-10.jpg",
+      "nameTranslations": [
+        "dan",
+        "deu",
+        "srp"
+      ],
+      "overviewTranslations": [
+        "lit",
+        "ara",
+        "srp"
+      ],
+      "aliases": [
+        {
+          "language": "por",
+          "name": "Breaking Bad: Ruptura Total"
+        },
+        {
+          "language": "eng",
+          "name": "Breaking Bad: Original Minisodes"
+        }
+      ],
+      "firstAired": "2008-01-20",
+      "lastAired": "2013-09-29",
+      "nextAired": "",
+      "score": 3013260,
+      "status": {
+        "id": 2,
+        "name": "Ended",
+        "recordType": "series",
+        "keepUpdated": false
+      },
+      "originalCountry": "usa",
+      "originalLanguage": "eng",
+      "defaultSeasonType": 1,
+      "isOrderRandomized": false,
+      "lastUpdated": "2022-11-06 15:23:50",
+      "averageRuntime": 48,
+      "episodes": null,
+      "overview": "When Walter White, a chemistry teacher...",
+      "year": "2008"
+    },
+    "episodes": [
+      {
+        "id": 3859781,
+        "seriesId": 81189,
+        "name": "Good Cop Bad Cop",
+        "aired": "2009-02-17",
+        "runtime": 3,
+        "nameTranslations": [
+          "eng",
+          "fra"
+        ],
+        "overview": "Hank and Marie try to spice up their relationship on Valentine's Day.",
+        "overviewTranslations": [
+          "eng",
+          "fra"
+        ],
+        "image": "https://artworks.thetvdb.com/banners/episodes/81189/3859781.jpg",
+        "imageType": 11,
+        "isMovie": 0,
+        "seasons": null,
+        "number": 1,
+        "seasonNumber": 0,
+        "seasonName": "Minisodes",
+        "lastUpdated": "2022-10-12 22:25:11",
+        "finaleType": null,
+        "year": "2009"
+      },
+      {
+        "id": 3859791,
+        "seriesId": 81189,
+        "name": "Wedding Day",
+        "aired": "2009-02-17",
+        "runtime": 5,
+        "nameTranslations": [
+          "eng"
+        ],
+        "overview": "Walt and Hank have a talk before Hank gets married.",
+        "overviewTranslations": [
+          "eng"
+        ],
+        "image": "https://artworks.thetvdb.com/banners/episodes/81189/3859791.jpg",
+        "imageType": 11,
+        "isMovie": 0,
+        "seasons": null,
+        "number": 2,
+        "seasonNumber": 0,
+        "seasonName": "Minisodes",
+        "lastUpdated": "2020-05-20 20:41:36",
+        "finaleType": null,
+        "year": "2009"
+      },
+      {
+        "id": 3859801,
+        "seriesId": 81189,
+        "name": "TwaughtHammer",
+        "aired": "2009-02-17",
+        "runtime": 4,
+        "nameTranslations": [
+          "eng"
+        ],
+        "overview": "Jesse and Badger make...",
+        "overviewTranslations": [
+          "eng"
+        ],
+        "image": "https://artworks.thetvdb.com/banners/episodes/81189/3859801.jpg",
+        "imageType": 11,
+        "isMovie": 0,
+        "seasons": null,
+        "number": 3,
+        "seasonNumber": 0,
+        "seasonName": "Minisodes",
+        "lastUpdated": "2020-05-20 20:45:12",
+        "finaleType": null,
+        "year": "2009"
+      },
+      {
+        "id": 3859811,
+        "seriesId": 81189,
+        "name": "Marie's Confession",
+        "aired": "2009-02-17",
+        "runtime": 3,
+        "nameTranslations": [
+          "eng"
+        ],
+        "overview": "Marie records a video diary.",
+        "overviewTranslations": [
+          "eng"
+        ],
+        "image": "https://artworks.thetvdb.com/banners/episodes/81189/3859811.jpg",
+        "imageType": 11,
+        "isMovie": 0,
+        "seasons": null,
+        "number": 4,
+        "seasonNumber": 0,
+        "seasonName": "Minisodes",
+        "lastUpdated": "2020-05-20 20:47:53",
+        "finaleType": null,
+        "year": "2009"
+      },
+      {
+        "id": 3859821,
+        "seriesId": 81189,
+        "name": "The Break-In",
+        "aired": "2009-02-17",
+        "runtime": 5,
+        "nameTranslations": [
+          "eng"
+        ],
+        "overview": "Badger uses his lock-picking skills to...",
+        "overviewTranslations": [
+          "eng"
+        ],
+        "image": "https://artworks.thetvdb.com/banners/episodes/81189/3859821.jpg",
+        "imageType": 11,
+        "isMovie": 0,
+        "seasons": null,
+        "number": 5,
+        "seasonNumber": 0,
+        "seasonName": "Minisodes",
+        "lastUpdated": "2022-07-22 15:46:47",
+        "finaleType": "season",
+        "year": "2009"
+      }
+    ]
+  },
+  "links": {
+    "prev": null,
+    "self": "https://api4.thetvdb.com/v4/series/81189/episodes/default?page=0",
+    "next": null,
+    "total_items": 5,
+    "page_size": 5
+  }
+}

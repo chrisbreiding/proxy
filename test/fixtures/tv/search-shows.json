@@ -1,0 +1,171 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "objectID": "series-81189",
+      "aliases": [
+        "Breaking Bad: Original Minisodes",
+        "Breaking Bad: Ruptura Total"
+      ],
+      "country": "usa",
+      "id": "series-81189",
+      "image_url": "https://artworks.thetvdb.com/banners/posters/81189-10.jpg",
+      "name": "Breaking Bad",
+      "first_air_time": "2008-01-20",
+      "overview": "When Walter White, a chemistry teacher, is...",
+      "primary_language": "eng",
+      "primary_type": "series",
+      "status": "Ended",
+      "type": "series",
+      "tvdb_id": "81189",
+      "year": "2008",
+      "slug": "breaking-bad",
+      "overviews": {
+        "deu": "Walter White ist ein schlafwandelnd...",
+        "eng": "When Walter White, a chemistry teacher, is...",
+        "fra": "La vie de Walter White, professeur de chimie..."
+      },
+      "translations": {
+        "ces": "Perníkový táta",
+        "dan": "Breaking Bad",
+        "deu": "Breaking Bad",
+        "est": "Halvale teele"
+      },
+      "network": "AMC",
+      "remote_ids": [
+        {
+          "id": "https://www.amc.com/shows/breaking-bad",
+          "type": 4,
+          "sourceName": "Official Website"
+        },
+        {
+          "id": "tt0903747",
+          "type": 2,
+          "sourceName": "IMDB"
+        }
+      ],
+      "thumbnail": "https://artworks.thetvdb.com/banners/posters/81189-10_t.jpg"
+    },
+    {
+      "objectID": "series-415491",
+      "aliases": [
+        "Jue Ming Gua Shi",
+        "詭宮傳",
+        "诡宫传",
+        "Desperate Master"
+      ],
+      "country": "chn",
+      "id": "series-415491",
+      "image_url": "https://artworks.thetvdb.com/banners/v4/series/415491/posters/61f834ad1d22d.jpg",
+      "name": "绝命卦师",
+      "first_air_time": "2016-04-11",
+      "overview": "明朝时，皇帝出征新疆。。。",
+      "primary_language": "zho",
+      "primary_type": "series",
+      "status": "Ended",
+      "type": "series",
+      "tvdb_id": "415491",
+      "year": "2016",
+      "slug": "415491-",
+      "overviews": {
+        "eng": "During the Ming Dynasty, ...",
+        "zho": "明朝时，皇帝出征新。。。"
+      },
+      "translations": {
+        "eng": "Breaking Bad Fortune Teller",
+        "zho": "绝命卦师"
+      },
+      "thumbnail": "https://artworks.thetvdb.com/banners/v4/series/415491/posters/61f834ad1d22d_t.jpg"
+    },
+    {
+      "objectID": "series-273859",
+      "aliases": [
+        "Breaking Bad (ES)"
+      ],
+      "country": "usa",
+      "id": "series-273859",
+      "image_url": "https://artworks.thetvdb.com/banners/posters/273859-1.jpg",
+      "name": "Metástasis",
+      "first_air_time": "2013-06-23",
+      "overview": "Metástasis Se centra en Walter Blanco ...",
+      "primary_language": "spa",
+      "primary_type": "series",
+      "status": "Ended",
+      "type": "series",
+      "tvdb_id": "273859",
+      "year": "2013",
+      "slug": "metastasis",
+      "overviews": {
+        "eng": "“Metástasis” is the story of a struggling ...",
+        "fra": "Walter Blanco, professeur de chimie, ...",
+        "spa": "Metástasis Se centra en Walter Blanco ..."
+      },
+      "translations": {
+        "eng": "Metástasis",
+        "spa": "Metástasis"
+      },
+      "network": "Univision",
+      "remote_ids": [
+        {
+          "id": "tt3190448",
+          "type": 2,
+          "sourceName": "IMDB"
+        },
+        {
+          "id": "SH01925339",
+          "type": 3,
+          "sourceName": "TMS (Zap2It)"
+        }
+      ],
+      "thumbnail": "https://artworks.thetvdb.com/banners/posters/273859-1_t.jpg"
+    },
+    {
+      "objectID": "series-357407",
+      "country": "usa",
+      "id": "series-357407",
+      "image_url": "https://artworks.thetvdb.com/banners/images/missing/series.jpg",
+      "name": "Baking Bad",
+      "primary_language": "deu",
+      "primary_type": "series",
+      "status": "Ended",
+      "type": "series",
+      "tvdb_id": "357407",
+      "slug": "baking-bad",
+      "translations": {
+        "deu": "Baking Bad"
+      },
+      "network": "Twitch"
+    },
+    {
+      "objectID": "series-287759",
+      "country": "usa",
+      "id": "series-287759",
+      "image_url": "https://artworks.thetvdb.com/banners/posters/287759-1.jpg",
+      "name": "Bad Lip Reading",
+      "first_air_time": "2011-03-21",
+      "overview": "Politics, Movies, Television, and Music Videos...",
+      "primary_language": "eng",
+      "primary_type": "series",
+      "status": "Continuing",
+      "type": "series",
+      "tvdb_id": "287759",
+      "year": "2011",
+      "slug": "bad-lip-reading",
+      "overviews": {
+        "eng": "Politics, Movies, Television, and Music Videos..."
+      },
+      "translations": {
+        "eng": "Bad Lip Reading"
+      },
+      "network": "YouTube",
+      "thumbnail": "https://artworks.thetvdb.com/banners/posters/287759-1_t.jpg"
+    }
+  ],
+  "links": {
+    "prev": null,
+    "self": "https://api4.thetvdb.com/v4/search?query=Breaking Bad&type=series&limit=500&page=0",
+    "next": null,
+    "total_items": 6,
+    "page_size": 500
+  }
+}

@@ -1,0 +1,83 @@
+// Vitest Snapshot v1
+
+exports[`lib/tv/store/shows > GET /tv/shows > returns shows from store for user 1`] = `
+[
+  {
+    "displayName": "user-1 display name",
+    "episodes": [
+      {
+        "title": "Episode 1",
+      },
+      {
+        "title": "Episode 2",
+      },
+    ],
+    "fileName": "user-1 file name",
+    "id": "show-1-id",
+    "searchName": "user-1 search name",
+  },
+  {
+    "displayName": "user-1 display name",
+    "episodes": [
+      {
+        "title": "Episode 3",
+      },
+      {
+        "title": "Episode 4",
+      },
+    ],
+    "fileName": "user-1 file name",
+    "id": "show-2-id",
+    "searchName": "user-1 search name",
+  },
+]
+`;
+
+exports[`lib/tv/store/shows > POST /tv/shows > adds the show to the user if it already exists 1`] = `
+{
+  "id": "show-3-id",
+  "name": "Show 3 name",
+  "users": {
+    "user-1": {
+      "displayName": "Show 3 name",
+      "fileName": "Show 3 name",
+      "searchName": "Show 3 name",
+    },
+    "user-2": {
+      "displayName": "user-2 display name",
+      "fileName": "user-2 file name",
+      "searchName": "user-2 search name",
+    },
+  },
+}
+`;
+
+exports[`lib/tv/store/shows > POST /tv/shows > gets the show data, saves it, and adds the show to the user if it does not already exist 1`] = `
+{
+  "id": "show-2-id",
+  "name": "Show 2 name",
+  "poster": "Show 2 poster",
+  "status": "Ended",
+  "users": {
+    "user-1": {
+      "displayName": "Show 2 name",
+      "fileName": "Show 2 name",
+      "searchName": "Show 2 name",
+    },
+  },
+}
+`;
+
+exports[`lib/tv/store/shows > PUT /tv/shows/:id > updates the show and returns it 1`] = `
+{
+  "id": "show-1-id",
+  "name": "Show 1 name",
+  "users": {
+    "user-1": {
+      "displayName": "new display name",
+      "fileName": "new file name",
+      "searchName": "new search name",
+    },
+  },
+}
+`;

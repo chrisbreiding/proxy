@@ -4,4 +4,4 @@ node_modules/
 /data
 .fixtures
 /dist
-._recorded
+.recorded

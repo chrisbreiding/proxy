@@ -1,0 +1,62 @@
+{
+  "status": "success",
+  "data": [
+    {
+      "recordType": "",
+      "recordId": 83498,
+      "methodInt": 2,
+      "method": "update",
+      "extraInfo": "",
+      "userId": 0,
+      "timeStamp": 1667707258,
+      "entityType": "series"
+    },
+    {
+      "recordType": "",
+      "recordId": 425416,
+      "methodInt": 2,
+      "method": "update",
+      "extraInfo": "",
+      "userId": 0,
+      "timeStamp": 1667707294,
+      "entityType": "series"
+    },
+    {
+      "recordType": "",
+      "recordId": 76703,
+      "methodInt": 2,
+      "method": "update",
+      "extraInfo": "",
+      "userId": 0,
+      "timeStamp": 1667707295,
+      "entityType": "series"
+    },
+    {
+      "recordType": "",
+      "recordId": 365414,
+      "methodInt": 2,
+      "method": "update",
+      "extraInfo": "",
+      "userId": 0,
+      "timeStamp": 1667707354,
+      "entityType": "series"
+    },
+    {
+      "recordType": "",
+      "recordId": 357741,
+      "methodInt": 2,
+      "method": "update",
+      "extraInfo": "",
+      "userId": 0,
+      "timeStamp": 1667707407,
+      "entityType": "series"
+    }
+  ],
+  "links": {
+    "prev": null,
+    "self": "https://api4.thetvdb.com/v4/updates?since=1667707200&type=series&action=update&page=0",
+    "next": "https://api4.thetvdb.com/v4/updates?since=1667707200&type=series&action=update&page=1",
+    "total_items": 2995,
+    "page_size": 500
+  }
+}
