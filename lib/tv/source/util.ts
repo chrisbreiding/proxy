@@ -1,7 +1,7 @@
 import type { Method } from 'axios'
-import { debug, debugVerbose } from '../util/debug'
-import { getEnv } from '../util/env'
-import { request } from '../util/network'
+import { debug, debugVerbose } from '../../util/debug'
+import { getEnv } from '../../util/env'
+import { request } from '../../util/network'
 
 const apikey = getEnv('THETVDB_API_KEY')
 const pin = getEnv('THETVDB_PIN')

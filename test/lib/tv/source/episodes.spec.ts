@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
 
-import { baseUrl } from '../../../../lib/tv/util'
+import { baseUrl } from '../../../../lib/tv/source/util'
 import { fixtureContents } from '../../../support/util'
 import { getEpisodesForShow } from '../../../../lib/tv/source/episodes'
 import { nockLogin } from '../util'

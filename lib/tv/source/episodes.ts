@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { makeRequest } from '../util'
+import { makeRequest } from './util'
 import { debug, debugVerbose } from '../../util/debug'
 
 interface TheTvDbEpisode {
