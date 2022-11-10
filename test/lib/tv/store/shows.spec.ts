@@ -1,11 +1,8 @@
-import { readJSONSync } from 'fs-extra'
 import nock from 'nock'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const env = readJSONSync('./.env')
-
-const apikey = process.env.THETVDB_API_KEY = env.THETVDB_API_KEY
-const pin = process.env.THETVDB_PIN = env.THETVDB_PIN
+const apikey = process.env.THETVDB_API_KEY = 'api-key'
+const pin = process.env.THETVDB_PIN = 'pin'
 
 import { baseUrl } from '../../../../lib/tv/util'
 import { fixtureContents } from '../../../support/util'

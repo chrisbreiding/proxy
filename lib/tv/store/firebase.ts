@@ -5,16 +5,25 @@ import path from 'path'
 import { getEnv } from '../../util/env'
 import { basePath } from '../../util/persistent-data'
 
-const serviceAccount = readJsonSync(path.join(basePath, 'firebase-tv-credentials.json'))
+function initializeApp () {
+  const serviceAccount = readJsonSync(path.join(basePath, 'firebase-tv-credentials.json'), { throws: false })
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: getEnv('FIREBASE_TV_DATABASE_URL'),
-})
+  // this should only happen when testing
+  if (!serviceAccount) return
 
-const db = admin.firestore()
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: getEnv('FIREBASE_TV_DATABASE_URL'),
+  })
 
-db.settings({ ignoreUndefinedProperties: true })
+  const db = admin.firestore()
+
+  db.settings({ ignoreUndefinedProperties: true })
+
+  return db
+}
+
+const db = initializeApp()
 
 type Snapshot = admin.firestore.QuerySnapshot<admin.firestore.DocumentData>
 
