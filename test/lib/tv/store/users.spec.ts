@@ -1,34 +1,101 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getUserByApiKey } from '../../../../lib/tv/store/users'
-import { getDocWhere } from '../../../../lib/tv/store/firebase'
+import { startServer } from '../../../../index'
+import { getDoc, getDocWhere, updateDoc } from '../../../../lib/tv/store/firebase'
+import type { User } from './../../../../lib/tv/store/users'
+import { handleServer } from '../../../util'
+import { testError } from '../util'
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
+    getDoc: vi.fn(),
     getDocWhere: vi.fn(),
+    updateDoc: vi.fn(),
   }
 })
 
 describe('lib/tv/store/users', () => {
-  describe('#getUserByApiKey', () => {
-    it('returns user with api key', async () => {
-      const user = {}
+  handleServer(startServer)
 
+  let user: User
+
+  beforeEach(() => {
+    user = {
+      apiKey: 'api-key',
+      id: 'user-id',
+      searchLinks: [{
+        name: 'link name',
+        showLink: 'show link',
+        episodeLink: 'episode link',
+      }],
+      username: 'user name',
+    }
+
+    // @ts-ignore
+    getDocWhere.mockResolvedValue(user)
+  })
+
+  describe('GET /tv/user', () => {
+    it('returns username and search links', async (ctx) => {
       // @ts-ignore
-      getDocWhere.mockResolvedValue(user)
+      getDoc.mockResolvedValue(user)
 
-      const result = await getUserByApiKey('api-key')
+      const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
 
-      expect(result).to.equal(user)
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({
+        searchLinks: [{
+          name: 'link name',
+          showLink: 'show link',
+          episodeLink: 'episode link',
+        }],
+        username: 'user name',
+      })
     })
 
-    it('returns undefined if no match', async () => {
+    it('sends 500 on error', (ctx) => {
+      return testError(getDoc, () => {
+        return ctx.request.get('/tv/user').set('api-key', 'api-key')
+      })
+    })
+  })
+
+  describe('PUT /tv/user', () => {
+    it('updates user props and returns updated user', async (ctx) => {
+      const update = {
+        searchLinks: [{
+          name: 'new link name',
+          showLink: 'new show link',
+          episodeLink: 'new episode link',
+        }],
+      }
+
       // @ts-ignore
-      getDocWhere.mockResolvedValue(undefined)
+      getDoc.mockResolvedValue({
+        ...user,
+        ...update,
+      })
 
-      const result = await getUserByApiKey('api-key')
+      const res = await ctx.request.put('/tv/user')
+      .set('api-key', 'api-key')
+      .send(update)
 
-      expect(result).to.be.undefined
+      expect(updateDoc).toBeCalledWith('users/user-id', update)
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({
+        searchLinks: [{
+          name: 'new link name',
+          showLink: 'new show link',
+          episodeLink: 'new episode link',
+        }],
+        username: 'user name',
+      })
+    })
+
+    it('sends 500 on error', (ctx) => {
+      return testError(getDoc, () => {
+        return ctx.request.put('/tv/user').set('api-key', 'api-key').send({})
+      })
     })
   })
 })

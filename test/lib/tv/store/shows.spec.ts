@@ -10,13 +10,14 @@ import {
   addCollectionToDoc,
   addDoc,
   deleteDoc,
+  getCollection,
   getDoc,
   getDocWhere,
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { clone } from '../../../../lib/util/collections'
 import { fixtureContents, handleServer } from '../../../util'
-import { nockLogin } from '../util'
+import { nockLogin, testError } from '../util'
 
 function makeSearchResultShow (num: number) {
   return {
@@ -66,20 +67,7 @@ vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
     addDoc: vi.fn(),
     addCollectionToDoc: vi.fn(),
-    getCollection: vi.fn().mockResolvedValue([
-      makeShow(1, [
-        makeEpisode(1),
-        makeEpisode(2),
-      ], [1]),
-      makeShow(2, [
-        makeEpisode(3),
-        makeEpisode(4),
-      ], [1, 2]),
-      makeShow(3, [
-        makeEpisode(5),
-        makeEpisode(6),
-      ], [2]),
-    ]),
+    getCollection: vi.fn(),
     getDoc: vi.fn(),
     getDocWhere: vi.fn(),
     deleteDoc: vi.fn(),
@@ -92,13 +80,12 @@ describe('lib/tv/store/shows', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // @ts-ignore
+    getDocWhere.mockResolvedValue({ id: 'user-1' })
   })
 
   describe('user validation', () => {
     it('sends 401 if no api key', async (ctx) => {
-      // @ts-ignore
-      getDocWhere.mockResolvedValue(undefined)
-
       const res = await ctx.request.get('/tv/shows')
 
       expect(res.status).to.equal(401)
@@ -106,6 +93,9 @@ describe('lib/tv/store/shows', () => {
     })
 
     it('sends 401 if api key does not match any users', async (ctx) => {
+      // @ts-ignore
+      getDocWhere.mockResolvedValue(undefined)
+
       const res = await ctx.request.get('/tv/shows').set('api-key', 'no-match')
 
       expect(res.status).to.equal(401)
@@ -116,12 +106,31 @@ describe('lib/tv/store/shows', () => {
   describe('GET /tv/shows', () => {
     it('returns shows from store for user', async (ctx) => {
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
+      getCollection.mockResolvedValue([
+        makeShow(1, [
+          makeEpisode(1),
+          makeEpisode(2),
+        ], [1]),
+        makeShow(2, [
+          makeEpisode(3),
+          makeEpisode(4),
+        ], [1, 2]),
+        makeShow(3, [
+          makeEpisode(5),
+          makeEpisode(6),
+        ], [2]),
+      ])
 
       const res = await ctx.request.get('/tv/shows').set('api-key', 'user-1-api-key')
 
       expect(res.status).to.equal(200)
       expect(res.body).toMatchSnapshot()
+    })
+
+    it('sends 500 on error', async (ctx) => {
+      return testError(getCollection, () => {
+        return ctx.request.get('/tv/shows').set('api-key', 'user-1-api-key')
+      })
     })
   })
 
@@ -133,8 +142,6 @@ describe('lib/tv/store/shows', () => {
       .get('/v4/series/show-2-id/episodes/default?page=0')
       .reply(200, fixtureContents('tv/episodes'))
 
-      // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
       // @ts-ignore
       getDoc.mockResolvedValue(undefined)
 
@@ -171,8 +178,6 @@ describe('lib/tv/store/shows', () => {
       const show = makeShow(3, [makeEpisode(1)], [2])
 
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
-      // @ts-ignore
       getDoc.mockResolvedValue(show)
 
       const searchShow = makeSearchResultShow(3)
@@ -197,8 +202,6 @@ describe('lib/tv/store/shows', () => {
       const show = makeShow(1, [makeEpisode(1)], [1])
 
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
-      // @ts-ignore
       getDoc.mockResolvedValue(show)
 
       const searchShow = makeSearchResultShow(3)
@@ -208,14 +211,39 @@ describe('lib/tv/store/shows', () => {
 
       expect(res.status).to.equal(204)
     })
+
+    it('sends 500 on source error', async (ctx) => {
+      nockLogin(apikey, pin)
+
+      nock(baseUrl)
+      .get('/v4/series/show-2-id/episodes/default?page=0')
+      .replyWithError('source failure')
+
+      // @ts-ignore
+      getDoc.mockResolvedValue(undefined)
+
+      const searchShow = makeSearchResultShow(2)
+      const res = await ctx.request.post('/tv/shows')
+      .set('api-key', 'user-1-api-key')
+      .send({ show: searchShow })
+
+      expect(res.status).to.equal(500)
+      expect(res.body.error).to.equal('source failure')
+    })
+
+    it('sends 500 on store error', async (ctx) => {
+      return testError(getDoc, () => {
+        return ctx.request.post('/tv/shows')
+        .set('api-key', 'user-1-api-key')
+        .send({ show: { the: 'show' } })
+      })
+    })
   })
 
   describe('PUT /tv/shows/:id', () => {
     it('updates the show and returns it', async (ctx) => {
       const show = makeShow(1, [makeEpisode(1)], [1])
 
-      // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
       // @ts-ignore
       getDoc.mockResolvedValue(show)
 
@@ -246,8 +274,6 @@ describe('lib/tv/store/shows', () => {
 
     it('sends 204 if the show does not exist in store', async (ctx) => {
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
-      // @ts-ignore
       getDoc.mockResolvedValue(undefined)
 
       const res = await ctx.request.put('/tv/shows/id')
@@ -256,14 +282,20 @@ describe('lib/tv/store/shows', () => {
 
       expect(res.status).to.equal(204)
     })
+
+    it('sends 500 on error', async (ctx) => {
+      return testError(getDoc, () => {
+        return ctx.request.put('/tv/shows/id')
+        .set('api-key', 'user-1-api-key')
+        .send({ show: {} })
+      })
+    })
   })
 
   describe('DELETE /tv/shows/:id', () => {
     it('deletes the show if no other users reference it', async (ctx) => {
       const show = makeShow(1, [makeEpisode(1)], [1])
 
-      // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
       // @ts-ignore
       getDoc.mockResolvedValue(show)
 
@@ -277,8 +309,6 @@ describe('lib/tv/store/shows', () => {
     it('removes the show from the user if another user references it', async (ctx) => {
       const show = makeShow(1, [makeEpisode(1)], [1, 2])
 
-      // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
       // @ts-ignore
       getDoc.mockResolvedValue(show)
 
@@ -297,8 +327,6 @@ describe('lib/tv/store/shows', () => {
 
     it('does nothing if show does not exist', async (ctx) => {
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
-      // @ts-ignore
       getDoc.mockResolvedValue(undefined)
 
       const res = await ctx.request.delete('/tv/shows/id')
@@ -313,8 +341,6 @@ describe('lib/tv/store/shows', () => {
       const show = makeShow(1, [makeEpisode(1)], [2])
 
       // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
-      // @ts-ignore
       getDoc.mockResolvedValue(show)
 
       const res = await ctx.request.delete('/tv/shows/id')
@@ -323,6 +349,13 @@ describe('lib/tv/store/shows', () => {
       expect(deleteDoc).not.toBeCalled
       expect(updateDoc).not.toBeCalled
       expect(res.status).to.equal(204)
+    })
+
+    it('sends 500 on error', async (ctx) => {
+      return testError(getDoc, () => {
+        return ctx.request.delete('/tv/shows/id')
+        .set('api-key', 'user-1-api-key')
+      })
     })
   })
 })

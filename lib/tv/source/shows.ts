@@ -68,13 +68,11 @@ export async function searchShows (showName: string): Promise<SearchResultShow[]
       },
     })
 
-    // TODO; return something like { status: 'success', data: [...] }?
     return shows.map(convert)
   } catch (error: any) {
     debug(`Searching ${showName} failed:`, error?.stack || error)
 
-    // TODO; return something like { status: 'failed', data: [] }?
-    return []
+    throw error
   }
 }
 
@@ -118,6 +116,6 @@ export async function getShowsUpdatedSince (date: string): Promise<ShowUpdate[]>
   } catch (error: any) {
     debug(`Getting shows updated since ${date} failed:`, error?.stack || error)
 
-    return []
+    throw error
   }
 }

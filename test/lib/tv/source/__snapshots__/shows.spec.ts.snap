@@ -25,7 +25,7 @@ exports[`lib/tv/source/shows > #getShowsUpdatedSince > returns shows updated sin
 ]
 `;
 
-exports[`lib/tv/source/shows > #searchShows > returns shows 1`] = `
+exports[`lib/tv/source/shows > GET /tv/shows/search > returns shows found in search 1`] = `
 [
   {
     "description": "When Walter White, a chemistry teacher, is...",
@@ -41,7 +41,6 @@ exports[`lib/tv/source/shows > #searchShows > returns shows 1`] = `
     "firstAired": "2016-04-11T04:00:00.000Z",
     "id": "415491",
     "name": "绝命卦师",
-    "network": undefined,
     "poster": "https://artworks.thetvdb.com/banners/v4/series/415491/posters/61f834ad1d22d.jpg",
     "status": "Ended",
   },
@@ -55,8 +54,6 @@ exports[`lib/tv/source/shows > #searchShows > returns shows 1`] = `
     "status": "Ended",
   },
   {
-    "description": undefined,
-    "firstAired": undefined,
     "id": "357407",
     "name": "Baking Bad",
     "network": "Twitch",

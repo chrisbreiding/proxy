@@ -90,6 +90,6 @@ export async function getEpisodesForShow (showId: string): Promise<Episode[]> {
   } catch (error: any) {
     debug(`Getting episodes for show id ${showId} failed:`, error?.stack || error)
 
-    return []
+    throw error
   }
 }
