@@ -32,4 +32,4 @@ const randomPermutations = new Array(count).fill(1).map(() => {
   return `...d('', ${perms}),`
 }).join('\n')
 
-fs.writeFileSync(process.cwd(), '.fixtures/permutations.txt'), `${randomPermutations}`)
+fs.writeFileSync(path.join(process.cwd(), '.fixtures/permutations.txt'), `${randomPermutations}`)
