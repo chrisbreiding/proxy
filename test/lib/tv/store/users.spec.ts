@@ -53,6 +53,16 @@ describe('lib/tv/store/users', () => {
       })
     })
 
+    it('sends 404 if user is not found', async (ctx) => {
+      // @ts-ignore
+      getDoc.mockResolvedValue(undefined)
+
+      const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
+
+      expect(res.status).to.equal(404)
+      expect(res.body).to.deep.equal({ error: 'User with id \'user-id\' not found' })
+    })
+
     it('sends 500 on error', (ctx) => {
       return testError(getDoc, () => {
         return ctx.request.get('/tv/user').set('api-key', 'api-key')
@@ -90,6 +100,16 @@ describe('lib/tv/store/users', () => {
         }],
         username: 'user name',
       })
+    })
+
+    it('sends 404 if user is not found', async (ctx) => {
+      // @ts-ignore
+      getDoc.mockResolvedValue(undefined)
+
+      const res = await ctx.request.put('/tv/user').set('api-key', 'api-key')
+
+      expect(res.status).to.equal(404)
+      expect(res.body).to.deep.equal({ error: 'User with id \'user-id\' not found' })
     })
 
     it('sends 500 on error', (ctx) => {

@@ -18,6 +18,7 @@ export async function request (options: RequestOptions) {
   const { url, body, headers, params, method = 'get' } = options
 
   try {
+    /* c8 ignore start */
     if (Debug.enabled('proxy:record:requests')) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
@@ -26,6 +27,7 @@ export async function request (options: RequestOptions) {
       outputJsonSync(filePath, { url, method, headers, params, body }, { spaces: 2 })
     }
 
+    /* c8 ignore stop */
     const response = await axios({
       method,
       url,
@@ -34,6 +36,7 @@ export async function request (options: RequestOptions) {
       data: body,
     })
 
+    /* c8 ignore start */
     if (Debug.enabled('proxy:record:responses')) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
@@ -43,12 +46,14 @@ export async function request (options: RequestOptions) {
       outputJsonSync(filePath, { url, method, headers, params, body, response: response.data }, { spaces: 2 })
     }
 
+    /* c8 ignore stop */
     return response.data
   } catch (error: any) {
     if (typeof error === 'object') {
       error.callStack = (new Error(error.message)).stack
     }
 
+    /* c8 ignore start */
     debug('--- axios error ---')
     debug({ url, body, headers, params, method })
     debug('')
@@ -64,6 +69,7 @@ export async function request (options: RequestOptions) {
     debug('')
     Debug.enabled('proxy') && console.trace() // eslint-disable-line no-console
     debug('-------------------')
+    /* c8 ignore stop */
 
     throw error
   }

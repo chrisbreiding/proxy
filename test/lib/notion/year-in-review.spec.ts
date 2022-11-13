@@ -40,6 +40,6 @@ describe('lib/notion/year-in-review', () => {
       donePageId: 'done-page-id',
       notionToken: 'notion-token',
       year: '2025',
-    })).rejects.toThrow('Could not find page for year: 2025')
+    })).rejects.toThrowError('Could not find page for year: 2025')
   })
 })

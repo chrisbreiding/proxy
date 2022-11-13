@@ -33,7 +33,7 @@ describe('lib/notion/quests', () => {
       await expect(getAllQuests({
         notionToken: 'notion-token',
         pageId: 'page-id',
-      })).rejects.toThrow('Could not find Upcoming block')
+      })).rejects.toThrowError('Could not find Upcoming block')
     })
   })
 })

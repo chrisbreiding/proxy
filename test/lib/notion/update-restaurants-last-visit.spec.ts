@@ -28,7 +28,7 @@ describe('lib/notion/update-restaurants-last-visit', () => {
     nockGetBlockChildren('restaurant-2', { reply: blocksWithDate('11/2/22') })
     nockGetBlockChildren('restaurant-3', { reply: blocksWithDate('7/29/22') })
     nockGetBlockChildren('restaurant-4', { reply: blocksWithDate('12/20/22') })
-    nockGetBlockChildren('restaurant-5', { reply: blocksWithDate('6/10/22') })
+    nockGetBlockChildren('restaurant-5', { reply: { results: [] } })
 
     const snapshotUpdates = [
       snapshotBody(nockNotion({

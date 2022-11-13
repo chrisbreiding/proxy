@@ -18,15 +18,28 @@ vi.mock('../../../../lib/tv/store/firebase', () => {
 })
 
 describe('lib/tv/source/shows', () => {
-  beforeEach(() => {
-    nockLogin(apikey, pin)
+  handleServer(startServer)
+
+  it('throws error if unable to authenticate', async (ctx) => {
+    nock(baseUrl)
+    .post('/v4/login', { apikey, pin })
+    .reply(200, { data: {}, status: 'fail' })
+    // @ts-ignore
+    getDocWhere.mockResolvedValue({ id: 'user-1' })
+
+    const res = await ctx.request.get('/tv/shows/search?query=Breaking+Bad')
+    .set('api-key', 'user-1-api-key')
+
+    expect(res.status).to.equal(500)
+    expect(res.body).deep.equal({ error: 'Could not authenticate with TheTVDB, status: fail' })
   })
 
   describe('GET /tv/shows/search', () => {
-    handleServer(startServer)
-
     beforeEach(() => {
       vi.clearAllMocks()
+      nock.cleanAll()
+
+      nockLogin(apikey, pin)
       // @ts-ignore
       getDocWhere.mockResolvedValue({ id: 'user-1' })
     })
@@ -59,6 +72,13 @@ describe('lib/tv/source/shows', () => {
   })
 
   describe('#getShowsUpdatedSince', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+      nock.cleanAll()
+
+      nockLogin(apikey, pin)
+    })
+
     it('returns shows updated since date', async () => {
       nock(baseUrl)
       .matchHeader('Authorization', 'Bearer token')
@@ -68,6 +88,17 @@ describe('lib/tv/source/shows', () => {
       const result = await getShowsUpdatedSince('2022-11-06')
 
       expect(result).toMatchSnapshot()
+    })
+
+    it('re-throws errors', async () => {
+      nock(baseUrl)
+      .matchHeader('Authorization', 'Bearer token')
+      .get('/v4/updates?action=update&type=series&since=1667707200')
+      .replyWithError(new Error('getting updates failed'))
+
+      await expect(() => {
+        return getShowsUpdatedSince('2022-11-06')
+      }).rejects.toThrowError('getting updates failed')
     })
   })
 })

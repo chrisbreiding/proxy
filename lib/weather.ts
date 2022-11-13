@@ -19,12 +19,14 @@ const weatherIconMap = {
   'default': '🌑',
 }
 
-export function getWeatherIcon (iconName: keyof typeof weatherIconMap) {
+export type WeatherIcon = keyof typeof weatherIconMap
+
+export function getWeatherIcon (iconName: WeatherIcon) {
   return weatherIconMap[iconName] || weatherIconMap.default
 }
 
 export interface DayWeather {
-  icon: keyof typeof weatherIconMap
+  icon: WeatherIcon
   precipAccumulation: number
   precipProbability: number
   temperatureLow: number
@@ -33,7 +35,7 @@ export interface DayWeather {
 }
 
 export interface CurrentWeather {
-  icon: keyof typeof weatherIconMap
+  icon: WeatherIcon
   precipProbability: number
   precipAccumulation: number
   temperature: number
@@ -69,7 +71,10 @@ export async function get (req: express.Request, res: express.Response) {
     res.json(result)
   } catch (error: any) {
     res.status(500).json({
-      error,
+      error: {
+        code: error?.code,
+        message: error?.message,
+      },
       data: error?.response?.data,
     })
   }

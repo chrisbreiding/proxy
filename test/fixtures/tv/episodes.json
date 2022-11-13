@@ -77,7 +77,6 @@
         "id": 3859791,
         "seriesId": 81189,
         "name": "Wedding Day",
-        "aired": "2009-02-17",
         "runtime": 5,
         "nameTranslations": [
           "eng"
@@ -90,8 +89,6 @@
         "imageType": 11,
         "isMovie": 0,
         "seasons": null,
-        "number": 2,
-        "seasonNumber": 0,
         "seasonName": "Minisodes",
         "lastUpdated": "2020-05-20 20:41:36",
         "finaleType": null,

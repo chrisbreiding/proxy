@@ -1,6 +1,84 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/update-current-weather > updates the current weather block with temperature and conditions > heading-update 1`] = `
+exports[`lib/notion/update-current-weather > colors cool temperature blue 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "☀️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "40°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > colors hot temperature orange 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "☀️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "85°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > colors sweltering temperature red 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "☀️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "red",
+        },
+        "text": {
+          "content": "100°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > colors warm temperature green 1`] = `
 {
   "heading_1": {
     "color": "default",
@@ -16,7 +94,101 @@ exports[`lib/notion/update-current-weather > updates the current weather block w
           "color": "green",
         },
         "text": {
-          "content": "59°",
+          "content": "60°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > displays rain icon and probability if rain 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "☔️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": "(45%) ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "purple",
+        },
+        "text": {
+          "content": "23°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > displays snow icon and accumulation if snow 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "❄️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": "(2.00in) ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "purple",
+        },
+        "text": {
+          "content": "23°",
+        },
+      },
+    ],
+  },
+  "object": "block",
+  "type": "heading_1",
+}
+`;
+
+exports[`lib/notion/update-current-weather > updates the current weather block with temperature and conditions > heading-update 1`] = `
+{
+  "heading_1": {
+    "color": "default",
+    "is_toggleable": true,
+    "rich_text": [
+      {
+        "text": {
+          "content": "☀️ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "purple",
+        },
+        "text": {
+          "content": "23°",
         },
       },
     ],
@@ -273,7 +445,7 @@ exports[`lib/notion/update-current-weather > updates the current weather block w
                 [
                   {
                     "text": {
-                      "content": "⛅️ ",
+                      "content": "❄️ ",
                     },
                   },
                 ],

@@ -24,6 +24,7 @@ export function startServer (port: number) {
   app.engine('.hbs', handlebars({ extname: '.hbs' }))
   app.set('view engine', '.hbs')
 
+  /* c8 ignore next 4 */
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('tiny'))
   }
@@ -33,6 +34,7 @@ export function startServer (port: number) {
     /^https:\/\/\w+\.crbapps\.com$/,
   ]
 
+  /* c8 ignore next 4 */
   if (process.env.ALLOW_NGROK === 'TRUE') {
     corsOrigins.push(/^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/)
   }

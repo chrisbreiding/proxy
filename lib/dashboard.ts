@@ -13,25 +13,17 @@ async function wrap (who: string, fn: () => Promise<any>) {
   } catch (error: any) {
     debug('Getting', who, 'data errored:', error.stack)
 
-    if (!error) {
-      return { error: 'An unknown error occurred' }
-    }
-
-    if (typeof error !== 'object') {
-      return { error }
-    }
-
     return {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      callStack: error.callStack,
+      error: {
+        name: error.name,
+        message: error.message,
 
-      code: error.data?.code,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
+        code: error.code,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
 
-      response: error.response?.data,
+        response: error.response?.data,
+      },
     }
   }
 }
@@ -40,13 +32,13 @@ export async function get (req: express.Request, res: express.Response) {
   const { location, notionToken, notionPageId } = req.query
 
   if (!location || typeof location !== 'string') {
-    return res.json({ error: 'Must include location in query' })
+    return res.json({ error: { message: 'Must include location in query' } })
   }
   if (!notionToken || typeof notionToken !== 'string') {
-    return res.json({ error: 'Must include notionToken in query' })
+    return res.json({ error: { message: 'Must include notionToken in query' } })
   }
   if (!notionPageId || typeof notionPageId !== 'string') {
-    return res.json({ error: 'Must include notionPageId in query' })
+    return res.json({ error: { message: 'Must include notionPageId in query' } })
   }
 
   const [garage, notion, weather] = await Promise.all([

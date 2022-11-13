@@ -74,7 +74,7 @@ describe('lib/util/network', () => {
 
       await expect(request({
         url: 'http://api.com',
-      })).rejects.toThrow('request failed')
+      })).rejects.toThrowError('request failed')
     })
   })
 })

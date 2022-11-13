@@ -11,31 +11,34 @@ import {
   makeBlock,
   NotionBlock,
   OwnBlock,
-  textFilter,
 } from './util'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 
 interface YearTemplateItem {
-  rule: string | undefined
+  rule: string
   quests: OwnBlock[]
+}
+
+function hasText (block: OwnBlock) {
+  return !!(getBlockPlainText(block) || '').trim()
 }
 
 async function getYearTemplate (yearTemplateId: string, notionToken: string): Promise<YearTemplateItem[]> {
   const blocks = await getBlockChildren({ notionToken, pageId: yearTemplateId })
 
   const blocksWithChildren = blocks.filter((block) => {
-    return block.has_children
+    return block.has_children && hasText(block)
   })
 
   return Promise.all(blocksWithChildren.map(async (block) => {
     return {
-      rule: getBlockPlainText(block),
+      rule: getBlockPlainText(block)!,
       quests: await getBlockChildrenDeep({
         notionToken,
         pageId: block.id,
-        filter: textFilter,
+        filter: hasText,
       }),
     }
   }))
@@ -51,21 +54,21 @@ interface DateAndQuests {
 }
 
 interface StartingMonthData {
-  name: string
+  month: string
   index: number
   dates: DatesObject
 }
 
 interface MonthData {
-  name: string
+  month: string
   index: number
   dates: DateAndQuests[]
 }
 
 function getStartingMonthsData (): StartingMonthData[] {
-  return getMonths().map((name, index) => {
+  return getMonths().map((month, index) => {
     return {
-      name,
+      month,
       index,
       dates: {} as DatesObject,
     }
@@ -73,12 +76,12 @@ function getStartingMonthsData (): StartingMonthData[] {
 }
 
 const everyMonthRegex = /Every month( on (\d{1,2})\w{2})?/
-const evenMonthsRegex = /Even months( on (\d{1,2}\w{2}))?/
-const oddsMonthsRegex = /Odd months( on (\d{1,2}\w{2}))?/
+const evenMonthsRegex = /Even months( on (\d{1,2})\w{2})?/
+const oddsMonthsRegex = /Odd months( on (\d{1,2})\w{2})?/
 const monthPattern = `(?:${getMonths().join('|')})`
 const monthRegex = new RegExp(monthPattern)
 const monthsRegex = new RegExp(`(${monthPattern}(?:(?:, )${monthPattern})*)`)
-const dateRegex = / on (\d{1,2})[a-z]{2}/
+const dateRegex = / on (\d{1,2})\w{2}/
 const numberRegex = /^\d+$/
 const noMatch = { matches: false, date: 0 }
 const matchesFirst = { matches: true, date: 1 }
@@ -119,7 +122,7 @@ const patterns = [
 
     return matchesNumber(match[2])
   },
-  // <month>[, <month>...]
+  // <month>[, <month>...] [on <date>] (or assume 1st)
   (templateString: string, monthIndex: number) => {
     const monthsMatch = templateString.match(monthsRegex)
     const dateMatch = templateString.match(dateRegex)
@@ -153,7 +156,6 @@ interface Extras {
 
 async function getExtras (extrasId: string, notionToken: string) {
   const blocks = await getBlockChildrenDeep({ notionToken, pageId: extrasId })
-
   const months = {} as Extras
   let currentMonth
   let currentDate
@@ -194,7 +196,7 @@ async function getExtras (extrasId: string, notionToken: string) {
       throw new Error(`Tried to add the following quest, but could not determine the date: '${text}'`)
     }
 
-    if (textFilter(block)) {
+    if (hasText(block)) {
       months[currentMonth][currentDate].push(block)
     }
   }
@@ -206,7 +208,7 @@ function getMonthsData (yearTemplateItem: YearTemplateItem[], extras: Extras) {
   return getStartingMonthsData().map((month) => {
     for (const templateItem of yearTemplateItem) {
       for (const matchesPattern of patterns) {
-        const result = matchesPattern(templateItem.rule || '', month.index)
+        const result = matchesPattern(templateItem.rule, month.index)
 
         if (result.matches) {
           month.dates[result.date] = (
@@ -216,7 +218,7 @@ function getMonthsData (yearTemplateItem: YearTemplateItem[], extras: Extras) {
       }
     }
 
-    const monthExtras = extras[month.name]
+    const monthExtras = extras[month.month]
 
     if (monthExtras) {
       for (const date in monthExtras) {
@@ -236,7 +238,7 @@ function getDateString (year: string | number, month: string | number, date: str
 }
 
 const makeBlocks = (monthsData: MonthData[], year: number): OwnBlock[] => {
-  const blocks = monthsData.map(({ name, index, dates }) => {
+  const blocks = monthsData.map(({ month, index, dates }) => {
     if (!dates.length) return
 
     return [
@@ -245,7 +247,7 @@ const makeBlocks = (monthsData: MonthData[], year: number): OwnBlock[] => {
         type: 'paragraph',
       }),
       makeBlock({
-        text: name,
+        text: month,
         type: 'paragraph',
         annotations: {
           bold: true,

@@ -70,7 +70,7 @@ export async function searchShows (showName: string): Promise<SearchResultShow[]
 
     return shows.map(convert)
   } catch (error: any) {
-    debug(`Searching ${showName} failed:`, error?.stack || error)
+    debug(`Searching ${showName} failed:`, error.stack)
 
     throw error
   }
@@ -114,7 +114,7 @@ export async function getShowsUpdatedSince (date: string): Promise<ShowUpdate[]>
 
     return showUpdates.map(convertShowUpdates)
   } catch (error: any) {
-    debug(`Getting shows updated since ${date} failed:`, error?.stack || error)
+    debug(`Getting shows updated since ${date} failed:`, error.stack)
 
     throw error
   }

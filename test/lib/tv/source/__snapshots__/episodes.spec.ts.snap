@@ -10,8 +10,8 @@ exports[`lib/tv/source/episodes > #getEpisodesForShow > returns all episodes for
     "title": "Good Cop Bad Cop",
   },
   {
-    "airdate": "2009-02-17T05:00:00.000Z",
-    "episodeNumber": 2,
+    "airdate": undefined,
+    "episodeNumber": 0,
     "season": 0,
     "sourceId": 3859791,
     "title": "Wedding Day",
@@ -45,8 +45,8 @@ exports[`lib/tv/source/episodes > #getEpisodesForShow > returns all episodes for
     "title": "Good Cop Bad Cop",
   },
   {
-    "airdate": "2009-02-17T05:00:00.000Z",
-    "episodeNumber": 2,
+    "airdate": undefined,
+    "episodeNumber": 0,
     "season": 0,
     "sourceId": 3859791,
     "title": "Wedding Day",
@@ -85,8 +85,8 @@ exports[`lib/tv/source/episodes > #getEpisodesForShow > returns episodes for sho
     "title": "Good Cop Bad Cop",
   },
   {
-    "airdate": "2009-02-17T05:00:00.000Z",
-    "episodeNumber": 2,
+    "airdate": undefined,
+    "episodeNumber": 0,
     "season": 0,
     "sourceId": 3859791,
     "title": "Wedding Day",

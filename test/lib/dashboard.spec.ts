@@ -48,9 +48,7 @@ describe('lib/dashboard', () => {
 
       nock('https://api.darksky.net')
       .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
-      .reply(500, {
-        message: 'could not get weather',
-      })
+      .reply(500, { message: 'could not get weather' })
 
       mockFs({
         'data': {
@@ -64,12 +62,38 @@ describe('lib/dashboard', () => {
       expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
       expect(res.body.notion).to.deep.equal({ data: [] })
 
-      expect(res.body.weather.message).to.equal('Request failed with status code 500')
-      expect(res.body.weather.status).to.equal(500)
-      expect(res.body.weather.response).to.deep.equal({ message: 'could not get weather' })
+      expect(res.body.weather.error).to.deep.equal({
+        code: 'ERR_BAD_RESPONSE',
+        message: 'Request failed with status code 500',
+        name: 'AxiosError',
+        response: { message: 'could not get weather' },
+        status: 500,
+        statusText: null,
+      })
     })
 
-    it('status 403 if key does not match', async (ctx) => {
+    it('sends error if no location specified', async (ctx) => {
+      const res = await ctx.request.get('/dashboard/key?notionToken=notion-token&notionPageId=quests-id')
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ error: { message: 'Must include location in query' } })
+    })
+
+    it('sends error if no notionToken specified', async (ctx) => {
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionPageId=quests-id')
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ error: { message: 'Must include notionToken in query' } })
+    })
+
+    it('sends error if no notionPageId specified', async (ctx) => {
+      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=notion-token')
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ error: { message: 'Must include notionPageId in query' } })
+    })
+
+    it('sends 403 if key does not match', async (ctx) => {
       const res = await ctx.request.get('/dashboard/nope')
 
       expect(res.status).to.equal(403)

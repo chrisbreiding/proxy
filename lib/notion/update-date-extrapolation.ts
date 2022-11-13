@@ -27,6 +27,35 @@ function getCategoryBlocks ({ notionToken, dateExtrapolationId }: GetCategoryBlo
   })
 }
 
+function validateBlocks (blocks: NotionBlock[]) {
+  const blocksSought = blocks.reduce((sought, block) => {
+    // already guaranteed it's a toggle, so it definitely has string text
+    const text = getBlockPlainText(block)!.trim()
+
+    if (text === 'Historical' && block.children?.length) {
+      sought.historical = true
+    }
+
+    if (text === 'Recent' && block.children?.length) {
+      sought.recent = true
+    }
+
+    if (text === 'Extrapolated' && block.type === 'toggle' && block.children?.length) {
+      sought.extrapolated = true
+    }
+
+    return sought
+  }, { historical: false, recent: false, extrapolated: false })
+
+  const errors: string[] = []
+
+  if (!blocksSought.historical) errors.push('Page must have a "Historical" toggle block with dates')
+  if (!blocksSought.recent) errors.push('Page must have a "Recent" toggle block with dates')
+  if (!blocksSought.extrapolated) errors.push('Page must have a "Extrapolated" toggle block with dates')
+
+  return errors
+}
+
 function getDateFromBlock (block: Block) {
   const text = (getBlockPlainText(block) || '').trim()
   const date = dayjs(text)
@@ -36,13 +65,12 @@ function getDateFromBlock (block: Block) {
 
 function getHistoricalDates (blocks: NotionBlock[]) {
   return blocks.reduce((memo, block) => {
-    const text = (getBlockPlainText(block) || '').trim()
+    // already validated these, so they definitely has string text
+    const text = getBlockPlainText(block)!.trim()
 
     if (!['Historical', 'Recent'].includes(text)) return memo
 
-    if (!block.children) return memo
-
-    const maybeDates = block.children.map(getDateFromBlock)
+    const maybeDates = block.children!.map(getDateFromBlock)
     const dates = compact(maybeDates) as dayjs.Dayjs[]
 
     dates.sort((a, b) => a.valueOf() - b.valueOf())
@@ -71,16 +99,11 @@ function getAverage (nums: number[]) {
 
 function getExtrapolatedDateBlocks (blocks: NotionBlock[]) {
   const block = blocks.find((block) => {
-    const text = getBlockPlainText(block) || ''
-
-    return text.includes('Extrapolated')
+    // already validated this, so it definitely has string text
+    return getBlockPlainText(block)!.includes('Extrapolated')
   })
 
-  if (!block || !block.children) {
-    return []
-  }
-
-  return block.children.filter((child) => {
+  return block!.children!.filter((child) => {
     return child.type === 'bulleted_list_item'
   }) as NotionBlock[]
 }
@@ -131,6 +154,12 @@ interface UpdateDateExtrapolationOptions {
 
 export async function updateDateExtrapolation ({ notionToken, dateExtrapolationId }: UpdateDateExtrapolationOptions) {
   const blocks = await getCategoryBlocks({ notionToken, dateExtrapolationId })
+  const errors = validateBlocks(blocks)
+
+  if (errors.length) {
+    throw new Error(`The following validation error(s) was/were found:\n- ${errors.join('\n- ')}`)
+  }
+
   const historicalDates = getHistoricalDates(blocks)
   const extrapolatedDates = getExtrapolatedDates(historicalDates, blocks)
 

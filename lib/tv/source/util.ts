@@ -30,7 +30,7 @@ async function authenticate () {
 
     return data.token as string
   } catch (error: any) {
-    debug('Authentication failed:', error?.stack || error)
+    debug('Authentication failed:', error.stack)
 
     throw error
   }

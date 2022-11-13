@@ -36,9 +36,7 @@ function guard (handler: (req: express.Request, res: express.Response) => void) 
     } catch (error: any) {
       debug('tv route error:', error?.stack)
 
-      res.status(500).json({
-        error: error?.message || error,
-      })
+      res.status(500).json({ error: error.message })
     }
   }
 }

@@ -1,3 +1,4 @@
+import type { ChildPageBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import minimist from 'minimist'
 
 import {
@@ -63,7 +64,7 @@ async function getPageIds ({ donePageId, notionToken, year }: GetPageIdsOptions)
 
     return {
       id: block.id,
-      name: 'title' in block.content ? block.content.title : '',
+      name: (block.content as ChildPageBlockObjectResponse['child_page']).title,
     } as MonthBlock
   }))
 
@@ -145,6 +146,7 @@ async function getMonthData ({ data, month, notionToken }: GetMonthDataOptions) 
       continue
     }
 
+    // TODO
     if (!date) continue
 
     const match = findMatching(data, text)

@@ -16,7 +16,7 @@ const defaultData = {
   right: 'closed' as const,
 }
 
-function mockData (data: PersistentDataStructure) {
+function mockData (data: PersistentDataStructure | null) {
   mockFs({
     'data': {
       'garage-data.json': JSON.stringify(data),
@@ -25,7 +25,7 @@ function mockData (data: PersistentDataStructure) {
   })
 }
 
-function mockEmptyData () {
+function mockError () {
   mockFs({
     'data': {},
     'views': mockFs.load(path.resolve(process.cwd(), 'views')),
@@ -58,7 +58,7 @@ describe('lib/garage', () => {
     })
 
     it('returns unknown states if no data', async (ctx) => {
-      mockData({})
+      mockData(null)
 
       const res = await ctx.request.get('/garage-states/key')
 
@@ -70,7 +70,7 @@ describe('lib/garage', () => {
     })
 
     it('returns unknown states if error', async (ctx) => {
-      mockEmptyData()
+      mockError()
 
       const res = await ctx.request.get('/garage-states/key')
 
@@ -121,8 +121,17 @@ describe('lib/garage', () => {
       expect(res.body).to.deep.equal({})
     })
 
+    it('handles empty persistent data', async (ctx) => {
+      mockData(null)
+
+      const res = await ctx.request.post('/garage-states/left/open/key')
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({})
+    })
+
     it('returns an empty object if error', async (ctx) => {
-      mockEmptyData()
+      mockError()
 
       const res = await ctx.request.post('/garage-states/left/open/key')
 
@@ -189,10 +198,26 @@ describe('lib/garage', () => {
         notifyOnOpen: false,
       }, 'open')
     })
+
+    it('ignores notify errors', async (ctx) => {
+      process.env.IFTTT_WEBHOOK_KEY = 'iftttkey'
+
+      nock('https://maker.ifttt.com')
+      .get(`/trigger/notify/with/key/iftttkey?value1=${encodeURIComponent('The left garage door opened')}`)
+      .reply(500)
+
+      mockData({
+        left: 'closed',
+        right: 'open',
+        notifyOnOpen: true,
+      })
+
+      await ctx.request.post('/garage-states/left/open/key')
+    })
   })
 
   describe('POST /garage/notify-on-open/:notifyOnOpen/:key', () => {
-    it('set notifyOnOpen in persistent data', async (ctx) => {
+    it('sets notifyOnOpen in persistent data', async (ctx) => {
       mockData(defaultData)
 
       await ctx.request.post('/garage/notify-on-open/true/key')
@@ -212,8 +237,8 @@ describe('lib/garage', () => {
       })
     })
 
-    it('returns empty object', async (ctx) => {
-      mockEmptyData()
+    it('handles empty persistent data', async (ctx) => {
+      mockData(null)
 
       const res = await ctx.request.post('/garage/notify-on-open/true/key')
 
@@ -222,7 +247,7 @@ describe('lib/garage', () => {
     })
 
     it('returns empty object if error', async (ctx) => {
-      mockEmptyData()
+      mockError()
 
       const res = await ctx.request.post('/garage/notify-on-open/true/key')
 
@@ -253,8 +278,20 @@ describe('lib/garage', () => {
       expect(res.text).toMatchSnapshot()
     })
 
+    it('handles empty persistent data', async (ctx) => {
+      mockData(null)
+
+      const res = await ctx.request.get('/garage/key')
+
+      expect(res.status).to.equal(200)
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+
+      mockFs.restore()
+      expect(res.text).toMatchSnapshot()
+    })
+
     it('renders error view if error', async (ctx) => {
-      mockEmptyData()
+      mockError()
 
       const res = await ctx.request.get('/garage/key')
 

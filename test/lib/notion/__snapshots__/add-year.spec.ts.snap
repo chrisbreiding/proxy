@@ -65,9 +65,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-month-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-month-id task",
               "link": null,
             },
             "type": "text",
@@ -91,9 +91,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-multiple-months-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-multiple-months-id task",
               "link": null,
             },
             "type": "text",
@@ -117,9 +117,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -143,127 +143,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-1-nested 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 1",
-            "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Regular task",
-            "text": {
-              "content": "Regular task",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -371,6 +253,47 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "paragraph": {
         "rich_text": [
           {
+            "plain_text": "Thu, 1/5",
+            "text": {
+              "content": "Thu, 1/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-odd-months-date-id task",
+            "text": {
+              "content": "pattern-odd-months-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
             "plain_text": "Tue, 1/10",
             "text": {
               "content": "Tue, 1/10",
@@ -395,35 +318,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -462,35 +359,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-multiple-months-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-multiple-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -516,6 +387,32 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "type": "paragraph",
     },
     {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-month-date-id task",
+            "text": {
+              "content": "pattern-month-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
       "object": "block",
       "toggle": {
         "color": "default",
@@ -530,9 +427,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Toggle task",
+            "plain_text": "pattern-month-date-id task w/ toggle",
             "text": {
-              "content": "Toggle task",
+              "content": "pattern-month-date-id task w/ toggle",
               "link": null,
             },
             "type": "text",
@@ -545,7 +442,7 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
 }
 `;
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2-nested 1`] = `
+exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-1-nested 1`] = `
 {
   "children": [
     {
@@ -562,35 +459,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "blocks-from-toggle-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "blocks-from-toggle-id task",
               "link": null,
             },
             "type": "text",
@@ -604,35 +475,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
 }
 `;
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-3 1`] = `
+exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2 1`] = `
 {
   "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Regular task",
-            "text": {
-              "content": "Regular task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
     {
       "object": "block",
       "paragraph": {
@@ -695,9 +540,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -721,9 +566,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -762,35 +607,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -832,6 +651,47 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
             "plain_text": "Another task",
             "text": {
               "content": "Another task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Thu, 2/23",
+            "text": {
+              "content": "Thu, 2/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-even-months-date-id task",
+            "text": {
+              "content": "pattern-even-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -890,39 +750,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "type": "paragraph",
     },
     {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-3-nested 1`] = `
-{
-  "children": [
-    {
       "bulleted_list_item": {
         "color": "default",
         "rich_text": [
@@ -936,9 +763,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -962,42 +789,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-4 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Regular task",
-            "text": {
-              "content": "Regular task",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -1037,7 +831,7 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
 }
 `;
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-4-nested 1`] = `
+exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2-nested 1`] = `
 {
   "children": [
     {
@@ -1054,35 +848,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "blocks-from-nested-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "blocks-from-nested-id task",
               "link": null,
             },
             "type": "text",
@@ -1096,7 +864,7 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
 }
 `;
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-5 1`] = `
+exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-3 1`] = `
 {
   "children": [
     {
@@ -1116,6 +884,47 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
             "plain_text": "Event after subtask",
             "text": {
               "content": "Event after subtask",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 3/5",
+            "text": {
+              "content": "Sun, 3/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-odd-months-date-id task",
+            "text": {
+              "content": "pattern-odd-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1154,35 +963,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1254,9 +1037,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-multiple-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-multiple-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1280,9 +1063,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1306,35 +1089,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -1373,9 +1130,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1384,6 +1141,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       },
       "object": "block",
       "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 4/23",
+            "text": {
+              "content": "Sun, 4/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
     },
     {
       "bulleted_list_item": {
@@ -1399,9 +1171,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-date-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1460,39 +1232,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "type": "paragraph",
     },
     {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-5-nested 1`] = `
-{
-  "children": [
-    {
       "bulleted_list_item": {
         "color": "default",
         "rich_text": [
@@ -1506,9 +1245,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1532,9 +1271,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -1544,13 +1283,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-6 1`] = `
-{
-  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Fri, 5/5",
+            "text": {
+              "content": "Fri, 5/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
     {
       "bulleted_list_item": {
         "color": "default",
@@ -1565,9 +1312,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Regular task",
+            "plain_text": "pattern-odd-months-date-id task",
             "text": {
-              "content": "Regular task",
+              "content": "pattern-odd-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1606,35 +1353,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1706,9 +1427,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1732,9 +1453,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -1773,9 +1494,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1784,6 +1505,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       },
       "object": "block",
       "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Fri, 6/23",
+            "text": {
+              "content": "Fri, 6/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
     },
     {
       "bulleted_list_item": {
@@ -1799,9 +1535,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-date-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -1873,9 +1609,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-multiple-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-multiple-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1899,68 +1635,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-6-nested 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 1",
-            "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -1984,9 +1661,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -1996,13 +1673,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-7 1`] = `
-{
-  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Wed, 7/5",
+            "text": {
+              "content": "Wed, 7/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
     {
       "bulleted_list_item": {
         "color": "default",
@@ -2017,9 +1702,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Regular task",
+            "plain_text": "pattern-odd-months-date-id task",
             "text": {
-              "content": "Regular task",
+              "content": "pattern-odd-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2058,35 +1743,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2158,9 +1817,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -2184,9 +1843,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -2225,9 +1884,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2236,6 +1895,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       },
       "object": "block",
       "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Wed, 8/23",
+            "text": {
+              "content": "Wed, 8/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
     },
     {
       "bulleted_list_item": {
@@ -2251,9 +1925,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-date-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2312,39 +1986,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "type": "paragraph",
     },
     {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-7-nested 1`] = `
-{
-  "children": [
-    {
       "bulleted_list_item": {
         "color": "default",
         "rich_text": [
@@ -2358,9 +1999,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -2384,9 +2025,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -2396,13 +2037,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-8 1`] = `
-{
-  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Tue, 9/5",
+            "text": {
+              "content": "Tue, 9/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
     {
       "bulleted_list_item": {
         "color": "default",
@@ -2417,9 +2066,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Regular task",
+            "plain_text": "pattern-odd-months-date-id task",
             "text": {
-              "content": "Regular task",
+              "content": "pattern-odd-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2458,35 +2107,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2525,35 +2148,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-multiple-months-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-multiple-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2625,9 +2222,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-multiple-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-multiple-months-id task",
               "link": null,
             },
             "type": "text",
@@ -2651,9 +2248,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -2677,35 +2274,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -2744,9 +2315,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2755,6 +2326,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       },
       "object": "block",
       "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Mon, 10/23",
+            "text": {
+              "content": "Mon, 10/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
     },
     {
       "bulleted_list_item": {
@@ -2770,9 +2356,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-even-months-date-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-even-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2831,39 +2417,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "type": "paragraph",
     },
     {
-      "object": "block",
-      "toggle": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Toggle task",
-            "text": {
-              "content": "Toggle task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "type": "toggle",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-8-nested 1`] = `
-{
-  "children": [
-    {
       "bulleted_list_item": {
         "color": "default",
         "rich_text": [
@@ -2877,9 +2430,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-odd-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-odd-months-id task",
               "link": null,
             },
             "type": "text",
@@ -2903,9 +2456,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -2915,13 +2468,21 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-9 1`] = `
-{
-  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 11/5",
+            "text": {
+              "content": "Sun, 11/5",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
     {
       "bulleted_list_item": {
         "color": "default",
@@ -2936,9 +2497,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Regular task",
+            "plain_text": "pattern-odd-months-date-id task",
             "text": {
-              "content": "Regular task",
+              "content": "pattern-odd-months-date-id task",
               "link": null,
             },
             "type": "text",
@@ -2977,35 +2538,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-date-id task",
               "link": null,
             },
             "type": "text",
@@ -3077,9 +2612,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-even-months-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-even-months-id task",
               "link": null,
             },
             "type": "text",
@@ -3103,9 +2638,9 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-every-month-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-every-month-id task",
               "link": null,
             },
             "type": "text",
@@ -3144,9 +2679,131 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 1",
+            "plain_text": "pattern-every-month-date-id task",
             "text": {
-              "content": "Task 1",
+              "content": "pattern-every-month-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sat, 12/23",
+            "text": {
+              "content": "Sat, 12/23",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-even-months-date-id task",
+            "text": {
+              "content": "pattern-even-months-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/add-year > handles months that have no quests and lack of extras > drop-zone-1 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "January",
+            "text": {
+              "content": "January",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 1/1",
+            "text": {
+              "content": "Sun, 1/1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-month-id task",
+            "text": {
+              "content": "pattern-month-id task",
               "link": null,
             },
             "type": "text",
@@ -3170,9 +2827,346 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
               "underline": false,
             },
             "href": null,
-            "plain_text": "Task 2",
+            "plain_text": "pattern-multiple-months-id task",
             "text": {
-              "content": "Task 2",
+              "content": "pattern-multiple-months-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Fri, 1/20",
+            "text": {
+              "content": "Fri, 1/20",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-multiple-months-date-id task",
+            "text": {
+              "content": "pattern-multiple-months-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "April",
+            "text": {
+              "content": "April",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sat, 4/1",
+            "text": {
+              "content": "Sat, 4/1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-multiple-months-id task",
+            "text": {
+              "content": "pattern-multiple-months-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "July",
+            "text": {
+              "content": "July",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sat, 7/1",
+            "text": {
+              "content": "Sat, 7/1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-multiple-months-id task",
+            "text": {
+              "content": "pattern-multiple-months-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "September",
+            "text": {
+              "content": "September",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Wed, 9/20",
+            "text": {
+              "content": "Wed, 9/20",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-multiple-months-date-id task",
+            "text": {
+              "content": "pattern-multiple-months-date-id task",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "October",
+            "text": {
+              "content": "October",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 10/1",
+            "text": {
+              "content": "Sun, 10/1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "pattern-multiple-months-id task",
+            "text": {
+              "content": "pattern-multiple-months-id task",
               "link": null,
             },
             "type": "text",

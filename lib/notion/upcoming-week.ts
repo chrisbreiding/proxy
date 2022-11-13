@@ -202,11 +202,7 @@ export async function addUpcomingWeek (req: express.Request, res: express.Respon
       </html>`,
     )
   } catch (error: any) {
-    res.status(500).json({
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    })
+    res.status(500).json({ error: error.message })
   }
 }
 

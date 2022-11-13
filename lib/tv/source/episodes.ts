@@ -88,6 +88,7 @@ export async function getEpisodesForShow (showId: string): Promise<Episode[]> {
 
     return episodes.map(convertTheTvDbEpisodeToEpisode)
   } catch (error: any) {
+    /* c8 ignore next */
     debug(`Getting episodes for show id ${showId} failed:`, error?.stack || error)
 
     throw error
