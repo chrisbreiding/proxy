@@ -81,7 +81,6 @@ async function getMostRecentVisitDate ({ name, notionToken, pageId }: GetMostRec
       }
     }
   }
-  // TODO: if no dates are found, e.g. completely empty content
 }
 
 interface GetMostRecentVisitDatesOptions {

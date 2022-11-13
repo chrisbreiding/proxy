@@ -50,7 +50,6 @@ export async function makeRequest (options: MakeRequestOptions) {
 
   debugVerbose('request: %o', { method, url, params, token })
 
-  // TODO: handle error
   const result = await request({
     headers: {
       'Authorization': `Bearer ${token}`,

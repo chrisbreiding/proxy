@@ -146,7 +146,6 @@ async function getMonthData ({ data, month, notionToken }: GetMonthDataOptions) 
       continue
     }
 
-    // TODO
     if (!date) continue
 
     const match = findMatching(data, text)
