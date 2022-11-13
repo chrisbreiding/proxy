@@ -36,8 +36,8 @@ function convertTheTvDbEpisodeToEpisode (episode: TheTvDbEpisode): Episode {
   return {
     airdate: episode.aired ? dayjs(episode.aired).toISOString() : undefined,
     episodeNumber: episode.number || 0,
+    id: `${episode.id}`,
     season: episode.seasonNumber || 0,
-    sourceId: episode.id,
     title: episode.name,
   }
 }

@@ -48,7 +48,7 @@ function convert (show: TheTvDbShow): SearchResultShow {
   return {
     description: show.overview,
     firstAired: show.first_air_time ? dayjs(show.first_air_time).toISOString() : undefined,
-    id: `${show.tvdb_id}`,
+    id: show.tvdb_id,
     name: show.name,
     network: show.network,
     poster: show.image_url,

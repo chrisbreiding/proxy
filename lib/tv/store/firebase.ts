@@ -100,7 +100,7 @@ export async function addCollectionToDoc (collectionPath: string, values: any[])
   const batch = db.batch()
 
   values.forEach((value) => {
-    const docRef = db.collection(collectionPath).doc()
+    const docRef = db.collection(collectionPath).doc(value.id)
     batch.set(docRef, value)
   })
 
