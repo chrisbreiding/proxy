@@ -30,26 +30,9 @@ type Snapshot = admin.firestore.QuerySnapshot<admin.firestore.DocumentData>
 function getDataFromSnapshot<T> (snapshot: Snapshot): Promise<T[]> {
   return Promise.all(snapshot.docs.map(async (docSnapshot) => {
     const doc = await docSnapshot.ref.get()
-    const collectionRefs = await docSnapshot.ref.listCollections()
-
-    const collectionPairs = await Promise.all(collectionRefs.map(async (collectionRef) => {
-      const snapshot = await docSnapshot.ref.collection(collectionRef.id).get()
-
-      const data = await getDataFromSnapshot<any>(snapshot)
-
-      return [collectionRef.id, data]
-    })) as [string, any[]][]
-
-    const collections = collectionPairs.reduce((memo, [name, collection]) => {
-      return {
-        ...memo,
-        [name]: collection,
-      }
-    }, {})
 
     return Object.assign(doc.data()!, {
       id: doc.id,
-      ...collections,
     }) as T
   }))
 }
@@ -60,6 +43,26 @@ export async function getCollection<T> (collectionName: string): Promise<T[]> {
   const snapshot = await db.collection(collectionName).get()
 
   return getDataFromSnapshot<T>(snapshot)
+}
+
+interface Identifiable {
+  id: string
+}
+
+export async function getSubCollections<T extends Identifiable, U> (data: T[], collection1Name: string, collection2Name: string): Promise<U[]> {
+  if (!db) return []
+
+  return Promise.all(data.map(async (datum: T) => {
+    const snapshot = await db.collection(`${collection1Name}/${datum.id}/${collection2Name}`).get()
+
+    const collections = await Promise.all(snapshot.docs.map(async (docSnapshot) => {
+      return (await docSnapshot.ref.get()).data()!
+    }))
+
+    return Object.assign(datum, {
+      [collection2Name]: collections,
+    }) as U
+  }))
 }
 
 export async function getDoc<T> (docPath: string): Promise<T | undefined> {
@@ -75,9 +78,8 @@ type Condition = [string, admin.firestore.WhereFilterOp, any]
 export async function getDocWhere<T> (collectionName: string, condition: Condition): Promise<T | undefined> {
   if (!db) return
 
-  const ref = db.collection(collectionName)
   const [fieldPath, opStr, value] = condition
-  const snapshot = await ref.where(fieldPath, opStr, value).get()
+  const snapshot = await db.collection(collectionName).where(fieldPath, opStr, value).get()
 
   if (snapshot.empty) {
     return

@@ -13,6 +13,7 @@ import {
   getCollection,
   getDoc,
   getDocWhere,
+  getSubCollections,
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { clone } from '../../../../lib/util/collections'
@@ -70,6 +71,7 @@ vi.mock('../../../../lib/tv/store/firebase', () => {
     getCollection: vi.fn(),
     getDoc: vi.fn(),
     getDocWhere: vi.fn(),
+    getSubCollections: vi.fn(),
     deleteDoc: vi.fn(),
     updateDoc: vi.fn(),
   }
@@ -107,6 +109,12 @@ describe('lib/tv/store/shows', () => {
     it('returns shows from store for user', async (ctx) => {
       // @ts-ignore
       getCollection.mockResolvedValue([
+        makeShow(1, [], [1]),
+        makeShow(2, [], [1, 2]),
+        makeShow(3, [], [2]),
+      ])
+      // @ts-ignore
+      getSubCollections.mockResolvedValue([
         makeShow(1, [
           makeEpisode(1),
           makeEpisode(2),
@@ -115,10 +123,6 @@ describe('lib/tv/store/shows', () => {
           makeEpisode(3),
           makeEpisode(4),
         ], [1, 2]),
-        makeShow(3, [
-          makeEpisode(5),
-          makeEpisode(6),
-        ], [2]),
       ])
 
       const res = await ctx.request.get('/tv/shows').set('api-key', 'user-1-api-key')

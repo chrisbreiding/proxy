@@ -6,6 +6,7 @@ import {
   deleteDoc,
   getCollection,
   getDoc,
+  getSubCollections,
   updateDoc,
 } from './firebase'
 import type { User } from './users'
@@ -113,16 +114,13 @@ export class Show implements ShowProps {
 }
 
 export async function getShows (user: User): Promise<UserShow[]> {
-  const showData = await getCollection<FullShowProps>('shows')
-
-  // TODO: optimize so that all episodes aren't
-  // retrieved before getting episodes
-
-  return showData
-  .filter((showDatum) => {
+  const showData = await getCollection<ShowProps>('shows')
+  const showsForUser = showData.filter((showDatum) => {
     return !!showDatum.users[user.id]
   })
-  .map((showDatum) => {
+  const showsWithEpisodes = await getSubCollections<ShowProps, FullShowProps>(showsForUser, 'shows', 'episodes')
+
+  return showsWithEpisodes.map((showDatum) => {
     return Show.forUser(showDatum, user)
   })
 }
