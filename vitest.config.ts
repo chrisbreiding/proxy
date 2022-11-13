@@ -7,7 +7,7 @@ export default defineConfig({
         '**/firebase.ts',
         '**/shopping.js',
         '**/patience-diff.js',
-        'test/**/*'
+        'test/**/*',
       ],
       reporter: ['text'],
     },
