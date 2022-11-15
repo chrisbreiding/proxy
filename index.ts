@@ -75,7 +75,7 @@ export function startServer (port: number) {
   io.on('connection', notion.onSocket)
 
   server.listen(port, () => {
-    debug(`listening on port ${port}...`)
+    debug(`Listening on port ${port}...`)
   })
 
   return server

@@ -10,7 +10,6 @@ import {
   block,
   nockGetBlockChildren,
   nockNotion,
-  notionFixture as fixture,
   notionFixtureContents as fixtureContents,
 } from './util'
 

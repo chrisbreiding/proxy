@@ -15,7 +15,7 @@ const episodes = fixtureContents('tv/episodes')
 describe('lib/tv/source/episodes', () => {
   describe('#getEpisodesForShow', () => {
     it('returns episodes for show', async () => {
-      nockLogin(apikey, pin)
+      nockLogin({ apikey, pin })
 
       nock(baseUrl)
       .matchHeader('Authorization', 'Bearer token')
@@ -28,7 +28,7 @@ describe('lib/tv/source/episodes', () => {
     })
 
     it('returns all episodes for show if there are paginated results', async () => {
-      nockLogin(apikey, pin)
+      nockLogin({ apikey, pin })
 
       const page0Episodes = clone(episodes)
       page0Episodes.links.next = 1

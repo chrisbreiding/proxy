@@ -1,30 +1,5 @@
 // Vitest Snapshot v1
 
-exports[`lib/tv/source/shows > #getShowsUpdatedSince > returns shows updated since date 1`] = `
-[
-  {
-    "dateTime": "2022-11-06T04:00:58.000Z",
-    "id": "83498",
-  },
-  {
-    "dateTime": "2022-11-06T04:01:34.000Z",
-    "id": "425416",
-  },
-  {
-    "dateTime": "2022-11-06T04:01:35.000Z",
-    "id": "76703",
-  },
-  {
-    "dateTime": "2022-11-06T04:02:34.000Z",
-    "id": "365414",
-  },
-  {
-    "dateTime": "2022-11-06T04:03:27.000Z",
-    "id": "357741",
-  },
-]
-`;
-
 exports[`lib/tv/source/shows > GET /tv/shows/search > returns shows found in search 1`] = `
 [
   {

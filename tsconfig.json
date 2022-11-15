@@ -5,6 +5,7 @@
     "lib/**/*.js"
   ],
   "exclude": [
+    "./.history/",
     "./node_modules/"
   ],
   "compilerOptions": {

@@ -1,9 +1,10 @@
 import dayjs from 'dayjs'
 
-import { makeRequest } from './util'
 import { debug, debugVerbose } from '../../util/debug'
+import type { TheTVDBEpisode } from './episodes'
+import { makeRequest } from './util'
 
-interface TheTvDbShow {
+interface TheTVDBSearchResultShow {
   objectID: string
   aliases: string[]
   country: string
@@ -41,10 +42,10 @@ export interface SearchResultShow {
   name: string
   network: string
   poster?: string
-  status: TheTvDbShow['status']
+  status: TheTVDBSearchResultShow['status']
 }
 
-function convert (show: TheTvDbShow): SearchResultShow {
+function convertSearchResultShow (show: TheTVDBSearchResultShow): SearchResultShow {
   return {
     description: show.overview,
     firstAired: show.first_air_time ? dayjs(show.first_air_time).toISOString() : undefined,
@@ -66,9 +67,9 @@ export async function searchShows (showName: string): Promise<SearchResultShow[]
         query: showName,
         type: 'series',
       },
-    })
+    }) as { data: TheTVDBSearchResultShow[] }
 
-    return shows.map(convert)
+    return shows.map(convertSearchResultShow)
   } catch (error: any) {
     debug(`Searching ${showName} failed:`, error.stack)
 
@@ -76,45 +77,65 @@ export async function searchShows (showName: string): Promise<SearchResultShow[]
   }
 }
 
-interface TheTvDbShowUpdate {
-  recordType: string
-  recordId: number // 83498
-  methodInt: number
-  method: string
-  extraInfo: string
-  userId: number
-  timeStamp: number // 1667707258
-  entityType: string // "series"
+interface TheTVDBShow {
+  aliases: {
+    description: string
+    language: string
+    name: string
+  }[]
+  averageRuntime: number
+  country: string
+  defaultSeasonType: number
+  description: string
+  episodes: TheTVDBEpisode[] | null
+  firstAired: string
+  id: number
+  image: string
+  isOrderRandomized: boolean
+  lastAired: string
+  lastUpdated: string
+  name: string
+  nameTranslations: string[]
+  nextAired: string
+  originalCountry: string
+  originalLanguage: string
+  overviewTranslations: string[]
+  score: number
+  slug: string
+  status: {
+    id: number
+    keepUpdated: boolean
+    name: 'Continuing' | 'Ended'
+    recordType: string
+  }
+  year: string
 }
 
-interface ShowUpdate {
-  id: string
-  dateTime: string
-}
-
-function convertShowUpdates (showUpdate: TheTvDbShowUpdate): ShowUpdate {
+function convertShow (show: TheTVDBShow): SearchResultShow {
   return {
-    id: `${showUpdate.recordId}`,
-    dateTime: dayjs.unix(showUpdate.timeStamp).toISOString(),
+    description: show.description,
+    firstAired: show.firstAired ? dayjs(show.firstAired).toISOString() : undefined,
+    id: `${show.id}`,
+    name: show.name,
+    network: '',
+    poster: show.image,
+    status: show.status.name,
   }
 }
 
-export async function getShowsUpdatedSince (date: string): Promise<ShowUpdate[]> {
-  debugVerbose('find shows updated since', date)
+export async function getShowsByIds (showIds: string[]): Promise<SearchResultShow[]> {
+  debugVerbose('get shows with ids: %o', showIds)
 
   try {
-    const { data: showUpdates } = await makeRequest({
-      path: 'updates',
-      params: {
-        action: 'update',
-        type: 'series',
-        since: `${dayjs(date).unix()}`,
-      },
-    })
+    return await Promise.all(showIds.map(async (showId) => {
+      const { data: show } = await makeRequest({
+        path: `series/${showId}`,
+      }) as { data: TheTVDBShow }
 
-    return showUpdates.map(convertShowUpdates)
+      return convertShow(show)
+    }))
   } catch (error: any) {
-    debug(`Getting shows updated since ${date} failed:`, error.stack)
+    debug('Getting shows failed:', error.stack)
 
     throw error
   }

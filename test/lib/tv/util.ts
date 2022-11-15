@@ -2,9 +2,12 @@ import nock from 'nock'
 import type supertest from 'supertest'
 import { expect } from 'vitest'
 
-export function nockLogin (apikey: string, pin: string) {
-  return nock('https://api4.thetvdb.com')
+import { baseUrl } from '../../../lib/tv/source/util'
+
+export function nockLogin ({ apikey, pin, times = 1 }: { apikey: string, pin: string, times?: number }) {
+  return nock(baseUrl)
   .post('/v4/login', { apikey, pin })
+  .times(times)
   .reply(200, { data: { token: 'token' } })
 }
 

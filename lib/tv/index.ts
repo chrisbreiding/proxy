@@ -1,7 +1,7 @@
 import express from 'express'
 import { debug } from '../util/debug'
 import { searchShows } from './source/shows'
-import { addShow, deleteShow, getShows, updateShow } from './store/shows'
+import { addShow, deleteShow, getShowsWithEpisodesForUser, updateShow } from './store/shows'
 import { getUser, getUserByApiKey, updateUser, User } from './store/users'
 
 const userMap = {} as { [key: string]: User }
@@ -54,7 +54,7 @@ export function createTvRoutes () {
   }))
 
   router.get('/shows', guard(async (req: express.Request, res: express.Response) => {
-    const shows = await getShows(res.locals.user)
+    const shows = await getShowsWithEpisodesForUser(res.locals.user)
 
     res.json(shows)
   }))

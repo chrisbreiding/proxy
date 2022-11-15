@@ -18,7 +18,11 @@ import {
 } from './firebase'
 import type { User } from './users'
 
-export async function getShows (user: User): Promise<UserShow[]> {
+export async function getShows (): Promise<ShowProps[]> {
+  return getCollection<ShowProps>('shows')
+}
+
+export async function getShowsWithEpisodesForUser (user: User): Promise<UserShow[]> {
   const showData = await getCollection<ShowProps>('shows')
   const showsForUser = showData.filter((showDatum) => {
     return !!showDatum.users[user.id]

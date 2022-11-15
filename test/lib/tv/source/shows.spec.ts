@@ -5,7 +5,6 @@ const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
 
 import { startServer } from '../../../../index'
-import { getShowsUpdatedSince } from '../../../../lib/tv/source/shows'
 import { baseUrl } from '../../../../lib/tv/source/util'
 import { getDocWhere } from '../../../../lib/tv/store/firebase'
 import { fixtureContents, handleServer } from '../../../util'
@@ -39,7 +38,7 @@ describe('lib/tv/source/shows', () => {
       vi.clearAllMocks()
       nock.cleanAll()
 
-      nockLogin(apikey, pin)
+      nockLogin({ apikey, pin })
       // @ts-ignore
       getDocWhere.mockResolvedValue({ id: 'user-1' })
     })
@@ -68,37 +67,6 @@ describe('lib/tv/source/shows', () => {
 
       expect(res.status).to.equal(500)
       expect(res.body.error).to.equal('search failure')
-    })
-  })
-
-  describe('#getShowsUpdatedSince', () => {
-    beforeEach(() => {
-      vi.clearAllMocks()
-      nock.cleanAll()
-
-      nockLogin(apikey, pin)
-    })
-
-    it('returns shows updated since date', async () => {
-      nock(baseUrl)
-      .matchHeader('Authorization', 'Bearer token')
-      .get('/v4/updates?action=update&type=series&since=1667707200')
-      .reply(200, fixtureContents('tv/updated-shows'))
-
-      const result = await getShowsUpdatedSince('2022-11-06')
-
-      expect(result).toMatchSnapshot()
-    })
-
-    it('re-throws errors', async () => {
-      nock(baseUrl)
-      .matchHeader('Authorization', 'Bearer token')
-      .get('/v4/updates?action=update&type=series&since=1667707200')
-      .replyWithError(new Error('getting updates failed'))
-
-      await expect(() => {
-        return getShowsUpdatedSince('2022-11-06')
-      }).rejects.toThrowError('getting updates failed')
     })
   })
 })
