@@ -125,7 +125,7 @@ describe('lib/tv/tasks/update', () => {
     expect(addDoc).toHaveBeenCalledOnce()
     expect(addDoc).toBeCalledWith('shows/1/episodes/3', {
       airdate: '2022-11-12T05:00:00.000Z',
-      episodeNumber: 5,
+      number: 5,
       id: '3',
       season: 1,
       title: 'Episode 3',
@@ -133,7 +133,7 @@ describe('lib/tv/tasks/update', () => {
 
     expect(updateDoc).toBeCalledWith('shows/1/episodes/4', {
       airdate: '2022-11-13T05:00:00.000Z',
-      episodeNumber: 6,
+      number: 6,
       id: '4',
       season: 1,
       title: 'Episode 4',

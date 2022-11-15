@@ -169,7 +169,7 @@ describe('lib/tv/store/shows', () => {
       })
       expect(addCollectionToDoc).toBeCalledWith(`shows/${searchShow.id}/episodes`, expect.arrayContaining([{
         airdate: '2009-02-17T05:00:00.000Z',
-        episodeNumber: 1,
+        number: 1,
         season: 0,
         id: '3859781',
         title: 'Good Cop Bad Cop',

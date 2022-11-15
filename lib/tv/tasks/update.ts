@@ -34,10 +34,10 @@ async function updateEpisode (showId: string, episodeUpdate: EpisodeUpdate) {
   const episode = await getEpisode(episodeUpdate.id)
 
   if (method === 'create') {
-    debug('Create episode s%se%s', episode.season, episode.episodeNumber)
+    debug('Create episode s%se%s', episode.season, episode.number)
     await addDoc(`shows/${showId}/episodes/${id}`, episode)
   } else {
-    debug('Update episode s%se%s', episode.season, episode.episodeNumber)
+    debug('Update episode s%se%s', episode.season, episode.number)
     await updateDoc(`shows/${showId}/episodes/${id}`, episode)
   }
 }

@@ -26,7 +26,7 @@ export interface TheTVDBEpisode {
 
 export interface Episode {
   airdate?: string
-  episodeNumber: number
+  number: number
   id: string
   season: number
   title: string
@@ -35,7 +35,7 @@ export interface Episode {
 function convertEpisode (episode: TheTVDBEpisode): Episode {
   return {
     airdate: episode.aired ? dayjs(episode.aired).toISOString() : undefined,
-    episodeNumber: episode.number || 0,
+    number: episode.number || 0,
     id: `${episode.id}`,
     season: episode.seasonNumber || 0,
     title: episode.name,
