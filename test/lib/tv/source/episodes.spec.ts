@@ -50,5 +50,17 @@ describe('lib/tv/source/episodes', () => {
 
       expect(result).toMatchSnapshot()
     })
+
+    it('re-throws errors', async () => {
+      nockLogin({ apikey, pin })
+
+      nock(baseUrl)
+      .matchHeader('Authorization', 'Bearer token')
+      .get('/v4/series/12345/episodes/default?page=0')
+      .replyWithError(new Error('source failure'))
+
+      await expect(() => getEpisodesForShow('12345'))
+      .rejects.toThrowError('source failure')
+    })
   })
 })

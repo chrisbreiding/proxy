@@ -118,3 +118,35 @@ export async function deleteDoc (docPath: string) {
 
   await db.doc(docPath).delete()
 }
+
+type Query = admin.firestore.Query<admin.firestore.DocumentData>
+
+async function deleteQueryBatch (db: admin.firestore.Firestore, query: Query, resolve: (value?: unknown) => void) {
+  const snapshot = await query.get()
+
+  if (snapshot.size === 0) {
+    return resolve()
+  }
+
+  const batch = db.batch()
+  snapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref)
+  })
+  await batch.commit()
+
+  process.nextTick(() => {
+    deleteQueryBatch(db, query, resolve)
+  })
+}
+
+export async function deleteCollection (collectionPath: string, idProp: string) {
+  if (!db) return
+
+  const batchSize = 20
+  const collectionRef = db.collection(collectionPath)
+  const query = collectionRef.orderBy(idProp).limit(batchSize)
+
+  return new Promise((resolve, reject) => {
+    deleteQueryBatch(db, query, resolve).catch(reject)
+  })
+}

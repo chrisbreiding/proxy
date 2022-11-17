@@ -1,5 +1,6 @@
+import Mixpanel from 'mixpanel'
 import nock from 'nock'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
 const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
@@ -8,7 +9,15 @@ import { startServer } from '../../../../index'
 import { baseUrl } from '../../../../lib/tv/source/util'
 import { getDocWhere } from '../../../../lib/tv/store/firebase'
 import { fixtureContents, handleServer } from '../../../util'
-import { nockLogin } from '../util'
+import { mockMixpanel, nockLogin } from '../util'
+
+vi.mock('mixpanel', () => {
+  return {
+    default: {
+      init: vi.fn(),
+    },
+  }
+})
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
@@ -19,12 +28,15 @@ vi.mock('../../../../lib/tv/store/firebase', () => {
 describe('lib/tv/source/shows', () => {
   handleServer(startServer)
 
+  beforeEach(() => {
+    (Mixpanel.init as Mock).mockReturnValue(mockMixpanel())
+  })
+
   it('throws error if unable to authenticate', async (ctx) => {
     nock(baseUrl)
     .post('/v4/login', { apikey, pin })
     .reply(200, { data: {}, status: 'fail' })
-    // @ts-ignore
-    getDocWhere.mockResolvedValue({ id: 'user-1' })
+    ;(getDocWhere as Mock).mockResolvedValue({ id: 'user-1' })
 
     const res = await ctx.request.get('/tv/shows/search?query=Breaking+Bad')
     .set('api-key', 'user-1-api-key')
@@ -39,8 +51,7 @@ describe('lib/tv/source/shows', () => {
       nock.cleanAll()
 
       nockLogin({ apikey, pin })
-      // @ts-ignore
-      getDocWhere.mockResolvedValue({ id: 'user-1' })
+      ;(getDocWhere as Mock).mockResolvedValue({ id: 'user-1' })
     })
 
     it('returns shows found in search', async (ctx) => {

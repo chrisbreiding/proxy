@@ -1,13 +1,17 @@
+import axios from 'axios'
 import express from 'express'
 import { debug } from '../util/debug'
 import { searchShows } from './source/shows'
+import { getMetaData } from './store/metadata'
 import { addShow, deleteShow, getShowsWithEpisodesForUser, updateShow } from './store/shows'
 import { getUser, getUserByApiKey, updateUser, User } from './store/users'
+import Mixpanel from 'mixpanel'
+import { getEnv } from '../util/env'
 
 const userMap = {} as { [key: string]: User }
 
 async function ensureAndSetUser (req: express.Request, res: express.Response, next: express.NextFunction) {
-  const apiKey = req.headers['api-key']
+  const apiKey = req.headers['api-key'] || req.query.apiKey
 
   if (typeof apiKey !== 'string') {
     return res.status(401).json({
@@ -25,6 +29,11 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
 
   userMap[apiKey] = user
   res.locals.user = user
+
+  const mixpanel = Mixpanel.init(getEnv('MIXPANEL_TOKEN')!)
+
+  res.locals.mixpanel = mixpanel
+  mixpanel.people.set(apiKey, { username: user.username })
 
   next()
 }
@@ -85,6 +94,16 @@ export function createTvRoutes () {
     res.sendStatus(204)
   }))
 
+  router.get('/shows/poster/:poster', guard(async (req: express.Request, res: express.Response) => {
+    const response = await axios({
+      method: 'get',
+      url: Buffer.from(req.params.poster, 'base64').toString(),
+      responseType: 'stream',
+    })
+
+    response.data.pipe(res)
+  }))
+
   router.get('/user', guard(async (req: express.Request, res: express.Response) => {
     const id = res.locals.user.id
     const user = await getUser(id)
@@ -94,8 +113,9 @@ export function createTvRoutes () {
     }
 
     res.json({
-      username: user.username,
+      lastUpdated: (await getMetaData()).lastUpdated,
       searchLinks: user.searchLinks,
+      username: user.username,
     })
   }))
 
@@ -111,6 +131,19 @@ export function createTvRoutes () {
       username: user.username,
       searchLinks: user.searchLinks,
     })
+  }))
+
+  router.post('/stats', guard(async (req: express.Request, res: express.Response) => {
+    const { apiKey } = res.locals.user
+    const { event, data } = req.body
+
+    try {
+      res.locals.mixpanel.track(apiKey, event, data || {})
+    } catch (error: any) {
+      debug('Mixpanel error for event \'%s\': %s', event, error.stack)
+    }
+
+    res.sendStatus(204)
   }))
 
   return router

@@ -4,23 +4,16 @@ import { debug } from '../../util/debug'
 import type { ShowProps } from '../models/show'
 import { EpisodeUpdate, getEpisode, getEpisodesUpdatedSince } from '../source/episodes'
 import { getShowsByIds, SearchResultShow } from '../source/shows'
-import { addDoc, deleteDoc, getDoc, updateDoc } from '../store/firebase'
+import { addDoc, deleteDoc, updateDoc } from '../store/firebase'
+import { getMetaData } from '../store/metadata'
 import { getShows } from '../store/shows'
 
-interface MetaData {
-  lastUpdated: string
-}
-
-async function getMetaData (): Promise<MetaData> {
-  return (await getDoc('meta/data')) as MetaData
-}
-
 async function getShowUpdates (): Promise<SearchResultShow[]> {
-  const continuingStoreShows = (await getShows()).filter((show: ShowProps) => {
+  const ongoingStoreShows = (await getShows()).filter((show: ShowProps) => {
     return show.status !== 'Ended'
   })
 
-  return getShowsByIds(continuingStoreShows.map((show) => show.id))
+  return getShowsByIds(ongoingStoreShows.map((show) => show.id))
 }
 
 async function updateEpisode (showId: string, episodeUpdate: EpisodeUpdate) {

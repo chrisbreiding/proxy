@@ -1,5 +1,5 @@
 import type { Episode } from '../source/episodes'
-import type { SearchResultShow } from '../source/shows'
+import type { SearchResultShow, Status } from '../source/shows'
 import type { User } from '../store/users'
 
 export interface UserShow {
@@ -7,9 +7,10 @@ export interface UserShow {
   episodes: Episode[]
   fileName: string
   id: string
+  network?: string
   poster?: string
   searchName: string
-  status: SearchResultShow['status']
+  status: Status
 }
 
 export interface EditableShowProps {
@@ -21,8 +22,9 @@ export interface EditableShowProps {
 export interface ShowProps {
   id: string
   name: string
+  network?: string
   poster?: string
-  status: SearchResultShow['status']
+  status: Status
   users: {
     [key: string]: EditableShowProps
   }
@@ -35,8 +37,9 @@ export interface FullShowProps extends ShowProps {
 export class Show implements ShowProps {
   id: string
   name: string
+  network?: string
   poster?: string
-  status: SearchResultShow['status']
+  status: Status
   users: {
     [key: string]: EditableShowProps
   }
@@ -45,6 +48,7 @@ export class Show implements ShowProps {
     return new Show({
       id: sourceShow.id,
       name: sourceShow.name,
+      network: sourceShow.network,
       poster: sourceShow.poster,
       status: sourceShow.status,
       users: {
@@ -63,6 +67,7 @@ export class Show implements ShowProps {
     return {
       episodes: showData.episodes,
       id: showData.id,
+      network: showData.network,
       poster: showData.poster,
       status: showData.status,
       displayName: userData.displayName,
@@ -74,6 +79,7 @@ export class Show implements ShowProps {
   constructor (props: ShowProps) {
     this.id = props.id
     this.name = props.name
+    this.network = props.network
     this.poster = props.poster
     this.status = props.status
     this.users = props.users
@@ -83,6 +89,7 @@ export class Show implements ShowProps {
     return {
       id: this.id,
       name: this.name,
+      network: this.network,
       poster: this.poster,
       status: this.status,
       users: this.users,

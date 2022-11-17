@@ -13,7 +13,7 @@ exports[`lib/tv/store/shows > GET /tv/shows > returns shows from store for user 
       },
     ],
     "fileName": "user-1 file name",
-    "id": "show-1-id",
+    "id": "1",
     "searchName": "user-1 search name",
   },
   {
@@ -27,7 +27,7 @@ exports[`lib/tv/store/shows > GET /tv/shows > returns shows from store for user 
       },
     ],
     "fileName": "user-1 file name",
-    "id": "show-2-id",
+    "id": "2",
     "searchName": "user-1 search name",
   },
 ]
@@ -35,42 +35,69 @@ exports[`lib/tv/store/shows > GET /tv/shows > returns shows from store for user 
 
 exports[`lib/tv/store/shows > POST /tv/shows > adds the show to the user if it already exists 1`] = `
 {
-  "id": "show-3-id",
-  "name": "Show 3 name",
-  "users": {
-    "user-1": {
-      "displayName": "Show 3 name",
-      "fileName": "Show 3 name",
-      "searchName": "Show 3 name",
+  "displayName": "Show 3 name",
+  "episodes": [
+    {
+      "title": "Episode 1",
     },
-    "user-2": {
-      "displayName": "user-2 display name",
-      "fileName": "user-2 file name",
-      "searchName": "user-2 search name",
-    },
-  },
+  ],
+  "fileName": "Show 3 name",
+  "id": "3",
+  "searchName": "Show 3 name",
 }
 `;
 
 exports[`lib/tv/store/shows > POST /tv/shows > gets the show data, saves it, and adds the show to the user if it does not already exist 1`] = `
 {
-  "id": "show-2-id",
-  "name": "Show 2 name",
-  "poster": "Show 2 poster",
-  "status": "Ended",
-  "users": {
-    "user-1": {
-      "displayName": "Show 2 name",
-      "fileName": "Show 2 name",
-      "searchName": "Show 2 name",
+  "displayName": "Show name",
+  "episodes": [
+    {
+      "airdate": "2009-02-17T05:00:00.000Z",
+      "id": "3859781",
+      "number": 1,
+      "season": 0,
+      "title": "Good Cop Bad Cop",
     },
-  },
+    {
+      "id": "3859791",
+      "number": 0,
+      "season": 0,
+      "title": "Wedding Day",
+    },
+    {
+      "airdate": "2009-02-17T05:00:00.000Z",
+      "id": "3859801",
+      "number": 3,
+      "season": 0,
+      "title": "TwaughtHammer",
+    },
+    {
+      "airdate": "2009-02-17T05:00:00.000Z",
+      "id": "3859811",
+      "number": 4,
+      "season": 0,
+      "title": "Marie's Confession",
+    },
+    {
+      "airdate": "2009-02-17T05:00:00.000Z",
+      "id": "3859821",
+      "number": 5,
+      "season": 0,
+      "title": "The Break-In",
+    },
+  ],
+  "fileName": "Show name",
+  "id": "2",
+  "network": "Show 2 network",
+  "poster": "Show poster",
+  "searchName": "Show name",
+  "status": "Continuing",
 }
 `;
 
 exports[`lib/tv/store/shows > PUT /tv/shows/:id > updates the show and returns it 1`] = `
 {
-  "id": "show-1-id",
+  "id": "1",
   "name": "Show 1 name",
   "users": {
     "user-1": {

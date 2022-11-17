@@ -1,5 +1,6 @@
+import Mixpanel from 'mixpanel'
 import nock from 'nock'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
 const apikey = process.env.THETVDB_API_KEY = 'api-key'
 const pin = process.env.THETVDB_PIN = 'pin'
@@ -13,7 +14,7 @@ import {
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { updateShowsAndEpisodes } from '../../../../lib/tv/tasks/update'
-import { nockLogin } from '../util'
+import { mockMixpanel, nockLogin } from '../util'
 
 function makeShow (num: number, status: string) {
   return {
@@ -23,6 +24,14 @@ function makeShow (num: number, status: string) {
     users: {},
   }
 }
+
+vi.mock('mixpanel', () => {
+  return {
+    default: {
+      init: vi.fn(),
+    },
+  }
+})
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
@@ -42,16 +51,15 @@ describe('lib/tv/tasks/update', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2022, 11, 15))
 
-    // @ts-ignore
-    getCollection.mockResolvedValue([
-      makeShow(1, 'Continuing'),
+    ;(getCollection as Mock).mockResolvedValue([
+      makeShow(1, 'Upcoming'),
       makeShow(2, 'Ended'),
       makeShow(3, 'Continuing'),
     ])
-    // @ts-ignore
-    getDoc.mockResolvedValue({
+    ;(getDoc as Mock).mockResolvedValue({
       lastUpdated: '2022-11-14T04:00:00.000Z',
     })
+    ;(Mixpanel.init as Mock).mockReturnValue(mockMixpanel())
 
     nock(baseUrl)
     .get('/v4/series/1')
@@ -66,7 +74,7 @@ describe('lib/tv/tasks/update', () => {
     vi.useRealTimers()
   })
 
-  it('updates all continuing shows poster and status properties', async () => {
+  it('updates all upcoming/continuing shows poster and status properties', async () => {
     nockLogin({ apikey, pin, times: 5 })
 
     nock(baseUrl)

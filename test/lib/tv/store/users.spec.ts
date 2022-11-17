@@ -1,10 +1,19 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import Mixpanel from 'mixpanel'
+import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
 import { startServer } from '../../../../index'
 import { getDoc, getDocWhere, updateDoc } from '../../../../lib/tv/store/firebase'
 import type { User } from './../../../../lib/tv/store/users'
 import { handleServer } from '../../../util'
-import { testError } from '../util'
+import { mockMixpanel } from '../util'
+
+vi.mock('mixpanel', () => {
+  return {
+    default: {
+      init: vi.fn(),
+    },
+  }
+})
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
@@ -31,14 +40,13 @@ describe('lib/tv/store/users', () => {
       username: 'user name',
     }
 
-    // @ts-ignore
-    getDocWhere.mockResolvedValue(user)
+    ;(getDocWhere as Mock).mockResolvedValue(user)
+    ;(Mixpanel.init as Mock).mockReturnValue(mockMixpanel())
   })
 
   describe('GET /tv/user', () => {
     it('returns username and search links', async (ctx) => {
-      // @ts-ignore
-      getDoc.mockResolvedValue(user)
+      (getDoc as Mock).mockResolvedValue(user)
 
       const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
 
@@ -54,8 +62,7 @@ describe('lib/tv/store/users', () => {
     })
 
     it('sends 404 if user is not found', async (ctx) => {
-      // @ts-ignore
-      getDoc.mockResolvedValue(undefined)
+      (getDoc as Mock).mockResolvedValue(undefined)
 
       const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
 
@@ -63,10 +70,13 @@ describe('lib/tv/store/users', () => {
       expect(res.body).to.deep.equal({ error: 'User with id \'user-id\' not found' })
     })
 
-    it('sends 500 on error', (ctx) => {
-      return testError(getDoc, () => {
-        return ctx.request.get('/tv/user').set('api-key', 'api-key')
-      })
+    it('sends 500 on error', async (ctx) => {
+      (getDoc as Mock).mockRejectedValue(new Error('failed'))
+
+      const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
+
+      expect(res.status).to.equal(500)
+      expect(res.body.error).to.equal('failed')
     })
   })
 
@@ -80,8 +90,7 @@ describe('lib/tv/store/users', () => {
         }],
       }
 
-      // @ts-ignore
-      getDoc.mockResolvedValue({
+      ;(getDoc as Mock).mockResolvedValue({
         ...user,
         ...update,
       })
@@ -103,8 +112,7 @@ describe('lib/tv/store/users', () => {
     })
 
     it('sends 404 if user is not found', async (ctx) => {
-      // @ts-ignore
-      getDoc.mockResolvedValue(undefined)
+      (getDoc as Mock).mockResolvedValue(undefined)
 
       const res = await ctx.request.put('/tv/user').set('api-key', 'api-key')
 
@@ -112,10 +120,13 @@ describe('lib/tv/store/users', () => {
       expect(res.body).to.deep.equal({ error: 'User with id \'user-id\' not found' })
     })
 
-    it('sends 500 on error', (ctx) => {
-      return testError(getDoc, () => {
-        return ctx.request.put('/tv/user').set('api-key', 'api-key').send({})
-      })
+    it('sends 500 on error', async (ctx) => {
+      (getDoc as Mock).mockRejectedValue(new Error('failed'))
+
+      const res = await ctx.request.put('/tv/user').set('api-key', 'api-key').send({})
+
+      expect(res.status).to.equal(500)
+      expect(res.body.error).to.equal('failed')
     })
   })
 })

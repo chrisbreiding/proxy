@@ -40,6 +40,7 @@
     "firebase-admin": "^11.2.0",
     "fs-extra": "^10.1.0",
     "minimist": "^1.2.7",
+    "mixpanel": "^0.17.0",
     "morgan": "^1.10.0",
     "socket.io": "^4.5.3",
     "uuid": "^9.0.0"

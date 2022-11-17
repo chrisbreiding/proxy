@@ -32,7 +32,9 @@ export function handleServer (startServer: (port: number) => http.Server) {
 }
 
 export function fixture (name: string) {
-  return path.join(process.cwd(), `test/fixtures/${name}.json`)
+  const extension = path.extname(name) ? '' : '.json'
+
+  return path.join(process.cwd(), `test/fixtures/${name}${extension}`)
 }
 
 export function fixtureContents (name: string) {
