@@ -1,12 +1,13 @@
 import axios from 'axios'
 import express from 'express'
-import { debug } from '../util/debug'
+import Mixpanel from 'mixpanel'
+
+import { debug, debugVerbose } from '../util/debug'
+import { getEnv } from '../util/env'
 import { searchShows } from './source/shows'
 import { getMetaData } from './store/metadata'
 import { addShow, deleteShow, getShowsWithEpisodesForUser, updateShow } from './store/shows'
 import { getUser, getUserByApiKey, updateUser, User } from './store/users'
-import Mixpanel from 'mixpanel'
-import { getEnv } from '../util/env'
 
 const userMap = {} as { [key: string]: User }
 
@@ -30,10 +31,13 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
   userMap[apiKey] = user
   res.locals.user = user
 
-  const mixpanel = Mixpanel.init(getEnv('MIXPANEL_TOKEN')!)
-
-  res.locals.mixpanel = mixpanel
-  mixpanel.people.set(apiKey, { username: user.username })
+  try {
+    const mixpanel = Mixpanel.init(getEnv('MIXPANEL_TOKEN')!)
+    mixpanel.people.set(apiKey, { username: user.username })
+    res.locals.mixpanel = mixpanel
+  } catch (error: any) {
+    debug('Mixpanel.init error:', error.stack)
+  }
 
   next()
 }
@@ -138,7 +142,12 @@ export function createTvRoutes () {
     const { event, data } = req.body
 
     try {
-      res.locals.mixpanel.track(apiKey, event, data || {})
+      debugVerbose('Send mixpanel event \'%s\' with data: %o', event, data)
+
+      res.locals.mixpanel.track(event, {
+        ...(data || {}),
+        distinct_id: apiKey,
+      })
     } catch (error: any) {
       debug('Mixpanel error for event \'%s\': %s', event, error.stack)
     }

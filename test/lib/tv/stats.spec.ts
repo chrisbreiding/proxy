@@ -50,12 +50,39 @@ describe('lib/tv/stats', () => {
       expect(res.status).to.equal(204)
       expect(Mixpanel.init).toBeCalledWith(mixpanelToken)
       expect(mixpanelMock.people.set).toBeCalledWith('api-key', { username: 'user1' })
-      expect(mixpanelMock.track).toBeCalledWith('api-key', event, data)
+      expect(mixpanelMock.track).toBeCalledWith(event, {
+        distinct_id: 'api-key',
+        some: 'deets',
+      })
     })
 
-    it('ignores errors', async (ctx) => {
+    it('ignores init errors', async (ctx) => {
+      (Mixpanel.init as Mock).mockImplementation(() => {
+        throw new Error('mixpanel init error')
+      })
+
+      const res = await ctx.request.post('/tv/stats')
+      .set('api-key', 'api-key')
+      .send({})
+
+      expect(res.status).to.equal(204)
+    })
+
+    it('ignores people.set errors', async (ctx) => {
+      mixpanelMock.people.set.mockImplementation(() => {
+        throw new Error('mixpanel people.set error')
+      })
+
+      const res = await ctx.request.post('/tv/stats')
+      .set('api-key', 'api-key')
+      .send({})
+
+      expect(res.status).to.equal(204)
+    })
+
+    it('ignores track errors', async (ctx) => {
       mixpanelMock.track.mockImplementation(() => {
-        throw new Error('mixpanel error')
+        throw new Error('mixpanel track error')
       })
 
       const res = await ctx.request.post('/tv/stats')
