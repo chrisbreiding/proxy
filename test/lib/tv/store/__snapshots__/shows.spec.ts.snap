@@ -1,5 +1,24 @@
 // Vitest Snapshot v1
 
+exports[`lib/tv/store/shows > GET /tv/shows > handles episodes not existing 1`] = `
+[
+  {
+    "displayName": "user-1 display name",
+    "episodes": [],
+    "fileName": "user-1 file name",
+    "id": "1",
+    "searchName": "user-1 search name",
+  },
+  {
+    "displayName": "user-1 display name",
+    "episodes": [],
+    "fileName": "user-1 file name",
+    "id": "2",
+    "searchName": "user-1 search name",
+  },
+]
+`;
+
 exports[`lib/tv/store/shows > GET /tv/shows > returns shows from store for user 1`] = `
 [
   {

@@ -9,14 +9,11 @@ const pin = process.env.THETVDB_PIN = 'pin'
 import { startServer } from '../../../../index'
 import { baseUrl } from '../../../../lib/tv/source/util'
 import {
-  addCollectionToDoc,
   addDoc,
-  deleteCollection,
   deleteDoc,
   getCollection,
   getDoc,
   getDocWhere,
-  getSubCollections,
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { clone } from '../../../../lib/util/collections'
@@ -77,14 +74,11 @@ vi.mock('mixpanel', () => {
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
-    addCollectionToDoc: vi.fn(),
     addDoc: vi.fn(),
-    deleteCollection: vi.fn(),
     deleteDoc: vi.fn(),
     getCollection: vi.fn(),
     getDoc: vi.fn(),
     getDocWhere: vi.fn(),
-    getSubCollections: vi.fn(),
     updateDoc: vi.fn(),
   }
 })
@@ -123,16 +117,32 @@ describe('lib/tv/store/shows', () => {
         makeShow(2, [1, 2]),
         makeShow(3, [2]),
       ])
-      ;(getSubCollections as Mock).mockResolvedValue([
-        makeShow(1, [1], [
-          makeEpisode(1),
-          makeEpisode(2),
-        ]),
-        makeShow(2, [1, 2], [
-          makeEpisode(3),
-          makeEpisode(4),
-        ]),
+      ;(getDoc as Mock).mockImplementation((path: string) => {
+        return {
+          'shows/1/episodes/all': { episodes: [
+            makeEpisode(1),
+            makeEpisode(2),
+          ] },
+          'shows/2/episodes/all': { episodes: [
+            makeEpisode(3),
+            makeEpisode(4),
+          ] },
+        }[path]
+      })
+
+      const res = await ctx.request.get('/tv/shows').set('api-key', 'user-1-api-key')
+
+      expect(res.status).to.equal(200)
+      expect(res.body).toMatchSnapshot()
+    })
+
+    it('handles episodes not existing', async (ctx) => {
+      (getCollection as Mock).mockResolvedValue([
+        makeShow(1, [1]),
+        makeShow(2, [1, 2]),
+        makeShow(3, [2]),
       ])
+      ;(getDoc as Mock).mockResolvedValue(undefined)
 
       const res = await ctx.request.get('/tv/shows').set('api-key', 'user-1-api-key')
 
@@ -194,13 +204,13 @@ describe('lib/tv/store/shows', () => {
           },
         },
       })
-      expect(addCollectionToDoc).toBeCalledWith(`shows/${searchShow.id}/episodes`, expect.arrayContaining([{
+      expect(addDoc).toBeCalledWith(`shows/${searchShow.id}/episodes/all`, { episodes: expect.arrayContaining([{
         airdate: '2009-02-17T05:00:00.000Z',
         number: 1,
         season: 0,
         id: '3859781',
         title: 'Good Cop Bad Cop',
-      }]))
+      }]) })
       expect(res.status).to.equal(200)
       expect(res.body).toMatchSnapshot()
     })
@@ -334,7 +344,7 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/show-id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteCollection).toBeCalledWith('shows/show-id/episodes', 'id')
+      expect(deleteDoc).toBeCalledWith('shows/show-id/episodes/all')
       expect(deleteDoc).toBeCalledWith('shows/show-id')
       expect(res.status).to.equal(204)
     })
@@ -363,7 +373,6 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteCollection).not.toBeCalled
       expect(deleteDoc).not.toBeCalled
       expect(updateDoc).not.toBeCalled
       expect(res.status).to.equal(204)
@@ -377,7 +386,6 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteCollection).not.toBeCalled
       expect(deleteDoc).not.toBeCalled
       expect(updateDoc).not.toBeCalled
       expect(res.status).to.equal(204)

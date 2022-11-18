@@ -39,8 +39,6 @@ vi.mock('../../../../lib/tv/store/firebase', () => {
     deleteDoc: vi.fn(),
     getCollection: vi.fn(),
     getDoc: vi.fn(),
-    getDocWhere: vi.fn(),
-    getSubCollections: vi.fn(),
     updateDoc: vi.fn(),
   }
 })

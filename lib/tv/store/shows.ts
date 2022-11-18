@@ -1,7 +1,6 @@
 import { debugVerbose } from '../../util/debug'
 import {
   EditableShowProps,
-  FullShowProps,
   Show,
   ShowProps,
   UserShow,
@@ -9,13 +8,10 @@ import {
 import { Episode, getEpisodesForShow } from '../source/episodes'
 import { getShowById, SearchResultShow } from '../source/shows'
 import {
-  addCollectionToDoc,
   addDoc,
-  deleteCollection,
   deleteDoc,
   getCollection,
   getDoc,
-  getSubCollections,
   updateDoc,
 } from './firebase'
 import type { User } from './users'
@@ -24,16 +20,27 @@ export async function getShows (): Promise<ShowProps[]> {
   return getCollection<ShowProps>('shows')
 }
 
+async function getEpisodes (showId: string) {
+  const { episodes } = (await getDoc<AllEpisodes>(`shows/${showId}/episodes/all`)) || { episodes: [] }
+
+  return episodes
+}
+
 export async function getShowsWithEpisodesForUser (user: User): Promise<UserShow[]> {
   const showData = await getCollection<ShowProps>('shows')
   const showsForUser = showData.filter((showDatum) => {
     return !!showDatum.users[user.id]
   })
-  const showsWithEpisodes = await getSubCollections<ShowProps, FullShowProps>(showsForUser, 'shows', 'episodes')
 
-  return showsWithEpisodes.map((showDatum) => {
-    return Show.forUser(showDatum, user)
-  })
+  return Promise.all(showsForUser.map(async (showDatum) => {
+    const episodes = await getEpisodes(showDatum.id)
+
+    return Show.forUser({ ...showDatum, episodes }, user)
+  }))
+}
+
+interface AllEpisodes {
+  episodes: Episode[]
 }
 
 export async function addShow (showToAdd: SearchResultShow, user: User): Promise<UserShow | undefined> {
@@ -51,7 +58,7 @@ export async function addShow (showToAdd: SearchResultShow, user: User): Promise
     show.network ||= showToAdd.network
 
     await addDoc(`shows/${show.id}`, show.serialize())
-    await addCollectionToDoc(`shows/${show.id}/episodes`, episodes)
+    await addDoc(`shows/${show.id}/episodes/all`, { episodes })
 
     return Show.forUser({ ...show, episodes }, user)
   }
@@ -67,7 +74,7 @@ export async function addShow (showToAdd: SearchResultShow, user: User): Promise
   show.addUser(user)
   await updateDoc(`shows/${show.id}`, { users: show.users })
 
-  const episodes = await getCollection<Episode>(`shows/${show.id}/episodes`)
+  const episodes = await getEpisodes(show.id)
 
   return Show.forUser({ ...show, episodes }, user)
 }
@@ -100,7 +107,7 @@ export async function deleteShow (id: string, user: User) {
     await updateDoc(`shows/${id}`, showDatum.users)
   } else {
     debugVerbose('Delete show with id: %s', id)
-    await deleteCollection(`shows/${id}/episodes`, 'id')
+    await deleteDoc(`shows/${id}/episodes/all`)
     await deleteDoc(`shows/${id}`)
   }
 }
