@@ -64,9 +64,10 @@ export async function updateShowsAndEpisodes () {
 
 export default async function main () {
   try {
-    debug('Updating shows and episodes...')
+    debug('skipping update...')
+    // debug('Updating shows and episodes...')
 
-    await updateShowsAndEpisodes()
+    // await updateShowsAndEpisodes()
   } catch (error: any) {
     debug('Updating shows and episodes failed:')
     debug(error?.stack || error)
