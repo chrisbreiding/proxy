@@ -94,6 +94,12 @@ export async function addDoc (docPath: string, value: any) {
   await db.doc(docPath).set(value)
 }
 
+export async function setDoc (docPath: string, value: any) {
+  if (!db) return
+
+  await db.doc(docPath).set(value)
+}
+
 export async function updateDoc (docPath: string, value: any) {
   if (!db) return
 

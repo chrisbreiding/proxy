@@ -150,19 +150,3 @@ export async function getEpisodesUpdatedSince (date: string): Promise<ShowAndEpi
     throw error
   }
 }
-
-export async function getEpisode (id: string): Promise<Episode> {
-  debugVerbose('Find episode:', id)
-
-  try {
-    const { data: episode } = await makeRequest({
-      path: `episodes/${id}`,
-    }) as { data: TheTVDBEpisode }
-
-    return convertEpisode(episode)
-  } catch (error: any) {
-    debug(`Getting episode ${id} failed:`, error.stack)
-
-    throw error
-  }
-}

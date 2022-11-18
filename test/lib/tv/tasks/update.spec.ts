@@ -7,10 +7,9 @@ const pin = process.env.THETVDB_PIN = 'pin'
 
 import { baseUrl } from '../../../../lib/tv/source/util'
 import {
-  addDoc,
-  deleteDoc,
   getCollection,
   getDoc,
+  setDoc,
   updateDoc,
 } from '../../../../lib/tv/store/firebase'
 import { updateShowsAndEpisodes } from '../../../../lib/tv/tasks/update'
@@ -35,10 +34,9 @@ vi.mock('mixpanel', () => {
 
 vi.mock('../../../../lib/tv/store/firebase', () => {
   return {
-    addDoc: vi.fn(),
-    deleteDoc: vi.fn(),
     getCollection: vi.fn(),
     getDoc: vi.fn(),
+    setDoc: vi.fn(),
     updateDoc: vi.fn(),
   }
 })
@@ -73,7 +71,7 @@ describe('lib/tv/tasks/update', () => {
   })
 
   it('updates all upcoming/continuing shows poster and status properties', async () => {
-    nockLogin({ apikey, pin, times: 5 })
+    nockLogin({ apikey, pin, times: 6 })
 
     nock(baseUrl)
     .get('/v4/series/3')
@@ -90,35 +88,54 @@ describe('lib/tv/tasks/update', () => {
         { recordId: 3, seriesId: 1, method: 'create' },
         { recordId: 4, seriesId: 1, method: 'update' },
         { recordId: 5, seriesId: 1, method: 'delete' },
-        { recordId: 6, seriesId: 99, method: 'create' },
-        { recordId: 7, seriesId: 99, method: 'update' },
-        { recordId: 8, seriesId: 99, method: 'delete' },
+        { recordId: 6, seriesId: 3, method: 'create' },
+        { recordId: 7, seriesId: 3, method: 'update' },
+        { recordId: 8, seriesId: 99, method: 'create' },
+        { recordId: 9, seriesId: 99, method: 'update' },
       ],
     })
 
     nock(baseUrl)
-    .get('/v4/episodes/3')
-    .reply(200, { data: {
-      aired: '2022-11-12',
-      id: 3,
-      number: 5,
-      seasonNumber: 1,
-      name: 'Episode 3',
-    } })
+    .get('/v4/series/1/episodes/default?page=0')
+    .reply(200, {
+      data: { episodes: [{
+        aired: '2022-11-12',
+        id: 3,
+        number: 5,
+        seasonNumber: 1,
+        name: 'Episode 3',
+      }, {
+        aired: '2022-11-13',
+        id: 4,
+        number: 6,
+        seasonNumber: 1,
+        name: 'Episode 4',
+      }] },
+      links: {},
+    })
 
     nock(baseUrl)
-    .get('/v4/episodes/4')
-    .reply(200, { data: {
-      aired: '2022-11-13',
-      id: 4,
-      number: 6,
-      seasonNumber: 1,
-      name: 'Episode 4',
-    } })
+    .get('/v4/series/3/episodes/default?page=0')
+    .reply(200, {
+      data: { episodes: [{
+        aired: '2022-11-12',
+        id: 6,
+        number: 5,
+        seasonNumber: 1,
+        name: 'Episode 6',
+      }, {
+        aired: '2022-11-13',
+        id: 7,
+        number: 6,
+        seasonNumber: 1,
+        name: 'Episode 7',
+      }] },
+      links: {},
+    })
 
     await updateShowsAndEpisodes()
 
-    expect(updateDoc).toBeCalledTimes(4)
+    expect(updateDoc).toBeCalledTimes(3)
     expect(updateDoc).toBeCalledWith('shows/1', {
       poster: 'show 1 poster',
       status: 'Continuing',
@@ -128,25 +145,33 @@ describe('lib/tv/tasks/update', () => {
       status: 'Ended',
     })
 
-    expect(addDoc).toHaveBeenCalledOnce()
-    expect(addDoc).toBeCalledWith('shows/1/episodes/3', {
+    expect(setDoc).toHaveBeenCalledTimes(2)
+    expect(setDoc).toBeCalledWith('shows/1/episodes/all', { episodes: [{
       airdate: '2022-11-12T05:00:00.000Z',
       number: 5,
       id: '3',
       season: 1,
       title: 'Episode 3',
-    })
-
-    expect(updateDoc).toBeCalledWith('shows/1/episodes/4', {
+    }, {
       airdate: '2022-11-13T05:00:00.000Z',
       number: 6,
       id: '4',
       season: 1,
       title: 'Episode 4',
-    })
-
-    expect(deleteDoc).toHaveBeenCalledOnce()
-    expect(deleteDoc).toBeCalledWith('shows/1/episodes/5')
+    }] })
+    expect(setDoc).toBeCalledWith('shows/3/episodes/all', { episodes: [{
+      airdate: '2022-11-12T05:00:00.000Z',
+      number: 5,
+      id: '6',
+      season: 1,
+      title: 'Episode 6',
+    }, {
+      airdate: '2022-11-13T05:00:00.000Z',
+      number: 6,
+      id: '7',
+      season: 1,
+      title: 'Episode 7',
+    }] })
 
     expect(updateDoc).toBeCalledWith('meta/data', { lastUpdated: '2022-12-15T05:00:00.000Z' })
   })
@@ -180,7 +205,7 @@ describe('lib/tv/tasks/update', () => {
     .toThrowError('getting updates failed')
   })
 
-  it('errors if getting episode fails', async () => {
+  it('errors if getting episodes fails', async () => {
     nockLogin({ apikey, pin, times: 4 })
 
     nock(baseUrl)
@@ -197,10 +222,10 @@ describe('lib/tv/tasks/update', () => {
     })
 
     nock(baseUrl)
-    .get('/v4/episodes/3')
-    .replyWithError(new Error('getting episode failed'))
+    .get('/v4/series/1/episodes/default?page=0')
+    .replyWithError(new Error('getting episodes failed'))
 
     await expect(() => updateShowsAndEpisodes()).rejects
-    .toThrowError('getting episode failed')
+    .toThrowError('getting episodes failed')
   })
 })
