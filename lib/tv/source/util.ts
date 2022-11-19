@@ -48,7 +48,7 @@ export async function makeRequest (options: MakeRequestOptions) {
   const token = options.token || await authenticate()
   const url = `${baseUrl}/v4/${path}`
 
-  debugVerbose('request: %o', { method, url, params, token })
+  debugVerbose('request: %o', { method, url, params, token: `${token.substring(0, 10)}...` })
 
   const result = await request({
     headers: {

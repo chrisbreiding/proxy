@@ -16,7 +16,7 @@
     "prod": "TZ='America/New_York' node ./dist/index.js",
     "start": "TZ='America/New_York' NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
     "test": "TZ='America/New_York' vitest",
-    "dev-script": "NODE_ENV=development DEBUG=proxy node ./scripts/run-script",
+    "dev-script": "NODE_ENV=development DEBUG=proxy,proxy:verbose node ./scripts/run-script",
     "daytime-hourly": "DEBUG=proxy node ./scripts/run-daytime-hourly",
     "daytime-quarter-hourly": "DEBUG=proxy node ./scripts/run-daytime-quarter-hourly",
     "nightly": "DEBUG=proxy node ./scripts/run-nightly"
