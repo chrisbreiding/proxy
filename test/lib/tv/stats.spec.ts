@@ -56,6 +56,33 @@ describe('lib/tv/stats', () => {
       })
     })
 
+    it('allows request to have no api key', async (ctx) => {
+      (getDocWhere as Mock).mockResolvedValue(undefined)
+
+      const event = 'decathlon'
+      const data = { some: 'deets' }
+      const res = await ctx.request.post('/tv/stats')
+      .set('api-key', 'wrong')
+      .send({ event, data })
+
+      expect(res.status).to.equal(204)
+      expect(Mixpanel.init).toBeCalledWith(mixpanelToken)
+      expect(mixpanelMock.people.set).not.toBeCalled
+      expect(mixpanelMock.track).toBeCalledWith(event, { some: 'deets' })
+    })
+
+    it('allows request to be unauthenticated', async (ctx) => {
+      const event = 'decathlon'
+      const data = { some: 'deets' }
+      const res = await ctx.request.post('/tv/stats')
+      .send({ event, data })
+
+      expect(res.status).to.equal(204)
+      expect(Mixpanel.init).toBeCalledWith(mixpanelToken)
+      expect(mixpanelMock.people.set).not.toBeCalled
+      expect(mixpanelMock.track).toBeCalledWith(event, { some: 'deets' })
+    })
+
     it('ignores init errors', async (ctx) => {
       (Mixpanel.init as Mock).mockImplementation(() => {
         throw new Error('mixpanel init error')

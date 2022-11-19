@@ -11,10 +11,33 @@ import { getUser, getUserByApiKey, updateUser, User } from './store/users'
 
 const userMap = {} as { [key: string]: User }
 
+function setupMixpanel (res: express.Response, user?: User) {
+  try {
+    const mixpanel = Mixpanel.init(getEnv('MIXPANEL_TOKEN')!)
+    res.locals.mixpanel = mixpanel
+
+    if (user) {
+      mixpanel.people.set(user.apiKey, { username: user.username })
+    }
+  } catch (error: any) {
+    debug('Mixpanel.init error:', error.stack)
+  }
+}
+
 async function ensureAndSetUser (req: express.Request, res: express.Response, next: express.NextFunction) {
+  function proceed (user?: User) {
+    setupMixpanel(res, user)
+    next()
+  }
+
+  // the /stats route is unauthenticated. set user if possible, but otherwise
+  // allow it to go through without sending 401
+  const isStats = req.path === '/stats'
   const apiKey = req.headers['api-key'] || req.query.apiKey
 
   if (typeof apiKey !== 'string') {
+    if (isStats) return proceed()
+
     return res.status(401).json({
       error: 'Must specify `api-key` header',
     })
@@ -23,6 +46,8 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
   const user = userMap[apiKey] || await getUserByApiKey(apiKey as string)
 
   if (!user) {
+    if (isStats) return proceed()
+
     return res.status(401).json({
       error: `Could not find user with api key: ${apiKey}`,
     })
@@ -31,15 +56,7 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
   userMap[apiKey] = user
   res.locals.user = user
 
-  try {
-    const mixpanel = Mixpanel.init(getEnv('MIXPANEL_TOKEN')!)
-    mixpanel.people.set(apiKey, { username: user.username })
-    res.locals.mixpanel = mixpanel
-  } catch (error: any) {
-    debug('Mixpanel.init error:', error.stack)
-  }
-
-  next()
+  proceed(user)
 }
 
 function guard (handler: (req: express.Request, res: express.Response) => void) {
@@ -138,7 +155,7 @@ export function createTvRoutes () {
   }))
 
   router.post('/stats', guard(async (req: express.Request, res: express.Response) => {
-    const { apiKey } = res.locals.user
+    const { apiKey } = res.locals.user || {}
     const { event, data } = req.body
 
     try {
