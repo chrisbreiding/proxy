@@ -133,8 +133,12 @@ export function createTvRoutes () {
       return res.status(404).send({ error: `User with id '${id}' not found` })
     }
 
+    const metadata = await getMetaData()
+
     res.json({
-      lastUpdated: (await getMetaData()).lastUpdated,
+      hideSpecialEpisodes: user.hideSpecialEpisodes,
+      hideTBAEpisodes: user.hideTBAEpisodes,
+      lastUpdated: metadata.lastUpdated,
       searchLinks: user.searchLinks,
       username: user.username,
     })
@@ -142,15 +146,21 @@ export function createTvRoutes () {
 
   router.put('/user', guard(async (req: express.Request, res: express.Response) => {
     const id = res.locals.user.id
-    const user = await updateUser(id, { searchLinks: req.body.searchLinks })
+    const user = await updateUser(id, {
+      hideSpecialEpisodes: req.body.hideSpecialEpisodes,
+      hideTBAEpisodes: req.body.hideTBAEpisodes,
+      searchLinks: req.body.searchLinks,
+    })
 
     if (!user) {
       return res.status(404).send({ error: `User with id '${id}' not found` })
     }
 
     res.json({
-      username: user.username,
+      hideSpecialEpisodes: user.hideSpecialEpisodes,
+      hideTBAEpisodes: user.hideTBAEpisodes,
       searchLinks: user.searchLinks,
+      username: user.username,
     })
   }))
 

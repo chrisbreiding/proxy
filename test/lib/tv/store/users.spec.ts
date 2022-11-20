@@ -32,6 +32,8 @@ describe('lib/tv/store/users', () => {
     user = {
       apiKey: 'api-key',
       id: 'user-id',
+      hideSpecialEpisodes: true,
+      hideTBAEpisodes: 'NONE',
       searchLinks: [{
         name: 'link name',
         showLink: 'show link',
@@ -45,13 +47,15 @@ describe('lib/tv/store/users', () => {
   })
 
   describe('GET /tv/user', () => {
-    it('returns username and search links', async (ctx) => {
+    it('returns username and settings', async (ctx) => {
       (getDoc as Mock).mockResolvedValue(user)
 
       const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
 
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
+        hideSpecialEpisodes: true,
+        hideTBAEpisodes: 'NONE',
         searchLinks: [{
           name: 'link name',
           showLink: 'show link',
@@ -83,6 +87,7 @@ describe('lib/tv/store/users', () => {
   describe('PUT /tv/user', () => {
     it('updates user props and returns updated user', async (ctx) => {
       const update = {
+        hideTBAEpisodes: 'ALL',
         searchLinks: [{
           name: 'new link name',
           showLink: 'new show link',
@@ -102,6 +107,8 @@ describe('lib/tv/store/users', () => {
       expect(updateDoc).toBeCalledWith('users/user-id', update)
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
+        hideSpecialEpisodes: true,
+        hideTBAEpisodes: 'ALL',
         searchLinks: [{
           name: 'new link name',
           showLink: 'new show link',
