@@ -16,7 +16,7 @@
     "prepare": "husky install",
     "prod": "TZ='America/New_York' node ./dist/index.js",
     "start": "TZ='America/New_York' NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
-    "test": "TZ='America/New_York' npm run ts-check && vitest run --coverage",
+    "test": "npm run ts-check && TZ='America/New_York' vitest run --coverage",
     "test-watch": "TZ='America/New_York' vitest",
     "dev-script": "NODE_ENV=development DEBUG=proxy,proxy:verbose node ./scripts/run-script",
     "daytime-hourly": "DEBUG=proxy node ./scripts/run-daytime-hourly",
