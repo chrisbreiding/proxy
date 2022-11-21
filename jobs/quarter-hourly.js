@@ -5,7 +5,7 @@ const { mapPromisesSerially } = require('../dist/lib/util/collections')
 console.log('Running quarter-hourly scripts...')
 
 const scripts = [
-  require('../dist/lib/notion/update-current-weather').default,
+  // require('../dist/lib/notion/update-current-weather').default,
   require('../dist/lib/notion/update-date-extrapolation').default,
 ]
 
