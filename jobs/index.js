@@ -5,7 +5,7 @@ module.exports = [
   },
   {
     name: 'hourly',
-    interval: 'every hour',
+    interval: 'every hour on the 7th minute',
   },
   {
     name: 'nightly',
