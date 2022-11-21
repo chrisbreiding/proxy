@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const { parentPort } = require('worker_threads')
-const { mapPromisesSerially } = require('../lib/util/collections')
+const { mapPromisesSerially } = require('../dist/lib/util/collections')
 
 console.log('Running nightly scripts...')
 
