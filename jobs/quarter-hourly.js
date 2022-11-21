@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 const { parentPort } = require('worker_threads')
+const { mapPromisesSerially } = require('../dist/lib/util/collections')
 
 console.log('Running quarter-hourly scripts...')
 
-require('../dist/lib/notion/update-current-weather').default()
+const scripts = [
+  require('../dist/lib/notion/update-current-weather').default,
+  require('../dist/lib/notion/update-date-extrapolation').default,
+]
+
+mapPromisesSerially(scripts, (script) => script())
 .then(() => {
   console.log('Successfully ran quarter-hourly scripts')
 

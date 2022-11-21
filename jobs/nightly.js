@@ -6,7 +6,6 @@ console.log('Running nightly scripts...')
 
 const scripts = [
   require('../dist/lib/notion/update-restaurants-last-visit').default,
-  require('../dist/lib/notion/update-date-extrapolation').default,
   require('../dist/lib/tv/tasks/update').default,
 ]
 
