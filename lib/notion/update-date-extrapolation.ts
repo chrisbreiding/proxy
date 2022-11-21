@@ -184,5 +184,7 @@ export default async function main () {
   } catch (error: any) {
     debug('Updating date extrapolation failed:')
     debug(error?.stack || error)
+
+    throw error
   }
 }

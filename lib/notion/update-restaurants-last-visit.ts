@@ -131,5 +131,7 @@ export default async function main () {
   } catch (error: any) {
     debug('Updating restaurants last visit dates failed:')
     debug(error?.stack || error)
+
+    throw error
   }
 }

@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser'
+import Bree from 'bree'
 import cors from 'cors'
 import express from 'express'
 import { engine as handlebars } from 'express-handlebars'
@@ -81,6 +82,15 @@ export function startServer (port: number) {
   return server
 }
 
+async function startBree () {
+  if (process.env.NODE_ENV !== 'production') return
+
+  const bree = new Bree({})
+
+  await bree.start()
+}
+
 if (require.main === module) {
   startServer(Number(process.env.PORT) || 3333)
+  startBree()
 }

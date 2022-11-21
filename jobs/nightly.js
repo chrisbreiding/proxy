@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const { parentPort } = require('worker_threads')
 const { mapPromisesSerially } = require('../lib/util/collections')
 
 console.log('Running nightly scripts...')
@@ -12,8 +13,16 @@ const scripts = [
 mapPromisesSerially(scripts, (script) => script())
 .then(() => {
   console.log('Successfully ran nightly scripts')
+
+  if (parentPort) {
+    parentPort.postMessage('done')
+  } else {
+    process.exit(0)
+  }
 })
 .catch((error) => {
   console.log('Running nightly scripts failed:')
-  console.log(error.stack)
+  console.log(error?.stack || error)
+
+  process.exit(1)
 })

@@ -129,5 +129,7 @@ export default async function main () {
   } catch (error: any) {
     debug('Updating current weather failed:')
     debug(error?.stack || error)
+
+    throw error
   }
 }
