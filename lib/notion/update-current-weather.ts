@@ -1,17 +1,16 @@
 import dayjs from 'dayjs'
 
 import {
-  updateBlock,
+  getBlockChildrenDeep,
+  makeBlock,
   makeTextPart,
-  getBlockChildren,
-  deleteBlock,
   OwnBlock,
-  appendBlockChildrenDeep,
+  updateBlock,
 } from './util'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import { DayWeather, getWeatherData, getWeatherIcon } from '../weather'
+import { DayWeather, getWeatherData, getWeatherIcon, Weather } from '../weather'
 import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './weather'
 
 function getColor (temp: number) {
@@ -22,7 +21,7 @@ function getColor (temp: number) {
   return 'red'
 }
 
-function makeTableCells (weather: DayWeather[]) {
+function makeTableRows (weather: DayWeather[]) {
   return weather.map((dayWeather) => {
     const date = dayjs.unix(dayWeather.time).format('ddd, M/D')
 
@@ -46,34 +45,56 @@ interface UpdateTableWeatherOptions {
 }
 
 async function updateTableWeather ({ notionToken, currentWeatherId, weather }: UpdateTableWeatherOptions) {
-  const children = await getBlockChildren({ notionToken, pageId: currentWeatherId })
+  const toggleContents = await getBlockChildrenDeep({ notionToken, pageId: currentWeatherId })
 
-  if (children.length) {
-    deleteBlock({ blockId: children[0].id, notionToken })
+  if (toggleContents.length !== 2) {
+    throw new Error('Expected current weather block to have 2 children, a table block and a paragraph block')
   }
 
-  const table = {
-    type: 'table',
-    content: {
-      table_width: 3,
-      has_column_header: false,
-      has_row_header: false,
+  const table = toggleContents[0]
+
+  if (table.type !== 'table') {
+    throw new Error(`Expected first block to be a table, but it is a '${table.type}'`)
+  }
+
+  const paragraph = toggleContents[1]
+
+  if (paragraph.type !== 'paragraph') {
+    throw new Error(`Expected second block to be a paragraph, but it is a '${paragraph.type}'`)
+  }
+
+  const tableRows = table.children
+
+  if (!tableRows || tableRows.length !== 8) {
+    throw new Error(`Expected table to have 8 rows, but it has ${tableRows?.length || 0}`)
+  }
+
+  const newTableRows = makeTableRows(weather)
+
+  for (const [i, row] of newTableRows.entries()) {
+    const blockId = tableRows[i].id
+
+    debugVerbose('Update row #%s', i + 1)
+
+    await updateBlock({ notionToken, blockId, block: row })
+  }
+
+  const dateTime = dayjs().format('MMM D, h:mma')
+
+  debugVerbose('Update "Updated" date/time to:', dateTime)
+
+  const paragraphBlock = makeBlock({
+    text: `Updated ${dateTime}`,
+    type: 'paragraph',
+    annotations: {
+      color: 'gray',
     },
-    children: makeTableCells(weather),
-  } as OwnBlock
+  })
 
-  await appendBlockChildrenDeep({ blocks: [table], notionToken, pageId: currentWeatherId })
+  await updateBlock({ notionToken, blockId: paragraph.id, block: paragraphBlock })
 }
 
-interface UpdateWeatherOptions {
-  currentWeatherId: string
-  location: string
-  notionToken: string
-}
-
-export async function updateWeather ({ currentWeatherId, location, notionToken }: UpdateWeatherOptions) {
-  const weather = await getWeatherData(location)
-
+async function getCurrentWeatherBlock (weather: Weather) {
   const {
     icon,
     precipProbability,
@@ -96,12 +117,25 @@ export async function updateWeather ({ currentWeatherId, location, notionToken }
     },
   }
 
-  const newText = block.content.rich_text
+  const text = block.content.rich_text
   .map(({ text }) => text.content)
   .join('')
   .trim()
 
-  debug(`Update current weather to '${newText}'`)
+  return { block, text }
+}
+
+interface UpdateWeatherOptions {
+  currentWeatherId: string
+  location: string
+  notionToken: string
+}
+
+export async function updateWeather ({ currentWeatherId, location, notionToken }: UpdateWeatherOptions) {
+  const weather = await getWeatherData(location)
+  const { block, text } = await getCurrentWeatherBlock(weather)
+
+  debug(`Update current weather to '${text}'`)
 
   await updateBlock({ notionToken, block, blockId: currentWeatherId })
   await updateTableWeather({ currentWeatherId, notionToken, weather: weather.daily.data })

@@ -26,6 +26,30 @@
         "has_column_header": false,
         "has_row_header": false
       }
+    },
+    {
+      "object": "block",
+      "id": "updated-id",
+      "parent": {
+        "type": "block_id",
+        "block_id": "80975dbb-5c09-47fe-87c8-0b2793595143"
+      },
+      "created_time": "2022-11-05T17:45:00.000Z",
+      "last_edited_time": "2022-11-05T22:19:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": []
+      }
     }
   ],
   "next_cursor": null,

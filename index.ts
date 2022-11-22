@@ -82,6 +82,7 @@ export function startServer (port: number) {
   return server
 }
 
+/* c8 ignore start */
 async function startBree () {
   if (process.env.NODE_ENV !== 'production') return
 
@@ -94,3 +95,4 @@ if (require.main === module) {
   startServer(Number(process.env.PORT) || 3333)
   startBree()
 }
+/* c8 ignore stop */

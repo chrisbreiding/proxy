@@ -115,36 +115,36 @@ export async function getBlockChildrenDeep ({ notionToken, pageId, filter, inclu
   return compact(blocksWithChildren)
 }
 
-type Content = ParagraphBlockObjectResponse['paragraph']
+type Content = BookmarkBlockObjectResponse['bookmark']
+| BulletedListItemBlockObjectResponse['bulleted_list_item']
+| CalloutBlockObjectResponse['callout']
+| ChildDatabaseBlockObjectResponse['child_database']
+| ChildPageBlockObjectResponse['child_page']
+| ColumnBlockObjectResponse['column']
+| ColumnListBlockObjectResponse['column_list']
+| DividerBlockObjectResponse['divider']
+| EmbedBlockObjectResponse['embed']
+| EquationBlockObjectResponse['equation']
+| FileBlockObjectResponse['file']
 | Heading1BlockObjectResponse['heading_1']
 | Heading2BlockObjectResponse['heading_2']
 | Heading3BlockObjectResponse['heading_3']
-| BulletedListItemBlockObjectResponse['bulleted_list_item']
+| ImageBlockObjectResponse['image']
+| LinkPreviewBlockObjectResponse['link_preview']
+| LinkToPageBlockObjectResponse['link_to_page']
 | NumberedListItemBlockObjectResponse['numbered_list_item']
+| ParagraphBlockObjectResponse['paragraph']
+| PdfBlockObjectResponse['pdf']
+| QuoteBlockObjectResponse['quote']
+| SyncedBlockBlockObjectResponse['synced_block']
+| TableBlockObjectResponse['table']
+| TableOfContentsBlockObjectResponse['table_of_contents']
+| TableRowBlockObjectResponse['table_row']
+| TemplateBlockObjectResponse['template']
 | ToDoBlockObjectResponse['to_do']
 | ToggleBlockObjectResponse['toggle']
-| ChildPageBlockObjectResponse['child_page']
-| ChildDatabaseBlockObjectResponse['child_database']
-| EmbedBlockObjectResponse['embed']
-| ImageBlockObjectResponse['image']
-| VideoBlockObjectResponse['video']
-| FileBlockObjectResponse['file']
-| PdfBlockObjectResponse['pdf']
-| BookmarkBlockObjectResponse['bookmark']
-| CalloutBlockObjectResponse['callout']
-| QuoteBlockObjectResponse['quote']
-| EquationBlockObjectResponse['equation']
-| DividerBlockObjectResponse['divider']
-| TableOfContentsBlockObjectResponse['table_of_contents']
-| ColumnBlockObjectResponse['column']
-| ColumnListBlockObjectResponse['column_list']
-| LinkPreviewBlockObjectResponse['link_preview']
-| SyncedBlockBlockObjectResponse['synced_block']
-| TemplateBlockObjectResponse['template']
-| LinkToPageBlockObjectResponse['link_to_page']
-| TableBlockObjectResponse['table']
-| TableRowBlockObjectResponse['table_row']
 | UnsupportedBlockObjectResponse['unsupported']
+| VideoBlockObjectResponse['video']
 
 export interface OwnBlock {
   children?: OwnBlock[] | NotionBlock[]
@@ -153,6 +153,7 @@ export interface OwnBlock {
 }
 
 export interface NotionBlock extends OwnBlock {
+  children?: NotionBlock[]
   has_children: boolean
   id: string
 }
@@ -252,19 +253,6 @@ export function updateBlock ({ notionToken, blockId, block }: UpdateBlockOptions
     method: 'patch',
     path: `blocks/${blockId}`,
     body: convertedBlock,
-  })
-}
-
-interface DeleteBlockOptions {
-  notionToken: string
-  blockId: string
-}
-
-export function deleteBlock ({ notionToken, blockId }: DeleteBlockOptions) {
-  return makeRequest<void>({
-    notionToken,
-    method: 'delete',
-    path: `blocks/${blockId}`,
   })
 }
 
