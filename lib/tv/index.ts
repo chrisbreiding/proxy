@@ -138,6 +138,7 @@ export function createTvRoutes () {
     res.json({
       hideSpecialEpisodes: user.hideSpecialEpisodes,
       hideTBAEpisodes: user.hideTBAEpisodes,
+      isAdmin: user.isAdmin,
       lastUpdated: metadata.lastUpdated,
       searchLinks: user.searchLinks,
       username: user.username,

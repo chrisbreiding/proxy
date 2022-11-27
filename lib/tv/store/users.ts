@@ -5,6 +5,7 @@ export interface User {
   hideSpecialEpisodes: boolean
   hideTBAEpisodes: 'ALL' | 'NONE'
   id: string
+  isAdmin: boolean
   searchLinks: {
     name: string
     showLink: string

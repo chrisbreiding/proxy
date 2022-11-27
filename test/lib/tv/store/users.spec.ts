@@ -34,6 +34,7 @@ describe('lib/tv/store/users', () => {
       id: 'user-id',
       hideSpecialEpisodes: true,
       hideTBAEpisodes: 'NONE',
+      isAdmin: true,
       searchLinks: [{
         name: 'link name',
         showLink: 'show link',
@@ -47,7 +48,7 @@ describe('lib/tv/store/users', () => {
   })
 
   describe('GET /tv/user', () => {
-    it('returns username and settings', async (ctx) => {
+    it('returns user info and settings', async (ctx) => {
       (getDoc as Mock).mockResolvedValue(user)
 
       const res = await ctx.request.get('/tv/user').set('api-key', 'api-key')
@@ -56,6 +57,7 @@ describe('lib/tv/store/users', () => {
       expect(res.body).to.deep.equal({
         hideSpecialEpisodes: true,
         hideTBAEpisodes: 'NONE',
+        isAdmin: true,
         searchLinks: [{
           name: 'link name',
           showLink: 'show link',
