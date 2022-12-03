@@ -10,7 +10,7 @@ import {
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import { DayWeather, getWeatherData, getWeatherIcon, Weather } from '../weather'
+import { DayWeather, getWeatherIcon, getCurrentAndDailyWeather, CurrentAndDailyWeather } from '../weather'
 import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './weather'
 
 function getColor (temp: number) {
@@ -94,7 +94,7 @@ async function updateTableWeather ({ notionToken, currentWeatherId, weather }: U
   await updateBlock({ notionToken, blockId: paragraph.id, block: paragraphBlock })
 }
 
-async function getCurrentWeatherBlock (weather: Weather) {
+async function getCurrentWeatherBlock (weather: CurrentAndDailyWeather) {
   const {
     icon,
     precipProbability,
@@ -108,8 +108,8 @@ async function getCurrentWeatherBlock (weather: Weather) {
     content: {
       rich_text: compact([
         makeTextPart(`${getWeatherIcon(icon)} `),
-        makePrecipPart(icon === 'rain' && precipProbability >= 0.01, `${Math.round(precipProbability * 100)}%`),
-        makePrecipPart(icon === 'snow' && precipAccumulation >= 0.1, `${(precipAccumulation || 0).toFixed(2)}in`),
+        makePrecipPart(!!precipProbability && icon === 'rain' && precipProbability >= 0.01, `${Math.round((precipProbability || 0) * 100)}%`),
+        makePrecipPart(!!precipAccumulation && icon === 'snow' && precipAccumulation >= 0.1, `${(precipAccumulation || 0).toFixed(2)}in`),
         makeTextPart(`${roundedTemperature}°`, getColor(roundedTemperature)),
       ]),
       color: 'default' as const,
@@ -132,13 +132,18 @@ interface UpdateWeatherOptions {
 }
 
 export async function updateWeather ({ currentWeatherId, location, notionToken }: UpdateWeatherOptions) {
-  const weather = await getWeatherData(location)
+  const weather = await getCurrentAndDailyWeather(location)
   const { block, text } = await getCurrentWeatherBlock(weather)
 
   debug(`Update current weather to '${text}'`)
 
   await updateBlock({ notionToken, block, blockId: currentWeatherId })
-  await updateTableWeather({ currentWeatherId, notionToken, weather: weather.daily.data })
+  await updateTableWeather({
+    currentWeatherId,
+    notionToken,
+    weather:
+    weather.daily.data.slice(0, 8),
+  })
 }
 
 export default async function main () {

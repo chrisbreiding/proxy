@@ -1,0 +1,14 @@
+// Vitest Snapshot v1
+
+exports[`lib/dashboard > GET /dashboard/:key > returns garage, notion, and weather data 1`] = `
+{
+  "data": {
+    "apparentTemperature": 39.092,
+    "icon": "sleet",
+    "precipAccumulation": 0,
+    "precipProbability": 0,
+    "summary": "Mixed Snow & Sleet",
+    "temperature": 23,
+  },
+}
+`;

@@ -107,6 +107,6 @@ export class Show implements ShowProps {
   updateUser (user: User, props: EditableShowProps) {
     this.users[user.id] = props
   }
-  // don't understand why this fails converage
+  // don't understand why this fails coverage
   /* c8 ignore next */
 }

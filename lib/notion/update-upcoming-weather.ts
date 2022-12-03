@@ -12,7 +12,7 @@ import { getAllQuests } from './quests'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { makeConditionParts, makeTemperatureParts } from './weather'
-import { DayWeather, getWeatherData } from '../weather'
+import { DayWeather, getDailyWeather } from '../weather'
 
 interface DateObject {
   date: string
@@ -58,7 +58,7 @@ export function getWeatherByDate (weather: DayWeather[]) {
 
     return memo
   }, {} as WeatherByDate)
-  // don't understand why this fails converage
+  // don't understand why this fails coverage
   /* c8 ignore next */
 }
 
@@ -126,8 +126,8 @@ export async function updateWeather ({ notionToken, questsId, location }: Update
 
   debugVerbose('dateObjects:', dateObjects)
 
-  const weatherData = await getWeatherData(location)
-  const weather = await getWeatherByDate(weatherData.daily.data)
+  const weatherData = await getDailyWeather(location)
+  const weather = getWeatherByDate(weatherData.daily.data)
 
   await updateBlocks({ dateObjects, notionToken, weather })
 }

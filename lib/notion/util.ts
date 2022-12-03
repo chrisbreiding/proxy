@@ -179,7 +179,7 @@ export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRe
       children: blocks,
     },
   })
-  // don't understand why this fails converage
+  // don't understand why this fails coverage
   /* c8 ignore next */
 }
 
@@ -300,7 +300,7 @@ export function convertNotionBlockToOwnBlock (block: BlockObjectResponse): Notio
     id: block.id,
     type,
   }
-  // don't understand why this fails converage
+  // don't understand why this fails coverage
   /* c8 ignore next */
 }
 
@@ -315,7 +315,7 @@ export function convertBlockToOutgoingBlock (block: Block): OutgoingBlock {
     type: block.type,
     [block.type]: block.content,
   }
-  // don't understand why this fails converage
+  // don't understand why this fails coverage
   /* c8 ignore next */
 }
 

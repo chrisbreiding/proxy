@@ -81,3 +81,5 @@ const stackLineRegex = /at\s.*(?::\d+:\d+|\s\((?:.*:\d+:\d+|<unknown>)\))\)?/s
 export function replaceStackLines (value: string) {
   return value.replace(stackLineRegex, '[stack lines]')
 }
+
+export const weatherUrlBasePath = '/api/v1/weather/en/lat/lng?country=US&timezone=America%2FNew_York'

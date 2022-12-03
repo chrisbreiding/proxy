@@ -1,21 +1,17 @@
-import dayjs from 'dayjs'
 import nock from 'nock'
 import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
-process.env.DARK_SKY_API_KEY = 'dark-sky-key'
+const token = process.env.APPLE_WEATHER_TOKEN = 'token'
+delete process.env.TZ
 
 import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
-import { snapshotBody } from '../../util'
-import {
-  block,
-  nockGetBlockChildren,
-  nockNotion,
-  notionFixtureContents as fixtureContents,
-} from './util'
+import { fixtureContents, snapshotBody, weatherUrlBasePath } from '../../util'
+import { block, nockGetBlockChildren, nockNotion } from './util'
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    vi.setSystemTime(new Date(2022, 11, 28))
   })
 
   afterEach(() => {
@@ -23,50 +19,51 @@ describe('lib/notion/update-upcoming-weather', () => {
   })
 
   it('updates upcoming quest dates with temperature and conditions', async () => {
-    vi.setSystemTime(new Date(2022, 11, 1)) // just needs to be before 12/27
-
     const weather = fixtureContents('weather/weather')
 
-    weather.daily.data[0].time = dayjs('2022-12-27').unix()
-    weather.daily.data[1].time = dayjs('2022-12-28').unix()
-    weather.daily.data[2].time = dayjs('2022-12-29').unix()
-    weather.daily.data[3].time = dayjs('2022-12-30').unix()
-    weather.daily.data[4].time = dayjs('2022-12-31').unix()
-    weather.daily.data[5].time = dayjs('2023-01-01').unix()
-    weather.daily.data[6].time = dayjs('2023-01-02').unix()
+    delete weather.currentWeather
+    delete weather.forecastHourly
+    delete weather.weatherAlerts
 
-    nock('https://api.darksky.net')
-    .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
+    nock('https://weatherkit.apple.com')
+    .matchHeader('authorization', `Bearer ${token}`)
+    .get(`${weatherUrlBasePath}&dataSets=forecastDaily`)
     .reply(200, weather)
 
     const questBlocks = [
       block.p({ text: 'Some text' }),
       block.p({ text: '' }),
-      block.p({ text: 'Mon, 12/27    ☀️ 33° / 62°' }),
+      block.p({ text: 'Wed, 12/28    🌪 23° / 62°' }),
       block.bullet({ text: 'A task' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Tue, 12/28' }),
+      block.p({ text: 'Thu, 12/29' }),
       block.bullet({ text: 'A task' }),
       block.toggle({ text: 'Upcoming', id: 'upcoming-id' }),
     ]
 
     const upcomingBlocks = [
-      block.p({ text: 'Wed, 12/29' }),
+      block.p({ text: 'Fri, 12/30' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Thu, 12/30' }),
+      block.p({ text: 'Sat, 12/31' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Fri, 12/31' }),
+      block.p({ text: 'Sun, 1/1' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Sat, 1/1' }),
+      block.p({ text: 'Mon, 1/2' }),
       block.bullet({ text: 'A task' }),
-      block.p({ text: 'Sun, 1/2' }),
+      block.p({ text: 'Tue, 1/3' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Tue, 1/4' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Tue, 1/5' }),
+      block.bullet({ text: 'A task' }),
+      block.p({ text: 'Tue, 1/6' }),
       block.bullet({ text: 'A task' }),
     ]
 
     nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
     nockGetBlockChildren('upcoming-id', { reply: { results: upcomingBlocks } })
 
-    const snapshotUpdates = [6, 8, 10, 12, 14, 16].map((num) => {
+    const snapshotUpdates = [6, 8, 10, 12, 14, 16, 18, 20, 22].map((num) => {
       return snapshotBody(nockNotion({
         method: 'patch',
         path: `/v1/blocks/block-${num}`,

@@ -1,22 +1,18 @@
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-process.env.DARK_SKY_API_KEY = 'dark-sky-key'
+const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 
 import { updateWeather } from '../../../lib/notion/update-current-weather'
-import type { WeatherIcon } from '../../../lib/weather'
-import { getBody } from '../../util'
-import {
-  nockGetBlockChildren,
-  nockUpdateBlock,
-  notionFixtureContents as fixtureContents,
-} from './util'
+import type { ConditionCode } from '../../../lib/weather'
+import { fixtureContents, getBody, weatherUrlBasePath } from '../../util'
+import { nockGetBlockChildren, nockUpdateBlock } from './util'
 
 interface WeatherProps {
+  conditionCode?: ConditionCode
+  precipitationAmount?: number
+  precipitationChance?: number
   temperature?: number
-  icon?: WeatherIcon
-  precipProbability?: number
-  precipAccumulation?: number
 }
 
 describe('lib/notion/update-current-weather', () => {
@@ -31,13 +27,29 @@ describe('lib/notion/update-current-weather', () => {
   function nockWeather (props: WeatherProps = {}) {
     const weather = fixtureContents('weather/weather')
 
-    weather.currently = {
-      ...weather.currently,
-      ...props,
+    weather.currentWeather = {
+      ...weather.currentWeather,
+      temperature: props.temperature || weather.currentWeather.temperature,
+      conditionCode: props.conditionCode || weather.currentWeather.conditionCode,
     }
 
-    nock('https://api.darksky.net')
-    .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
+    if (props.precipitationAmount || props.precipitationChance) {
+      weather.forecastHourly = {
+        hours: [
+          {
+            ...weather.forecastHourly.hours[0],
+            precipitationAmount: props.precipitationAmount,
+            precipitationChance: props.precipitationChance,
+          },
+        ],
+      }
+    }
+
+    delete weather.weatherAlerts
+
+    nock('https://weatherkit.apple.com')
+    .matchHeader('authorization', `Bearer ${token}`)
+    .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastDaily,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
     .reply(200, weather)
   }
 
@@ -63,9 +75,13 @@ describe('lib/notion/update-current-weather', () => {
     ]
   }
 
+  function toCelsius (fahrenheit: number) {
+    return (fahrenheit - 32) / 1.8
+  }
+
   beforeEach(() => {
     vi.useFakeTimers()
-    vi.setSystemTime(new Date(2022, 11, 1))
+    vi.setSystemTime(new Date(2022, 11, 28))
   })
 
   afterEach(() => {
@@ -73,7 +89,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('updates the current weather block and daily weather table', async () => {
-    const getBodies = nockItUp()
+    const getBodies = nockItUp({ conditionCode: 'Blizzard' })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -87,7 +103,11 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors cool temperature blue', async () => {
-    const getBodies = nockItUp({ temperature: 40 })
+    const getBodies = nockItUp({
+      // @ts-expect-error
+      conditionCode: 'Other',
+      temperature: toCelsius(40),
+    })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -101,7 +121,10 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors warm temperature green', async () => {
-    const getBodies = nockItUp({ temperature: 60 })
+    const getBodies = nockItUp({
+      conditionCode: 'Cloudy',
+      temperature: toCelsius(60),
+    })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -115,7 +138,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors hot temperature orange', async () => {
-    const getBodies = nockItUp({ temperature: 85 })
+    const getBodies = nockItUp({ temperature: toCelsius(85) })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -129,7 +152,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors sweltering temperature red', async () => {
-    const getBodies = nockItUp({ temperature: 100 })
+    const getBodies = nockItUp({ temperature: toCelsius(100) })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -144,8 +167,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('displays rain icon and probability if rain', async () => {
     const getBodies = nockItUp({
-      icon: 'rain',
-      precipProbability: 0.45,
+      conditionCode: 'Rain',
+      precipitationChance: 0.45,
     })
 
     await updateWeather({
@@ -161,8 +184,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('displays snow icon and accumulation if snow', async () => {
     const getBodies = nockItUp({
-      icon: 'snow',
-      precipAccumulation: 2,
+      conditionCode: 'Snow',
+      precipitationAmount: 25,
     })
 
     await updateWeather({

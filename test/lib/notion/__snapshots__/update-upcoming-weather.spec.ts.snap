@@ -8,7 +8,7 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Tue, 12/28    ",
+          "content": "Thu, 12/29    ",
         },
       },
       {
@@ -54,12 +54,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Wed, 12/29    ",
+          "content": "Fri, 12/30    ",
         },
       },
       {
         "text": {
-          "content": "⛅️ ",
+          "content": "💨 ",
         },
       },
       {
@@ -100,7 +100,7 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Thu, 12/30    ",
+          "content": "Sat, 12/31    ",
         },
       },
       {
@@ -154,7 +154,7 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Fri, 12/31    ",
+          "content": "Sun, 1/1    ",
         },
       },
       {
@@ -200,12 +200,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Sat, 1/1    ",
+          "content": "Mon, 1/2    ",
         },
       },
       {
         "text": {
-          "content": "⛅️ ",
+          "content": "🌫 ",
         },
       },
       {
@@ -246,12 +246,12 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
     "rich_text": [
       {
         "text": {
-          "content": "Sun, 1/2    ",
+          "content": "Tue, 1/3    ",
         },
       },
       {
         "text": {
-          "content": "⛅️ ",
+          "content": "🥵 ",
         },
       },
       {
@@ -276,6 +276,144 @@ exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with 
         },
         "text": {
           "content": "63°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-18-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Tue, 1/4    ",
+        },
+      },
+      {
+        "text": {
+          "content": "🌀 ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "28°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "44°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-20-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Tue, 1/5    ",
+        },
+      },
+      {
+        "text": {
+          "content": "⛈ ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "33°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "54°",
+        },
+      },
+    ],
+  },
+  "type": "paragraph",
+}
+`;
+
+exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions > block-22-update 1`] = `
+{
+  "object": "block",
+  "paragraph": {
+    "color": "default",
+    "rich_text": [
+      {
+        "text": {
+          "content": "Tue, 1/6    ",
+        },
+      },
+      {
+        "text": {
+          "content": "🌨 ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "blue",
+        },
+        "text": {
+          "content": "25°",
+        },
+      },
+      {
+        "annotations": {
+          "color": "gray",
+        },
+        "text": {
+          "content": " / ",
+        },
+      },
+      {
+        "annotations": {
+          "color": "orange",
+        },
+        "text": {
+          "content": "51°",
         },
       },
     ],

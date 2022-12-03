@@ -2,21 +2,33 @@ import mockFs from 'mock-fs'
 import nock from 'nock'
 import {
   afterAll,
+  afterEach,
+  beforeEach,
   describe,
   expect,
   it,
+  vi,
 } from 'vitest'
 
 process.env.API_KEY = 'key'
-process.env.DARK_SKY_API_KEY = 'dark-sky-key'
+const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 
 import { startServer } from '../../index'
 import { nockGetBlockChildren } from './notion/util'
-import { handleServer } from '../util'
+import { fixtureContents, handleServer, weatherUrlBasePath } from '../util'
 
 describe('lib/dashboard', () => {
   describe('GET /dashboard/:key', () => {
     handleServer(startServer)
+
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date(2022, 11, 28))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
 
     afterAll(() => {
       mockFs.restore()
@@ -25,9 +37,14 @@ describe('lib/dashboard', () => {
     it('returns garage, notion, and weather data', async (ctx) => {
       nockGetBlockChildren('quests-id', { reply: { results: [] } })
 
-      nock('https://api.darksky.net')
-      .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
-      .reply(200, { weather: 'data' })
+      const weather = fixtureContents('weather/weather')
+
+      weather.currentWeather.conditionCode = 'MixedSnowAndSleet'
+
+      nock('https://weatherkit.apple.com')
+      .matchHeader('authorization', `Bearer ${token}`)
+      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+      .reply(200, weather)
 
       mockFs({
         'data': {
@@ -40,14 +57,15 @@ describe('lib/dashboard', () => {
       expect(res.status).to.equal(200)
       expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
       expect(res.body.notion).to.deep.equal({ data: [] })
-      expect(res.body.weather).to.deep.equal({ data: { weather: 'data' } })
+      expect(res.body.weather).toMatchSnapshot()
     })
 
     it('returns individual error instead of data', async (ctx) => {
       nockGetBlockChildren('quests-id', { reply: { results: [] } })
 
-      nock('https://api.darksky.net')
-      .get('/forecast/dark-sky-key/lat,lng?exclude=minutely,flags&extend=hourly')
+      nock('https://weatherkit.apple.com')
+      .matchHeader('authorization', `Bearer ${token}`)
+      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
       .reply(500, { message: 'could not get weather' })
 
       mockFs({

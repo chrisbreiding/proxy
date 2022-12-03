@@ -18,6 +18,7 @@
     "start": "TZ='America/New_York' NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
     "dev": "TZ='America/New_York' DEBUG=proxy,proxy:verbose nodemon ./index.ts",
     "test": "npm run ts-check && TZ='America/New_York' vitest run --coverage",
+    "test-single": "NODE_ENV=development TZ='America/New_York' vitest run",
     "test-watch": "TZ='America/New_York' vitest",
     "dev-script": "NODE_ENV=development DEBUG=proxy,proxy:verbose node ./scripts/run-script",
     "daytime-hourly": "DEBUG=proxy node ./scripts/run-daytime-hourly",

@@ -3,7 +3,7 @@ import type express from 'express'
 import { getGarageData } from './garage'
 import { getNotionData } from './notion'
 import { debug } from './util/debug'
-import { getWeatherData } from './weather'
+import { getCurrentWeather } from './weather'
 
 async function wrap (who: string, fn: () => Promise<any>) {
   try {
@@ -44,7 +44,7 @@ export async function get (req: express.Request, res: express.Response) {
   const [garage, notion, weather] = await Promise.all([
     wrap('garage', () => getGarageData()),
     wrap('notion', () => getNotionData({ notionToken, notionPageId })),
-    wrap('weather', () => getWeatherData(location)),
+    wrap('weather', () => getCurrentWeather(location)),
   ])
 
   res.json({ garage, notion, weather })
