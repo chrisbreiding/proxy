@@ -402,9 +402,9 @@ export interface AllWeather {
 }
 
 async function convertAllData (data: SourceAllWeather): Promise<AllWeather> {
-  const startOfHour = dayjs().startOf('hour').toISOString()
+  const startOfHour = dayjs().startOf('hour').unix()
   const currentHourWeather = data.forecastHourly.hours.find((hour) => {
-    return hour.forecastStart === startOfHour
+    return dayjs(hour.forecastStart).unix() === startOfHour
   })
 
   return {
