@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "watch": "tsc --watch",
+    "deploy": "git push dokku master",
     "ts-check": "tsc --noEmit",
     "lint": "eslint *.ts lib/*.ts lib/**/*.ts lib/**/*.js",
     "lint-fix": "npm run lint -- --fix",
