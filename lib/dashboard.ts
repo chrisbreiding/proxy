@@ -2,8 +2,9 @@ import type express from 'express'
 
 import { getGarageData } from './garage'
 import { getNotionData } from './notion'
+import { getGrindSizes } from './notion/coffee'
 import { debug } from './util/debug'
-import { getCurrentWeather } from './weather'
+// import { getCurrentWeather } from './weather'
 
 async function wrap (who: string, fn: () => Promise<any>) {
   try {
@@ -29,23 +30,27 @@ async function wrap (who: string, fn: () => Promise<any>) {
 }
 
 export async function get (req: express.Request, res: express.Response) {
-  const { location, notionToken, notionPageId } = req.query
+  const { notionBeansId, notionToken, notionQuestsId } = req.query
 
-  if (!location || typeof location !== 'string') {
-    return res.json({ error: { message: 'Must include location in query' } })
+  // if (!location || typeof location !== 'string') {
+  //   return res.json({ error: { message: 'Must include location in query' } })
+  // }
+  if (!notionBeansId || typeof notionBeansId !== 'string') {
+    return res.json({ error: { message: 'Must include notionBeansId in query' } })
   }
   if (!notionToken || typeof notionToken !== 'string') {
     return res.json({ error: { message: 'Must include notionToken in query' } })
   }
-  if (!notionPageId || typeof notionPageId !== 'string') {
-    return res.json({ error: { message: 'Must include notionPageId in query' } })
+  if (!notionQuestsId || typeof notionQuestsId !== 'string') {
+    return res.json({ error: { message: 'Must include notionQuestsId in query' } })
   }
 
-  const [garage, notion, weather] = await Promise.all([
+  const [garage, quests, beans] = await Promise.all([
     wrap('garage', () => getGarageData()),
-    wrap('notion', () => getNotionData({ notionToken, notionPageId })),
-    wrap('weather', () => getCurrentWeather(location)),
+    wrap('quests', () => getNotionData({ notionToken, notionPageId: notionQuestsId })),
+    // wrap('weather', () => getCurrentWeather(location)),
+    wrap('beans', () => getGrindSizes({ notionToken, notionBeansId })),
   ])
 
-  res.json({ garage, notion, weather })
+  res.json({ garage, quests, beans })
 }

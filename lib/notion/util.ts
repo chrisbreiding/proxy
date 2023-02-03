@@ -25,6 +25,7 @@ import type {
   NumberedListItemBlockObjectResponse,
   ParagraphBlockObjectResponse,
   PdfBlockObjectResponse,
+  QueryDatabaseBodyParameters,
   QuoteBlockObjectResponse,
   RichTextItemResponse,
   SyncedBlockBlockObjectResponse,
@@ -280,13 +281,15 @@ export function updatePage ({ notionToken, pageId, properties }: UpdatePageOptio
 interface QueryDatabasesOptions {
   notionToken: string
   databaseId: string
+  filter?: QueryDatabaseBodyParameters['filter']
 }
 
-export function queryDatabases ({ notionToken, databaseId }: QueryDatabasesOptions) {
+export function queryDatabases ({ notionToken, databaseId, filter }: QueryDatabasesOptions) {
   return makeRequest<ListDatabasesResponse>({
     notionToken,
     method: 'post',
     path: `databases/${databaseId}/query`,
+    body: filter ? { filter } : undefined,
   })
 }
 
