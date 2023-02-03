@@ -15,7 +15,7 @@ import {
 const daysOfWeek = 'Sun|Mon|Tue|Wed|Thu|Fri|Sat'.split('|')
 const daysOfWeekRegex = /(Sun|Mon|Tue|Wed|Thu|Fri|Sat),/
 const monthPattern = `(?:${getMonths({ short: true }).join('|')})`
-const monthsConditionRegex = new RegExp(`( if (${monthPattern}(?:(?:, )${monthPattern})*))`)
+const monthsConditionRegex = new RegExp(`( ?if (${monthPattern}(?:(?:, )${monthPattern})*))`)
 
 type DatesObject = { [key: string]: dayjs.Dayjs }
 
@@ -41,7 +41,7 @@ function getDates (startDate: string): DatesTracker {
 interface GetTextOptions {
   block: NotionBlock
   dates: DatesTracker
-  currentDate: string
+  currentDate?: dayjs.Dayjs
 }
 
 interface TextDate {
@@ -65,10 +65,10 @@ function getText ({ block, dates, currentDate }: GetTextOptions): TextDate {
 
   const [, condition, monthsString] = text.match(monthsConditionRegex) || []
 
-  if (!condition) return { text }
+  if (!condition || !currentDate) return { text }
 
   const months = monthsString.split(', ')
-  const currentMonth = dayjs(currentDate).format('MMM')
+  const currentMonth = currentDate.format('MMM')
 
   if (!months.includes(currentMonth)) return {}
 
@@ -90,12 +90,10 @@ async function getDayBlocks ({ notionToken, weekTemplatePageId, startDate }: Get
   const blocks = await getBlockChildrenDeep({ notionToken, pageId: weekTemplatePageId })
   const dates = getDates(startDate)
 
-  let currentDate: string
-
   return {
     dates,
     blocks: blocks.reduce((memo, block) => {
-      const { text, date } = getText({ block, dates, currentDate })
+      const { text, date } = getText({ block, dates, currentDate: memo.currentDate })
 
       if (date) {
         memo.currentDate = date
