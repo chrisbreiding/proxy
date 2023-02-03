@@ -6,7 +6,7 @@ interface GetGrindSizesOptions {
   notionBeansId: string
 }
 
-export async function getGrindSizes ({ notionToken, notionBeansId }: GetGrindSizesOptions) {
+export async function getActiveGrindSizes ({ notionToken, notionBeansId }: GetGrindSizesOptions) {
   const { results } = await queryDatabases({
     notionToken,
     databaseId: notionBeansId,

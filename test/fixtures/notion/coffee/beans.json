@@ -1,0 +1,354 @@
+{
+  "object": "list",
+  "results": [
+      {
+          "object": "page",
+          "id": "a68c021f-2404-48fe-8038-68fab09bbf82",
+          "created_time": "2023-02-02T15:30:00.000Z",
+          "last_edited_time": "2023-02-02T15:46:00.000Z",
+          "created_by": {
+              "object": "user",
+              "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+          },
+          "last_edited_by": {
+              "object": "user",
+              "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+          },
+          "cover": null,
+          "icon": null,
+          "parent": {
+              "type": "database_id",
+              "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
+          },
+          "archived": false,
+          "properties": {
+              "Brand": {
+                  "id": "%3BQLD",
+                  "type": "select",
+                  "select": {
+                      "id": "015a9183-6281-48fc-93e6-78ff57c10304",
+                      "name": "La Columbe",
+                      "color": "green"
+                  }
+              },
+              "Bag Description": {
+                  "id": "%3DmOo",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "Full-bodied, Chocolatey, Roasty",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "Full-bodied, Chocolatey, Roasty",
+                          "href": null
+                      }
+                  ]
+              },
+              "Origin": {
+                  "id": "DO%7BI",
+                  "type": "multi_select",
+                  "multi_select": [
+                      {
+                          "id": "b97d1567-7f7b-40bf-b108-c5f5ebb72a8a",
+                          "name": "Brazil",
+                          "color": "orange"
+                      },
+                      {
+                          "id": "01a7498d-a39b-44ef-8d3a-4ba009561bd8",
+                          "name": "Colombia",
+                          "color": "default"
+                      },
+                      {
+                          "id": "5cfb5d2f-3cfb-4248-9746-6b0de9872e00",
+                          "name": "Honduras",
+                          "color": "pink"
+                      },
+                      {
+                          "id": "a1a3bb6e-b154-412a-b3ee-917e8c06e0ee",
+                          "name": "Mexico",
+                          "color": "purple"
+                      }
+                  ]
+              },
+              "Decaffeination": {
+                  "id": "KvVG",
+                  "type": "select",
+                  "select": null
+              },
+              "Type": {
+                  "id": "OYoC",
+                  "type": "multi_select",
+                  "multi_select": []
+              },
+              "Roast": {
+                  "id": "WIW%3A",
+                  "type": "select",
+                  "select": {
+                      "id": "b522a619-af6d-4b1c-9c51-0660977429a8",
+                      "name": "Dark",
+                      "color": "brown"
+                  }
+              },
+              "Last Drank": {
+                  "id": "%5Cr%3Cr",
+                  "type": "date",
+                  "date": null
+              },
+              "Link": {
+                  "id": "%5DNVN",
+                  "type": "url",
+                  "url": "https://example.com/regular-coffee"
+              },
+              "Strength": {
+                  "id": "h%3BRj",
+                  "type": "select",
+                  "select": {
+                      "id": "p=vB",
+                      "name": "Regular",
+                      "color": "blue"
+                  }
+              },
+              "Grind": {
+                  "id": "iG%7DL",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "3",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "3",
+                          "href": null
+                      }
+                  ]
+              },
+              "Active": {
+                  "id": "iidH",
+                  "type": "checkbox",
+                  "checkbox": true
+              },
+              "Get Again?": {
+                  "id": "uZEf",
+                  "type": "select",
+                  "select": null
+              },
+              "Notes": {
+                  "id": "~e%3Fh",
+                  "type": "rich_text",
+                  "rich_text": []
+              },
+              "Name": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "Rise and Shine",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "Rise and Shine",
+                          "href": null
+                      }
+                  ]
+              }
+          },
+          "url": "https://www.notion.so/regular"
+      },
+      {
+          "object": "page",
+          "id": "ec763e6f-5936-4ee0-a1b7-b148cf1f5288",
+          "created_time": "2023-01-31T01:42:00.000Z",
+          "last_edited_time": "2023-02-02T21:45:00.000Z",
+          "created_by": {
+              "object": "user",
+              "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+          },
+          "last_edited_by": {
+              "object": "user",
+              "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+          },
+          "cover": null,
+          "icon": null,
+          "parent": {
+              "type": "database_id",
+              "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
+          },
+          "archived": false,
+          "properties": {
+              "Brand": {
+                  "id": "%3BQLD",
+                  "type": "select",
+                  "select": {
+                      "id": "0e9f4817-922b-41ec-9935-bb5c3a5f2271",
+                      "name": "Sprouts",
+                      "color": "yellow"
+                  }
+              },
+              "Bag Description": {
+                  "id": "%3DmOo",
+                  "type": "rich_text",
+                  "rich_text": []
+              },
+              "Origin": {
+                  "id": "DO%7BI",
+                  "type": "multi_select",
+                  "multi_select": []
+              },
+              "Decaffeination": {
+                  "id": "KvVG",
+                  "type": "select",
+                  "select": null
+              },
+              "Type": {
+                  "id": "OYoC",
+                  "type": "multi_select",
+                  "multi_select": []
+              },
+              "Roast": {
+                  "id": "WIW%3A",
+                  "type": "select",
+                  "select": {
+                      "id": "b522a619-af6d-4b1c-9c51-0660977429a8",
+                      "name": "Dark",
+                      "color": "brown"
+                  }
+              },
+              "Last Drank": {
+                  "id": "%5Cr%3Cr",
+                  "type": "date",
+                  "date": null
+              },
+              "Link": {
+                  "id": "%5DNVN",
+                  "type": "url",
+                  "url": "https://example.com/decaf-coffee"
+              },
+              "Strength": {
+                  "id": "h%3BRj",
+                  "type": "select",
+                  "select": {
+                      "id": ":<lP",
+                      "name": "Decaf",
+                      "color": "yellow"
+                  }
+              },
+              "Grind": {
+                  "id": "iG%7DL",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "42",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "42",
+                          "href": null
+                      }
+                  ]
+              },
+              "Active": {
+                  "id": "iidH",
+                  "type": "checkbox",
+                  "checkbox": true
+              },
+              "Get Again?": {
+                  "id": "uZEf",
+                  "type": "select",
+                  "select": {
+                      "id": "wCFK",
+                      "name": "Yes",
+                      "color": "green"
+                  }
+              },
+              "Notes": {
+                  "id": "~e%3Fh",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "Yummy yummy",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "Yummy yummy",
+                          "href": null
+                      }
+                  ]
+              },
+              "Name": {
+                  "id": "title",
+                  "type": "title",
+                  "title": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "Sleepy Time",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "Sleepy Time",
+                          "href": null
+                      }
+                  ]
+              }
+          },
+          "url": "https://www.notion.so/decaf"
+      }
+  ],
+  "next_cursor": null,
+  "has_more": false,
+  "type": "page",
+  "page": {}
+}

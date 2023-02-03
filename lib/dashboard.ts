@@ -2,7 +2,7 @@ import type express from 'express'
 
 import { getGarageData } from './garage'
 import { getNotionData } from './notion'
-import { getGrindSizes } from './notion/coffee'
+import { getActiveGrindSizes } from './notion/coffee'
 import { debug } from './util/debug'
 // import { getCurrentWeather } from './weather'
 
@@ -49,7 +49,7 @@ export async function get (req: express.Request, res: express.Response) {
     wrap('garage', () => getGarageData()),
     wrap('quests', () => getNotionData({ notionToken, notionPageId: notionQuestsId })),
     // wrap('weather', () => getCurrentWeather(location)),
-    wrap('beans', () => getGrindSizes({ notionToken, notionBeansId })),
+    wrap('beans', () => getActiveGrindSizes({ notionToken, notionBeansId })),
   ])
 
   res.json({ garage, quests, beans })

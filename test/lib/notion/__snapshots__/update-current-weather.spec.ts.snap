@@ -60,7 +60,7 @@ exports[`lib/notion/update-current-weather > colors sweltering temperature red 1
     "rich_text": [
       {
         "text": {
-          "content": "☀️ ",
+          "content": "🌨 ",
         },
       },
       {

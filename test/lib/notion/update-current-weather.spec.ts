@@ -152,7 +152,10 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors sweltering temperature red', async () => {
-    const getBodies = nockItUp({ temperature: toCelsius(100) })
+    const getBodies = nockItUp({
+      temperature: toCelsius(100),
+      conditionCode: 'MixedSnowAndSleet',
+    })
 
     await updateWeather({
       notionToken: 'notion-token',
