@@ -303,18 +303,17 @@ interface SourceCurrentAndHourlyWeather {
   }
 }
 
-// was used for dashboard, currently not used
-// export async function getCurrentWeather (location: string): Promise<CurrentWeather> {
-//   const { hourlyStart, hourlyEnd } = getCurrentHourlyStartAndEnd()
+export async function getCurrentWeather (location: string): Promise<CurrentWeather> {
+  const { hourlyStart, hourlyEnd } = getCurrentHourlyStartAndEnd()
 
-//   const data = await getWeather(location, {
-//     dataSets: 'currentWeather,forecastHourly',
-//     hourlyEnd,
-//     hourlyStart,
-//   }) as SourceCurrentAndHourlyWeather
+  const data = await getWeather(location, {
+    dataSets: 'currentWeather,forecastHourly',
+    hourlyEnd,
+    hourlyStart,
+  }) as SourceCurrentAndHourlyWeather
 
-//   return convertCurrentWeatherData(data.currentWeather, data.forecastHourly.hours[0])
-// }
+  return convertCurrentWeatherData(data.currentWeather, data.forecastHourly.hours[0])
+}
 
 interface SourceDailyWeather {
   forecastDaily: {

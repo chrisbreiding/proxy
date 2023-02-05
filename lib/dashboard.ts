@@ -1,10 +1,10 @@
 import type express from 'express'
 
+import { debug } from './util/debug'
+import { getActiveGrindSizes } from './notion/coffee'
+import { getCurrentWeather } from './weather'
 import { getGarageData } from './garage'
 import { getNotionData } from './notion'
-import { getActiveGrindSizes } from './notion/coffee'
-import { debug } from './util/debug'
-// import { getCurrentWeather } from './weather'
 
 async function wrap (who: string, fn: () => Promise<any>) {
   try {
@@ -30,11 +30,11 @@ async function wrap (who: string, fn: () => Promise<any>) {
 }
 
 export async function get (req: express.Request, res: express.Response) {
-  const { notionBeansId, notionToken, notionQuestsId } = req.query
+  const { location, notionBeansId, notionToken, notionQuestsId } = req.query
 
-  // if (!location || typeof location !== 'string') {
-  //   return res.json({ error: { message: 'Must include location in query' } })
-  // }
+  if (!location || typeof location !== 'string') {
+    return res.json({ error: { message: 'Must include location in query' } })
+  }
   if (!notionBeansId || typeof notionBeansId !== 'string') {
     return res.json({ error: { message: 'Must include notionBeansId in query' } })
   }
@@ -45,12 +45,12 @@ export async function get (req: express.Request, res: express.Response) {
     return res.json({ error: { message: 'Must include notionQuestsId in query' } })
   }
 
-  const [garage, quests, beans] = await Promise.all([
+  const [garage, quests, weather, beans] = await Promise.all([
     wrap('garage', () => getGarageData()),
     wrap('quests', () => getNotionData({ notionToken, notionPageId: notionQuestsId })),
-    // wrap('weather', () => getCurrentWeather(location)),
+    wrap('weather', () => getCurrentWeather(location)),
     wrap('beans', () => getActiveGrindSizes({ notionToken, notionBeansId })),
   ])
 
-  res.json({ garage, quests, beans })
+  res.json({ garage, quests, weather, beans })
 }

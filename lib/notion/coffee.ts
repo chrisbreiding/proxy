@@ -22,12 +22,15 @@ export async function getActiveGrindSizes ({ notionToken, notionBeansId }: GetGr
     },
   }) as { results: DatabaseObjectResponse[] }
 
-  return results.map(({ properties }) => {
+  return results.reduce((memo, { properties }) => {
+    // @ts-ignore
+    const strength = properties['Strength'].select.name as string
+    // @ts-ignore
+    const grindSize = richTextToPlainText(properties['Grind'].rich_text)
+
     return {
-      // @ts-ignore
-      strength: properties['Strength'].select.name as string,
-      // @ts-ignore
-      grindSize: richTextToPlainText(properties['Grind'].rich_text),
+      ...memo,
+      [strength.toLowerCase()]: grindSize,
     }
-  })
+  }, {})
 }
