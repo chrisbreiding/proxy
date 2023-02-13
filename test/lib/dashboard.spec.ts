@@ -1,6 +1,5 @@
 import mockFs from 'mock-fs'
 import nock from 'nock'
-import path from 'path'
 import {
   afterAll,
   afterEach,
@@ -72,14 +71,7 @@ describe('lib/dashboard', () => {
           },
         }
       `)
-      expect(res.body.beans).toMatchInlineSnapshot(`
-        {
-          "data": {
-            "decaf": "42",
-            "regular": "3",
-          },
-        }
-      `)
+      expect(res.body.beans).toMatchSnapshot()
     })
 
     it('returns individual error instead of data', async (ctx) => {
@@ -107,7 +99,7 @@ describe('lib/dashboard', () => {
       expect(res.status).to.equal(200)
       expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
       expect(res.body.quests).to.deep.equal({ data: [] })
-      expect(res.body.beans).to.deep.equal({ data: {} })
+      expect(res.body.beans).to.deep.equal({ data: [] })
 
       expect(res.body.weather.error).to.deep.equal({
         code: 'ERR_BAD_RESPONSE',

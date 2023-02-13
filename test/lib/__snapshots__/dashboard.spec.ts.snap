@@ -1,0 +1,399 @@
+// Vitest Snapshot v1
+
+exports[`lib/dashboard > GET /dashboard/:key > returns garage, quests, and beans data 2`] = `
+{
+  "data": [
+    {
+      "archived": false,
+      "cover": null,
+      "created_by": {
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b",
+        "object": "user",
+      },
+      "created_time": "2023-02-02T15:30:00.000Z",
+      "icon": null,
+      "id": "a68c021f-2404-48fe-8038-68fab09bbf82",
+      "last_edited_by": {
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b",
+        "object": "user",
+      },
+      "last_edited_time": "2023-02-02T15:46:00.000Z",
+      "object": "page",
+      "parent": {
+        "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
+        "type": "database_id",
+      },
+      "properties": {
+        "Active": {
+          "checkbox": true,
+          "id": "iidH",
+          "type": "checkbox",
+        },
+        "Bag Description": {
+          "id": "%3DmOo",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "Full-bodied, Chocolatey, Roasty",
+              "text": {
+                "content": "Full-bodied, Chocolatey, Roasty",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Brand": {
+          "id": "%3BQLD",
+          "select": {
+            "color": "green",
+            "id": "015a9183-6281-48fc-93e6-78ff57c10304",
+            "name": "La Columbe",
+          },
+          "type": "select",
+        },
+        "Decaffeination": {
+          "id": "KvVG",
+          "select": null,
+          "type": "select",
+        },
+        "Get Again?": {
+          "id": "uZEf",
+          "select": null,
+          "type": "select",
+        },
+        "Grind": {
+          "id": "iG%7DL",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "3",
+              "text": {
+                "content": "3",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Last Drank": {
+          "date": null,
+          "id": "%5Cr%3Cr",
+          "type": "date",
+        },
+        "Link": {
+          "id": "%5DNVN",
+          "type": "url",
+          "url": "https://example.com/regular-coffee",
+        },
+        "Name": {
+          "id": "title",
+          "title": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "Rise and Shine",
+              "text": {
+                "content": "Rise and Shine",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "title",
+        },
+        "Notes": {
+          "id": "~e%3Fh",
+          "rich_text": [],
+          "type": "rich_text",
+        },
+        "Origin": {
+          "id": "DO%7BI",
+          "multi_select": [
+            {
+              "color": "orange",
+              "id": "b97d1567-7f7b-40bf-b108-c5f5ebb72a8a",
+              "name": "Brazil",
+            },
+            {
+              "color": "default",
+              "id": "01a7498d-a39b-44ef-8d3a-4ba009561bd8",
+              "name": "Colombia",
+            },
+            {
+              "color": "pink",
+              "id": "5cfb5d2f-3cfb-4248-9746-6b0de9872e00",
+              "name": "Honduras",
+            },
+            {
+              "color": "purple",
+              "id": "a1a3bb6e-b154-412a-b3ee-917e8c06e0ee",
+              "name": "Mexico",
+            },
+          ],
+          "type": "multi_select",
+        },
+        "Roast": {
+          "id": "WIW%3A",
+          "select": {
+            "color": "brown",
+            "id": "b522a619-af6d-4b1c-9c51-0660977429a8",
+            "name": "Dark",
+          },
+          "type": "select",
+        },
+        "Strength": {
+          "id": "h%3BRj",
+          "select": {
+            "color": "blue",
+            "id": "p=vB",
+            "name": "Regular",
+          },
+          "type": "select",
+        },
+        "Temperature": {
+          "id": "%3DmO0",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "200",
+              "text": {
+                "content": "200",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Type": {
+          "id": "OYoC",
+          "multi_select": [],
+          "type": "multi_select",
+        },
+      },
+      "url": "https://www.notion.so/regular",
+    },
+    {
+      "archived": false,
+      "cover": null,
+      "created_by": {
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b",
+        "object": "user",
+      },
+      "created_time": "2023-01-31T01:42:00.000Z",
+      "icon": null,
+      "id": "ec763e6f-5936-4ee0-a1b7-b148cf1f5288",
+      "last_edited_by": {
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b",
+        "object": "user",
+      },
+      "last_edited_time": "2023-02-02T21:45:00.000Z",
+      "object": "page",
+      "parent": {
+        "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
+        "type": "database_id",
+      },
+      "properties": {
+        "Active": {
+          "checkbox": true,
+          "id": "iidH",
+          "type": "checkbox",
+        },
+        "Bag Description": {
+          "id": "%3DmOo",
+          "rich_text": [],
+          "type": "rich_text",
+        },
+        "Brand": {
+          "id": "%3BQLD",
+          "select": {
+            "color": "yellow",
+            "id": "0e9f4817-922b-41ec-9935-bb5c3a5f2271",
+            "name": "Sprouts",
+          },
+          "type": "select",
+        },
+        "Decaffeination": {
+          "id": "KvVG",
+          "select": null,
+          "type": "select",
+        },
+        "Get Again?": {
+          "id": "uZEf",
+          "select": {
+            "color": "green",
+            "id": "wCFK",
+            "name": "Yes",
+          },
+          "type": "select",
+        },
+        "Grind": {
+          "id": "iG%7DL",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "42",
+              "text": {
+                "content": "42",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Last Drank": {
+          "date": null,
+          "id": "%5Cr%3Cr",
+          "type": "date",
+        },
+        "Link": {
+          "id": "%5DNVN",
+          "type": "url",
+          "url": "https://example.com/decaf-coffee",
+        },
+        "Name": {
+          "id": "title",
+          "title": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "Sleepy Time",
+              "text": {
+                "content": "Sleepy Time",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "title",
+        },
+        "Notes": {
+          "id": "~e%3Fh",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "Yummy yummy",
+              "text": {
+                "content": "Yummy yummy",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Origin": {
+          "id": "DO%7BI",
+          "multi_select": [],
+          "type": "multi_select",
+        },
+        "Roast": {
+          "id": "WIW%3A",
+          "select": {
+            "color": "brown",
+            "id": "b522a619-af6d-4b1c-9c51-0660977429a8",
+            "name": "Dark",
+          },
+          "type": "select",
+        },
+        "Strength": {
+          "id": "h%3BRj",
+          "select": {
+            "color": "yellow",
+            "id": ":<lP",
+            "name": "Decaf",
+          },
+          "type": "select",
+        },
+        "Temperature": {
+          "id": "%3DmO0",
+          "rich_text": [
+            {
+              "annotations": {
+                "bold": false,
+                "code": false,
+                "color": "default",
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+              },
+              "href": null,
+              "plain_text": "195",
+              "text": {
+                "content": "195",
+                "link": null,
+              },
+              "type": "text",
+            },
+          ],
+          "type": "rich_text",
+        },
+        "Type": {
+          "id": "OYoC",
+          "multi_select": [],
+          "type": "multi_select",
+        },
+      },
+      "url": "https://www.notion.so/decaf",
+    },
+  ],
+}
+`;

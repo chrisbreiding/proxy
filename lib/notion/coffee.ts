@@ -6,7 +6,7 @@ interface GetGrindSizesOptions {
   notionBeansId: string
 }
 
-export async function getActiveGrindSizes ({ notionToken, notionBeansId }: GetGrindSizesOptions) {
+export async function getActiveBeanDetails ({ notionToken, notionBeansId }: GetGrindSizesOptions) {
   const { results } = await queryDatabases({
     notionToken,
     databaseId: notionBeansId,
@@ -22,15 +22,5 @@ export async function getActiveGrindSizes ({ notionToken, notionBeansId }: GetGr
     },
   }) as { results: DatabaseObjectResponse[] }
 
-  return results.reduce((memo, { properties }) => {
-    // @ts-ignore
-    const strength = properties['Strength'].select.name as string
-    // @ts-ignore
-    const grindSize = richTextToPlainText(properties['Grind'].rich_text)
-
-    return {
-      ...memo,
-      [strength.toLowerCase()]: grindSize,
-    }
-  }, {})
+  return results
 }

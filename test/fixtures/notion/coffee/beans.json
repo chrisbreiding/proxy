@@ -156,6 +156,29 @@
                   "type": "rich_text",
                   "rich_text": []
               },
+              "Temperature": {
+                  "id": "%3DmO0",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "200",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "200",
+                          "href": null
+                      }
+                  ]
+              },
               "Name": {
                   "id": "title",
                   "type": "title",
@@ -316,6 +339,29 @@
                               "color": "default"
                           },
                           "plain_text": "Yummy yummy",
+                          "href": null
+                      }
+                  ]
+              },
+              "Temperature": {
+                  "id": "%3DmO0",
+                  "type": "rich_text",
+                  "rich_text": [
+                      {
+                          "type": "text",
+                          "text": {
+                              "content": "195",
+                              "link": null
+                          },
+                          "annotations": {
+                              "bold": false,
+                              "italic": false,
+                              "strikethrough": false,
+                              "underline": false,
+                              "code": false,
+                              "color": "default"
+                          },
+                          "plain_text": "195",
                           "href": null
                       }
                   ]
