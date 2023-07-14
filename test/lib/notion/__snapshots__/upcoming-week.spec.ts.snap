@@ -2,6 +2,7 @@
 
 exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-1 1`] = `
 {
+  "after": "last-upcoming-id",
   "children": [
     {
       "object": "block",
@@ -22,9 +23,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "Sun task 1",
+            "plain_text": "$var1",
             "text": {
-              "content": "Sun task 1",
+              "content": "$var1",
             },
             "type": "text",
           },
@@ -82,9 +83,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "Mon task 1",
+            "plain_text": "Mon $var2",
             "text": {
-              "content": "Mon task 1",
+              "content": "Mon $var2",
             },
             "type": "text",
           },
@@ -174,6 +175,7 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
 
 exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-2 1`] = `
 {
+  "after": "nested-parent-id",
   "children": [
     {
       "bulleted_list_item": {
@@ -239,9 +241,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "Fri task 1",
+            "plain_text": "Value 3 (suffix)",
             "text": {
-              "content": "Fri task 1",
+              "content": "Value 3 (suffix)",
             },
             "type": "text",
           },
@@ -303,7 +305,7 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
 {
   "embed": {
     "caption": [],
-    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?weekTemplatePageId=week-template-id&appendToId=append-to-id&addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z",
+    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id",
   },
   "object": "block",
   "type": "embed",
@@ -357,6 +359,103 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
             "text": {
               "content": "Task 2",
               "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully handles absence of button block and variables block > append-1 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 12/26",
+            "text": {
+              "content": "Sun, 12/26",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "$var1",
+            "text": {
+              "content": "$var1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sun task 2",
+            "text": {
+              "content": "Sun task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Sun conditional task that matches",
+            "text": {
+              "content": "Sun conditional task that matches",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Mon, 12/27",
+            "text": {
+              "content": "Mon, 12/27",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Mon $var2",
+            "text": {
+              "content": "Mon $var2",
             },
             "type": "text",
           },

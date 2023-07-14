@@ -166,17 +166,19 @@ function getRichText (block: OwnBlock): RichTextItemResponse[] | undefined {
 }
 
 interface MakeAppendRequestOptions {
+  afterId?: string
   blocks: OutgoingBlock[]
   notionToken: string
   pageId: string
 }
 
-export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRequestOptions) {
+export function makeAppendRequest ({ afterId, notionToken, pageId, blocks }: MakeAppendRequestOptions) {
   return makeRequest<ListBlockChildrenResponse>({
     notionToken,
     method: 'patch',
     path: `blocks/${pageId}/children`,
     body: {
+      after: afterId,
       children: blocks,
     },
   })
@@ -185,6 +187,7 @@ export function makeAppendRequest ({ notionToken, pageId, blocks }: MakeAppendRe
 }
 
 interface AppendBlockChildrenOptions {
+  afterId?: string
   blocks: OwnBlock[]
   notionToken: string
   pageId: string
@@ -207,7 +210,8 @@ export async function appendBlockChildrenDeep ({ notionToken, pageId, blocks }: 
   return makeAppendRequest({ notionToken, pageId, blocks: moveChildren(blocks) })
 }
 
-export async function appendBlockChildren ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+export async function appendBlockChildren ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+  let currentAfterId = afterId
   let toAppend: OutgoingBlock[] = []
 
   for (const block of blocks) {
@@ -218,12 +222,23 @@ export async function appendBlockChildren ({ notionToken, pageId, blocks }: Appe
 
       toAppend.push(convertedBlock)
 
-      const { results } = await makeAppendRequest({ notionToken, pageId, blocks: toAppend })
+      const { results } = await makeAppendRequest({
+        afterId: currentAfterId,
+        notionToken,
+        pageId,
+        blocks: toAppend,
+      })
+      const lastResultId = results[results.length - 1].id
+
+      if (afterId) {
+        currentAfterId = lastResultId
+      }
+
       toAppend = []
 
       await appendBlockChildren({
         notionToken,
-        pageId: results[results.length - 1].id,
+        pageId: lastResultId,
         blocks: children,
       })
     } else {
@@ -233,6 +248,7 @@ export async function appendBlockChildren ({ notionToken, pageId, blocks }: Appe
 
   if (toAppend.length) {
     return makeAppendRequest({
+      afterId: currentAfterId,
       notionToken,
       pageId,
       blocks: toAppend,

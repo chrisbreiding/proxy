@@ -584,7 +584,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
       ],
     },
     "has_children": false,
-    "id": "5a2a7729-a742-4985-b0ab-ed039f420144",
+    "id": "last-upcoming-id",
     "type": "bulleted_list_item",
   },
   {
@@ -593,7 +593,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
       "url": "https://proxy.crbapps.com/notion/upcoming-week/",
     },
     "has_children": false,
-    "id": "3fbb71da-f4c6-4bd9-960f-1be37256084f",
+    "id": "button-id",
     "type": "embed",
   },
   {

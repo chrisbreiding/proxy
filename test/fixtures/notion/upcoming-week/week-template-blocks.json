@@ -112,7 +112,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Sun task 1",
+              "content": "$var1",
               "link": null
             },
             "annotations": {
@@ -123,7 +123,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Sun task 1",
+            "plain_text": "$var1",
             "href": null
           }
         ],
@@ -325,7 +325,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Mon task 1",
+              "content": "Mon $var2",
               "link": null
             },
             "annotations": {
@@ -336,7 +336,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Mon task 1",
+            "plain_text": "Mon $var2",
             "href": null
           }
         ],
@@ -815,7 +815,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Fri task 1",
+              "content": "${var3} (suffix)",
               "link": null
             },
             "annotations": {
@@ -826,7 +826,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Fri task 1",
+            "plain_text": "${var3} (suffix)",
             "href": null
           }
         ],
@@ -956,6 +956,178 @@
               "color": "default"
             },
             "plain_text": "Sat task 2",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "f2a02f0452e4-f78920b6-c2c6-4316-acfa",
+      "parent": {
+        "type": "page_id",
+        "page_id": "1a7837b5-bee5-4812-8906-25bdc50e99ab"
+      },
+      "created_time": "2022-06-19T15:46:00.000Z",
+      "last_edited_time": "2022-06-19T15:46:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "f2a02f0452e4-f78920b6-c2c6-asdv-acfa",
+      "parent": {
+        "type": "page_id",
+        "page_id": "1a7837b5-bee5-4812-8906-25bdc50e99ab"
+      },
+      "created_time": "2022-06-19T15:46:00.000Z",
+      "last_edited_time": "2022-06-19T15:46:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "heading_3",
+      "heading_3": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Extras",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Extras",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "f2a02f0452e4-f78920b6-sadv-4316-acfa",
+      "parent": {
+        "type": "page_id",
+        "page_id": "1a7837b5-bee5-4812-8906-25bdc50e99ab"
+      },
+      "created_time": "2022-06-19T15:46:00.000Z",
+      "last_edited_time": "2022-06-19T15:46:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Something extra",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Something extra",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "variables-id",
+      "parent": {
+        "type": "page_id",
+        "page_id": "1a7837b5-bee5-4812-8906-25bdc50e99ab"
+      },
+      "created_time": "2022-06-19T15:46:00.000Z",
+      "last_edited_time": "2022-06-19T15:46:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "toggle",
+      "toggle": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Variables",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Variables",
             "href": null
           }
         ],

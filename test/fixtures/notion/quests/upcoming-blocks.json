@@ -337,7 +337,7 @@
     },
     {
       "object": "block",
-      "id": "5a2a7729-a742-4985-b0ab-ed039f420144",
+      "id": "last-upcoming-id",
       "parent": {
         "type": "block_id",
         "block_id": "b947d72a-b658-4663-816e-3505e4776078"
@@ -380,7 +380,7 @@
     },
     {
       "object": "block",
-      "id": "3fbb71da-f4c6-4bd9-960f-1be37256084f",
+      "id": "button-id",
       "parent": {
         "type": "block_id",
         "block_id": "b947d72a-b658-4663-816e-3505e4776078"
