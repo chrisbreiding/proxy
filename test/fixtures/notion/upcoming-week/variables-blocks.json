@@ -69,7 +69,7 @@
           {
             "type": "text",
             "text": {
-              "content": "var2: Value 2",
+              "content": "var2: Value 2: with a colon",
               "link": null
             },
             "annotations": {
@@ -80,7 +80,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "var2: Value 2",
+            "plain_text": "var2: Value 2: with a colon",
             "href": null
           }
         ],

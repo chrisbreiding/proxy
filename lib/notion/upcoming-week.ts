@@ -38,11 +38,11 @@ async function getVariables ({ blocks, notionToken }: GetVariablesOptions) {
 
     if (!text) return memo
 
-    const [name, value] = text.split(': ')
+    const [name, ...values] = text.split(': ')
 
     return {
       ...memo,
-      [name]: value,
+      [name]: values.join(': '),
     }
   }, {} as { [key: string]: string })
 }

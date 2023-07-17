@@ -112,7 +112,7 @@
           {
             "type": "text",
             "text": {
-              "content": "$var1",
+              "content": "${var1}",
               "link": null
             },
             "annotations": {
@@ -123,7 +123,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "$var1",
+            "plain_text": "${var1}",
             "href": null
           }
         ],
@@ -325,7 +325,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Mon $var2",
+              "content": "Mon ${var2}",
               "link": null
             },
             "annotations": {
@@ -336,7 +336,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Mon $var2",
+            "plain_text": "Mon ${var2}",
             "href": null
           }
         ],

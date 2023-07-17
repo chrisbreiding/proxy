@@ -23,9 +23,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "$var1",
+            "plain_text": "Value 1",
             "text": {
-              "content": "$var1",
+              "content": "Value 1",
             },
             "type": "text",
           },
@@ -83,9 +83,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "Mon $var2",
+            "plain_text": "Mon Value 2: with a colon",
             "text": {
-              "content": "Mon $var2",
+              "content": "Mon Value 2: with a colon",
             },
             "type": "text",
           },
@@ -393,9 +393,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "$var1",
+            "plain_text": "\${var1}",
             "text": {
-              "content": "$var1",
+              "content": "\${var1}",
             },
             "type": "text",
           },
@@ -453,9 +453,9 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "Mon $var2",
+            "plain_text": "Mon \${var2}",
             "text": {
-              "content": "Mon $var2",
+              "content": "Mon \${var2}",
             },
             "type": "text",
           },
