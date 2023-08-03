@@ -26,6 +26,49 @@
           {
             "type": "text",
             "text": {
+              "content": "Something extraneous",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Something extraneous",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "dfbd2f12-eeff-4c16-8f72-5570b98a0751",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-30T14:00:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
               "content": "Tue, 11/1    ☔️ ",
               "link": null
             },
@@ -424,6 +467,272 @@
       "archived": false,
       "type": "divider",
       "divider": {}
+    },
+    {
+      "object": "block",
+      "id": "extra-date-1",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-30T15:00:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mon, 12/27    ☀️ ",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Mon, 12/27    ☀️ ",
+            "href": null
+          },
+          {
+            "type": "text",
+            "text": {
+              "content": "52°",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "blue"
+            },
+            "plain_text": "52°",
+            "href": null
+          },
+          {
+            "type": "text",
+            "text": {
+              "content": " / ",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "gray"
+            },
+            "plain_text": " / ",
+            "href": null
+          },
+          {
+            "type": "text",
+            "text": {
+              "content": "70°",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "orange"
+            },
+            "plain_text": "70°",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "extra-item-1",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-27T01:54:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "From the future for Monday",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "From the future for Monday",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "extra-date-2",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-30T15:00:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Wed, 12/29",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Wed, 12/29",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "extra-item-2",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-27T01:54:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "From the future for Wednesday",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "From the future for Wednesday",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "extra-item-3",
+      "parent": {
+        "type": "block_id",
+        "block_id": "b947d72a-b658-4663-816e-3505e4776078"
+      },
+      "created_time": "2022-10-26T16:25:00.000Z",
+      "last_edited_time": "2022-10-27T01:54:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Also from the future for Wednesday",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Also from the future for Wednesday",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
     },
     {
       "object": "block",

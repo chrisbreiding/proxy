@@ -80,6 +80,14 @@ export function nockUpdateBlock (id: string, { fixture: fixtureName }: UpdateOpt
   .reply(200)
 }
 
+export function nockDeleteBlock (id: string) {
+  return nock('https://api.notion.com')
+  .matchHeader('authorization', 'Bearer notion-token')
+  .matchHeader('notion-version', notionVersion)
+  .delete(`/v1/blocks/${id}`)
+  .reply(200)
+}
+
 interface BlockOptions {
   id?: string
   text: string

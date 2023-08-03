@@ -320,6 +320,33 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
             "underline": false,
           },
           "href": null,
+          "plain_text": "Something extraneous",
+          "text": {
+            "content": "Something extraneous",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "dfbd2f12-eeff-4c16-8f72-5570b98a0751",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
           "plain_text": "Tue, 11/1    ☔️ ",
           "text": {
             "content": "Tue, 11/1    ☔️ ",
@@ -601,6 +628,192 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     "has_children": false,
     "id": "2c715df6-e475-4151-8e19-41afab14a367",
     "type": "divider",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Mon, 12/27    ☀️ ",
+          "text": {
+            "content": "Mon, 12/27    ☀️ ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "blue",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "52°",
+          "text": {
+            "content": "52°",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "gray",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": " / ",
+          "text": {
+            "content": " / ",
+            "link": null,
+          },
+          "type": "text",
+        },
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "orange",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "70°",
+          "text": {
+            "content": "70°",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "extra-date-1",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "From the future for Monday",
+          "text": {
+            "content": "From the future for Monday",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "extra-item-1",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Wed, 12/29",
+          "text": {
+            "content": "Wed, 12/29",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "extra-date-2",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "From the future for Wednesday",
+          "text": {
+            "content": "From the future for Wednesday",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "extra-item-2",
+    "type": "bulleted_list_item",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
+          "plain_text": "Also from the future for Wednesday",
+          "text": {
+            "content": "Also from the future for Wednesday",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "extra-item-3",
+    "type": "bulleted_list_item",
   },
   {
     "content": {},

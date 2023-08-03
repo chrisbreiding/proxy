@@ -1,9 +1,10 @@
 import nock from 'nock'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { startServer } from '../../../index'
 import {
   nockAppendBlockChildren,
+  nockDeleteBlock,
   nockGetBlockChildren,
   nockUpdateBlock,
   notionFixtureContents,
@@ -42,7 +43,13 @@ describe('lib/notion/upcoming-week', () => {
       ].map(([key, value]) => `${key}=${value}`).join('&')
     }
 
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date(2021, 11, 24))
+    })
+
     afterEach(() => {
+      vi.useRealTimers()
       nock.cleanAll()
     })
 
@@ -62,6 +69,12 @@ describe('lib/notion/upcoming-week', () => {
         snapshotBody(nockUpdateBlock('button-id'), 'button'),
       ]
 
+      nockDeleteBlock('extra-date-1')
+      nockDeleteBlock('extra-date-2')
+      nockDeleteBlock('extra-item-1')
+      nockDeleteBlock('extra-item-2')
+      nockDeleteBlock('extra-item-3')
+
       const query = makeQuery()
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
@@ -77,7 +90,7 @@ describe('lib/notion/upcoming-week', () => {
       const weekTemplateBlocks = notionFixtureContents('upcoming-week/week-template-blocks')
 
       upcomingBlocks.results = upcomingBlocks.results.filter((block: any) => {
-        return block.id !== 'button-id'
+        return block.id !== 'button-id' && !block.id.includes('extra-')
       })
       weekTemplateBlocks.results = weekTemplateBlocks.results.slice(0, 8)
 

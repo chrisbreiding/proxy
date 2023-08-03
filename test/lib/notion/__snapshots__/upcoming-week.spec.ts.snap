@@ -83,6 +83,21 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
+            "plain_text": "From the future for Monday",
+            "text": {
+              "content": "From the future for Monday",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
             "plain_text": "Mon Value 2: with a colon",
             "text": {
               "content": "Mon Value 2: with a colon",
@@ -153,6 +168,36 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
         ],
       },
       "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "From the future for Wednesday",
+            "text": {
+              "content": "From the future for Wednesday",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Also from the future for Wednesday",
+            "text": {
+              "content": "Also from the future for Wednesday",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
     },
     {
       "bulleted_list_item": {

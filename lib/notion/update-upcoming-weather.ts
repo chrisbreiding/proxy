@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 
 import {
-  dateRegex,
   getBlockPlainText,
   getDateFromText,
   makeTextPart,
@@ -29,15 +28,13 @@ function getDates (questBlocks: NotionBlock[]) {
 
     if (!text) return memo
 
-    const [dateText] = text.match(dateRegex) || []
+    const { date, dateText } = getDateFromText(text)
 
-    if (!dateText) return memo
-
-    const date = getDateFromText(dateText).format('YYYY-MM-DD')
+    if (!date || !dateText) return memo
 
     memo.push({
       text,
-      date,
+      date: date.format('YYYY-MM-DD'),
       dateText,
       id: block.id,
     })
