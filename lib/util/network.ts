@@ -55,7 +55,7 @@ export async function request (options: RequestOptions) {
 
     /* c8 ignore start */
     debug('--- axios error ---')
-    debug({ url, body, headers, params, method })
+    debug(options)
     debug('')
     debug({
       stack: error?.stack,

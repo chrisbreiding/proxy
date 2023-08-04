@@ -2,13 +2,12 @@ import dayjs from 'dayjs'
 
 import { debug } from '../../util/debug'
 import type { ShowProps } from '../models/show'
-import { getEpisodesForShow, getEpisodesUpdatedSince } from '../source/episodes'
+import { getEpisodesForShow } from '../source/episodes'
 import { getShowsByIds, SearchResultShow } from '../source/shows'
 import { setDoc, updateDoc } from '../store/firebase'
-import { getMetaData } from '../store/metadata'
 import { getShows } from '../store/shows'
 
-async function getShowUpdates (): Promise<SearchResultShow[]> {
+async function getOngoingShows (): Promise<SearchResultShow[]> {
   const ongoingStoreShows = (await getShows()).filter((show: ShowProps) => {
     return show.status !== 'Ended'
   })
@@ -17,32 +16,29 @@ async function getShowUpdates (): Promise<SearchResultShow[]> {
 }
 
 export async function updateShowsAndEpisodes () {
-  const showUpdates = await getShowUpdates()
-  const lastUpdated = (await getMetaData()).lastUpdated
-  const updatedShowsWithEpisodes = await getEpisodesUpdatedSince(lastUpdated)
+  const ongoingShows = await getOngoingShows()
 
-  for (const show of showUpdates) {
+  const currentDateTime = dayjs().toISOString()
+
+  for (const show of ongoingShows) {
     debug('Update show - name: %s, id: %s', show.name, show.id)
+
+    // if the show has any episode updates, overwrite all the episodes
+    // with newly sourced ones
+    const episodes = await getEpisodesForShow(show.id)
+
+    await setDoc(`shows/${show.id}/episodes/all`, { episodes })
 
     await updateDoc(`shows/${show.id}`, {
       poster: show.poster,
       status: show.status,
+      lastUpdated: currentDateTime,
     })
-
-    const episodeUpdates = updatedShowsWithEpisodes[show.id]
-
-    if (episodeUpdates?.length) {
-      debug('Update all episodes for show')
-      // if the show has any episode updates, overwrite all the episodes
-      // with newly sourced ones
-      const episodes = await getEpisodesForShow(show.id)
-
-      await setDoc(`shows/${show.id}/episodes/all`, { episodes })
-    }
   }
 
   updateDoc('meta/data', {
-    lastUpdated: dayjs().toISOString(),
+    error: null,
+    lastUpdated: currentDateTime,
   })
 }
 
@@ -54,6 +50,14 @@ export default async function main () {
   } catch (error: any) {
     debug('Updating shows and episodes failed:')
     debug(error?.stack || error)
+
+    updateDoc('meta/data', {
+      error: {
+        message: error?.message || error,
+        stack: error?.stack,
+        date: dayjs().toISOString(),
+      },
+    })
 
     throw error
   }

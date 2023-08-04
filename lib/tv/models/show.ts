@@ -7,6 +7,7 @@ export interface UserShow {
   episodes: Episode[]
   fileName: string
   id: string
+  lastUpdated?: string
   network?: string
   poster?: string
   searchName: string
@@ -21,6 +22,7 @@ export interface EditableShowProps {
 
 export interface ShowProps {
   id: string
+  lastUpdated?: string
   name: string
   network?: string
   poster?: string
@@ -36,6 +38,7 @@ export interface FullShowProps extends ShowProps {
 
 export class Show implements ShowProps {
   id: string
+  lastUpdated?: string
   name: string
   network?: string
   poster?: string
@@ -67,6 +70,7 @@ export class Show implements ShowProps {
     return {
       episodes: showData.episodes,
       id: showData.id,
+      lastUpdated: showData.lastUpdated,
       network: showData.network,
       poster: showData.poster,
       status: showData.status,
@@ -78,6 +82,7 @@ export class Show implements ShowProps {
 
   constructor (props: ShowProps) {
     this.id = props.id
+    this.lastUpdated = props.lastUpdated
     this.name = props.name
     this.network = props.network
     this.poster = props.poster
@@ -88,6 +93,7 @@ export class Show implements ShowProps {
   serialize () {
     return {
       id: this.id,
+      lastUpdated: this.lastUpdated,
       name: this.name,
       network: this.network,
       poster: this.poster,

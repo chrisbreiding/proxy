@@ -130,23 +130,3 @@ function convertUpdates (updates: ShowAndEpisodeUpdates, episodeUpdate: TheTvDbE
 
   return updates
 }
-
-export async function getEpisodesUpdatedSince (date: string): Promise<ShowAndEpisodeUpdates> {
-  debugVerbose('find episodes updated since', date)
-
-  try {
-    const { data: episodeUpdates } = await makeRequest({
-      path: 'updates',
-      params: {
-        type: 'episodes',
-        since: `${dayjs(date).unix()}`,
-      },
-    })
-
-    return episodeUpdates.reduce(convertUpdates, {} as ShowAndEpisodeUpdates)
-  } catch (error: any) {
-    debug(`Getting episodes updated since ${date} failed:`, error.stack)
-
-    throw error
-  }
-}

@@ -51,6 +51,7 @@ describe('lib/tv/tasks/update', () => {
       makeShow(1, 'Upcoming'),
       makeShow(2, 'Ended'),
       makeShow(3, 'Continuing'),
+      makeShow(4, 'Continuing'),
     ])
     ;(getDoc as Mock).mockResolvedValue({
       lastUpdated: '2022-11-14T04:00:00.000Z',
@@ -70,7 +71,7 @@ describe('lib/tv/tasks/update', () => {
     vi.useRealTimers()
   })
 
-  it('updates all upcoming/continuing shows poster and status properties', async () => {
+  it('updates all upcoming/continuing shows', async () => {
     nockLogin({ apikey, pin, times: 6 })
 
     nock(baseUrl)
@@ -82,18 +83,12 @@ describe('lib/tv/tasks/update', () => {
     } })
 
     nock(baseUrl)
-    .get('/v4/updates?type=episodes&since=1668398400')
-    .reply(200, {
-      data: [
-        { recordId: 3, seriesId: 1, method: 'create' },
-        { recordId: 4, seriesId: 1, method: 'update' },
-        { recordId: 5, seriesId: 1, method: 'delete' },
-        { recordId: 6, seriesId: 3, method: 'create' },
-        { recordId: 7, seriesId: 3, method: 'update' },
-        { recordId: 8, seriesId: 99, method: 'create' },
-        { recordId: 9, seriesId: 99, method: 'update' },
-      ],
-    })
+    .get('/v4/series/4')
+    .reply(200, { data: { id: 4,
+      firstAired: '2022-05-01',
+      image: 'show 4 poster',
+      status: { name: 'Continuing' },
+    } })
 
     nock(baseUrl)
     .get('/v4/series/1/episodes/default?page=0')
@@ -133,19 +128,45 @@ describe('lib/tv/tasks/update', () => {
       links: {},
     })
 
+    nock(baseUrl)
+    .get('/v4/series/4/episodes/default?page=0')
+    .reply(200, {
+      data: { episodes: [{
+        aired: '2022-12-20',
+        id: 8,
+        number: 2,
+        seasonNumber: 2,
+        name: 'Episode 8',
+      }, {
+        aired: '2022-12-27',
+        id: 9,
+        number: 3,
+        seasonNumber: 2,
+        name: 'Episode 9',
+      }] },
+      links: {},
+    })
+
     await updateShowsAndEpisodes()
 
-    expect(updateDoc).toBeCalledTimes(3)
+    expect(updateDoc).toBeCalledTimes(4)
     expect(updateDoc).toBeCalledWith('shows/1', {
+      lastUpdated: '2022-12-15T05:00:00.000Z',
       poster: 'show 1 poster',
       status: 'Continuing',
     })
     expect(updateDoc).toBeCalledWith('shows/3', {
+      lastUpdated: '2022-12-15T05:00:00.000Z',
       poster: 'show 3 poster',
       status: 'Ended',
     })
+    expect(updateDoc).toBeCalledWith('shows/4', {
+      lastUpdated: '2022-12-15T05:00:00.000Z',
+      poster: 'show 4 poster',
+      status: 'Continuing',
+    })
 
-    expect(setDoc).toHaveBeenCalledTimes(2)
+    expect(setDoc).toHaveBeenCalledTimes(3)
     expect(setDoc).toBeCalledWith('shows/1/episodes/all', { episodes: [{
       airdate: '2022-11-12T05:00:00.000Z',
       number: 5,
@@ -172,37 +193,42 @@ describe('lib/tv/tasks/update', () => {
       season: 1,
       title: 'Episode 7',
     }] })
+    expect(setDoc).toBeCalledWith('shows/4/episodes/all', { episodes: [{
+      airdate: '2022-12-20T05:00:00.000Z',
+      number: 2,
+      id: '8',
+      season: 2,
+      title: 'Episode 8',
+    }, {
+      airdate: '2022-12-27T05:00:00.000Z',
+      number: 3,
+      id: '9',
+      season: 2,
+      title: 'Episode 9',
+    }] })
 
-    expect(updateDoc).toBeCalledWith('meta/data', { lastUpdated: '2022-12-15T05:00:00.000Z' })
+    expect(updateDoc).toBeCalledWith('meta/data', {
+      error: null,
+      lastUpdated: '2022-12-15T05:00:00.000Z',
+    })
   })
 
   it('errors if getting show fails', async () => {
-    nockLogin({ apikey, pin, times: 2 })
+    nockLogin({ apikey, pin, times: 3 })
 
     nock(baseUrl)
     .get('/v4/series/3')
     .replyWithError(new Error('getting show failed'))
 
-    await expect(updateShowsAndEpisodes()).rejects
-    .toThrowError('getting show failed')
-  })
-
-  it('errors if getting episode updates fails', async () => {
-    nockLogin({ apikey, pin, times: 3 })
-
     nock(baseUrl)
-    .get('/v4/series/3')
-    .reply(200, { data: { id: 3,
-      image: 'show 3 poster',
-      status: { name: 'Ended' },
+    .get('/v4/series/4')
+    .reply(200, { data: { id: 4,
+      image: 'show 4 poster',
+      status: { name: 'Continuing' },
     } })
 
-    nock(baseUrl)
-    .get('/v4/updates?type=episodes&since=1668398400')
-    .replyWithError(new Error('getting updates failed'))
-
-    await expect(() => updateShowsAndEpisodes()).rejects
-    .toThrowError('getting updates failed')
+    await expect(updateShowsAndEpisodes()).rejects
+    .toThrowError('getting show failed')
   })
 
   it('errors if getting episodes fails', async () => {
@@ -213,6 +239,13 @@ describe('lib/tv/tasks/update', () => {
     .reply(200, { data: { id: 3,
       image: 'show 3 poster',
       status: { name: 'Ended' },
+    } })
+
+    nock(baseUrl)
+    .get('/v4/series/4')
+    .reply(200, { data: { id: 4,
+      image: 'show 4 poster',
+      status: { name: 'Continuing' },
     } })
 
     nock(baseUrl)
