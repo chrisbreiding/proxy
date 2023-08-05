@@ -643,6 +643,41 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
             "underline": false,
           },
           "href": null,
+          "plain_text": "No date yet",
+          "text": {
+            "content": "No date yet",
+            "link": null,
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "has_children": false,
+    "id": "no-date-yet",
+    "type": "paragraph",
+  },
+  {
+    "content": {
+      "title": "Some child page",
+    },
+    "has_children": false,
+    "id": "no-text",
+    "type": "child_page",
+  },
+  {
+    "content": {
+      "color": "default",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": null,
           "plain_text": "Mon, 12/27    ☀️ ",
           "text": {
             "content": "Mon, 12/27    ☀️ ",
@@ -802,17 +837,17 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
             "underline": false,
           },
           "href": null,
-          "plain_text": "Also from the future for Wednesday",
+          "plain_text": "From the future for Wednesday with children",
           "text": {
-            "content": "Also from the future for Wednesday",
+            "content": "From the future for Wednesday with children",
             "link": null,
           },
           "type": "text",
         },
       ],
     },
-    "has_children": false,
-    "id": "extra-item-3",
+    "has_children": true,
+    "id": "extra-with-children",
     "type": "bulleted_list_item",
   },
   {

@@ -1,23 +1,7 @@
 {
   "results": [
     {
-      "id": "wed-id",
-      "type": "paragraph",
-      "object": "block",
-      "paragraph": {
-        "rich_text": [
-          {
-            "type": "text",
-            "text": {
-              "content": "Wed, 11/9"
-            },
-            "plain_text": "Wed, 11/9"
-          }
-        ]
-      }
-    },
-    {
-      "id": "nested-parent-id",
+      "id": "does-not-matter",
       "type": "bulleted_list_item",
       "object": "block",
       "bulleted_list_item": {
@@ -25,9 +9,25 @@
           {
             "type": "text",
             "text": {
-              "content": "Wed task 1 (has children)"
+              "content": "Does not matter"
             },
-            "plain_text": "Wed task 1 (has children)"
+            "plain_text": "Does not matter"
+          }
+        ]
+      }
+    },
+    {
+      "id": "extra-with-children",
+      "type": "bulleted_list_item",
+      "object": "block",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Also does not matter, just need this ID"
+            },
+            "plain_text": "Also does not matter, just need this ID"
           }
         ]
       }

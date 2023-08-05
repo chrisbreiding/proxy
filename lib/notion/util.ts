@@ -24,6 +24,7 @@ import type {
   ListDatabasesResponse,
   NumberedListItemBlockObjectResponse,
   ParagraphBlockObjectResponse,
+  PartialBlockObjectResponse,
   PdfBlockObjectResponse,
   QueryDatabaseBodyParameters,
   QuoteBlockObjectResponse,
@@ -197,7 +198,8 @@ interface AppendBlockChildrenOptions {
   pageId: string
 }
 
-export async function appendBlockChildrenDeep ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+// appends block children with a limit of 2 levels of nesting
+export async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   function moveChildren (blocks: NotionBlock[] | OwnBlock[]) {
     return blocks.map((block) => {
       const convertedBlock = convertBlockToOutgoingBlock(block)
@@ -214,7 +216,23 @@ export async function appendBlockChildrenDeep ({ notionToken, pageId, blocks }: 
   return makeAppendRequest({ notionToken, pageId, blocks: moveChildren(blocks) })
 }
 
-export async function appendBlockChildren ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+interface GetAfterIdOptions {
+  numAdded: number
+  previousAfterId?: string
+  results: (BlockObjectResponse | PartialBlockObjectResponse)[]
+}
+
+function getAfterId ({ numAdded, previousAfterId, results }: GetAfterIdOptions) {
+  if (!previousAfterId) return results[results.length - 1].id
+
+  const previousAfterIndex = results.findIndex((block) => areIdsEqual(block.id, previousAfterId))
+  const nextAfter = results[previousAfterIndex + numAdded]
+
+  return nextAfter.id
+}
+
+// appends blocks children with no limit to the levels of nesting
+export async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   let currentAfterId = afterId
   let toAppend: OutgoingBlock[] = []
 
@@ -232,17 +250,21 @@ export async function appendBlockChildren ({ afterId, notionToken, pageId, block
         pageId,
         blocks: toAppend,
       })
-      const lastResultId = results[results.length - 1].id
+      const lastAddedId = getAfterId({
+        numAdded: toAppend.length,
+        previousAfterId: currentAfterId,
+        results,
+      })
 
       if (afterId) {
-        currentAfterId = lastResultId
+        currentAfterId = lastAddedId
       }
 
       toAppend = []
 
-      await appendBlockChildren({
+      await appendBlockChildrenWithUnlimitedNesting({
         notionToken,
-        pageId: lastResultId,
+        pageId: lastAddedId,
         blocks: children,
       })
     } else {
@@ -430,6 +452,11 @@ export function getMonths ({ short }: { short?: boolean } = {}) {
   return Array.from(new Array(12)).map((_, i) => {
     return getMonthNameFromIndex(i, short)
   })
+}
+
+// compare guids without dashes in case one does not include dashes
+export function areIdsEqual (id1: string, id2: string) {
+  return id1.replaceAll('-', '') === id2.replaceAll('-', '')
 }
 
 /* c8 ignore start */

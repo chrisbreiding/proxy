@@ -2,7 +2,7 @@ import type { ChildPageBlockObjectResponse } from '@notionhq/client/build/src/ap
 import minimist from 'minimist'
 
 import {
-  appendBlockChildrenDeep,
+  appendBlockChildrenWithUpToTwoLevelsOfNesting,
   dateRegex,
   getBlockChildren,
   getBlockPlainText,
@@ -222,7 +222,7 @@ export async function yearInReview ({ donePageId, notionToken, year }: YearInRev
   const data = await getData({ months, notionToken })
   const blocks = makeBlocks(data)
 
-  await appendBlockChildrenDeep({ blocks, notionToken, pageId: yearId })
+  await appendBlockChildrenWithUpToTwoLevelsOfNesting({ blocks, notionToken, pageId: yearId })
 }
 
 export default async function main () {

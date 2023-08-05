@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import minimist from 'minimist'
 
 import {
-  appendBlockChildren,
+  appendBlockChildrenWithUnlimitedNesting,
   getBlockChildren,
   getBlockChildrenDeep,
   getBlockPlainText,
@@ -328,7 +328,7 @@ export async function addYear ({ notionToken, futurePageId, year }: AddYearOptio
   const monthsData = getMonthsData(yearTemplateBlocks, extras)
   const blocks = makeBlocks(monthsData, year)
 
-  await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId })
+  await appendBlockChildrenWithUnlimitedNesting({ notionToken, blocks, pageId: dropZoneId })
 }
 
 export default async function main () {

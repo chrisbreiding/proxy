@@ -1024,29 +1024,8 @@
       },
       "has_children": false,
       "archived": false,
-      "type": "heading_3",
-      "heading_3": {
-        "rich_text": [
-          {
-            "type": "text",
-            "text": {
-              "content": "Extras",
-              "link": null
-            },
-            "annotations": {
-              "bold": false,
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-              "code": false,
-              "color": "default"
-            },
-            "plain_text": "Extras",
-            "href": null
-          }
-        ],
-        "color": "default"
-      }
+      "type": "divider",
+      "divider": {}
     },
     {
       "object": "block",

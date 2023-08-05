@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { startServer } from '../../../index'
 import {
+  block,
   nockAppendBlockChildren,
   nockDeleteBlock,
   nockGetBlockChildren,
@@ -10,6 +11,7 @@ import {
   notionFixtureContents,
 } from './util'
 import { handleServer, snapshotBody } from '../../util'
+import { insertAtIndex, times } from '../../../lib/util/collections'
 
 process.env.API_KEY = 'key'
 
@@ -54,18 +56,51 @@ describe('lib/notion/upcoming-week', () => {
     })
 
     it('adds week based on template and updates button url', async (ctx) => {
-      nockGetBlockChildren('upcoming-id', { fixture: 'quests/upcoming-blocks' })
+      const upcomingBlocks = notionFixtureContents('quests/upcoming-blocks')
+
+      nockGetBlockChildren('upcoming-id', { reply: upcomingBlocks })
+      nockGetBlockChildren('extra-with-children', { fixture: 'blocks' })
       nockGetBlockChildren('variables-id', { fixture: 'upcoming-week/variables-blocks' })
       nockGetBlockChildren('week-template-id', { fixture: 'upcoming-week/week-template-blocks' })
       nockGetBlockChildren('nested-parent-id', { fixture: 'blocks' })
 
+      function insertBlocks (
+        originalResults: any[],
+        num: number,
+        previousLastId: string,
+        lastId: string,
+      ) {
+        const lastIndex = originalResults.findIndex((block: { id: string }) => {
+          return block.id === previousLastId
+        })
+        const newBlocks = times(num).map((_, i) => {
+          return block.p({
+            text: `Block #${i + 1}`,
+            id: i === num - 1 ? lastId : undefined,
+          })
+        })
+
+        return {
+          results: insertAtIndex(originalResults, newBlocks, lastIndex + 1),
+        }
+      }
+
+      // append results have all the page's blocks, including the inserted blocks
+      const firstAppendResults = insertBlocks(upcomingBlocks.results, 12, 'last-upcoming-id', 'nested-parent-id')
+      const secondAppendResults = insertBlocks(firstAppendResults.results, 3, 'nested-parent-id', 'extra-with-children')
+
       const snapshots = [
         snapshotBody(nockAppendBlockChildren({
           id: 'upcoming-id',
-          fixture: 'upcoming-week/append-1-result',
+          reply: firstAppendResults,
         }), 'append-1'),
-        snapshotBody(nockAppendBlockChildren({ id: 'nested-parent-id' }), 'nested'),
-        snapshotBody(nockAppendBlockChildren({ id: 'upcoming-id' }), 'append-2'),
+        snapshotBody(nockAppendBlockChildren({ id: 'nested-parent-id' }), 'nested-1'),
+        snapshotBody(nockAppendBlockChildren({
+          id: 'upcoming-id',
+          reply: secondAppendResults,
+        }), 'append-2'),
+        snapshotBody(nockAppendBlockChildren({ id: 'extra-with-children' }), 'nested-2'),
+        snapshotBody(nockAppendBlockChildren({ id: 'upcoming-id' }), 'append-3'),
         snapshotBody(nockUpdateBlock('button-id'), 'button'),
       ]
 
@@ -73,7 +108,7 @@ describe('lib/notion/upcoming-week', () => {
       nockDeleteBlock('extra-date-2')
       nockDeleteBlock('extra-item-1')
       nockDeleteBlock('extra-item-2')
-      nockDeleteBlock('extra-item-3')
+      nockDeleteBlock('extra-with-children')
 
       const query = makeQuery()
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)

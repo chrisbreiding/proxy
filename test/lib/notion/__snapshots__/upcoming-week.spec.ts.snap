@@ -83,21 +83,6 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "From the future for Monday",
-            "text": {
-              "content": "From the future for Monday",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
             "plain_text": "Mon Value 2: with a colon",
             "text": {
               "content": "Mon Value 2: with a colon",
@@ -116,6 +101,21 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
             "plain_text": "Mon task 2",
             "text": {
               "content": "Mon task 2",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "From the future for Monday",
+            "text": {
+              "content": "From the future for Monday",
             },
             "type": "text",
           },
@@ -173,36 +173,6 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "bulleted_list_item": {
         "rich_text": [
           {
-            "plain_text": "From the future for Wednesday",
-            "text": {
-              "content": "From the future for Wednesday",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "Also from the future for Wednesday",
-            "text": {
-              "content": "Also from the future for Wednesday",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
             "plain_text": "Wed task 1 (has children)",
             "text": {
               "content": "Wed task 1 (has children)",
@@ -237,6 +207,44 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "object": "block",
       "type": "bulleted_list_item",
     },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "From the future for Wednesday",
+            "text": {
+              "content": "From the future for Wednesday",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "From the future for Wednesday with children",
+            "text": {
+              "content": "From the future for Wednesday with children",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-3 1`] = `
+{
+  "after": "extra-with-children",
+  "children": [
     {
       "object": "block",
       "paragraph": {
@@ -357,7 +365,66 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
 }
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested 1`] = `
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested-1 1`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Task 1",
+            "text": {
+              "content": "Task 1",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Task 2",
+            "text": {
+              "content": "Task 2",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested-2 1`] = `
 {
   "children": [
     {

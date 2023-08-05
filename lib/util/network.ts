@@ -3,8 +3,8 @@ import axios, { Method } from 'axios'
 import Debug from 'debug'
 import path from 'path'
 
-import { debug } from './debug'
-import { outputJsonSync } from 'fs-extra'
+import { debug, debugVerbose } from './debug'
+import { outputJsonSync, readJSONSync } from 'fs-extra'
 
 export interface RequestOptions {
   url: string
@@ -17,14 +17,18 @@ export interface RequestOptions {
 export async function request (options: RequestOptions) {
   const { url, body, headers, params, method = 'get' } = options
 
+  debugVerbose('request: %s %s %o', method.toUpperCase(), url, { body, params, headers })
+
   try {
     /* c8 ignore start */
     if (Debug.enabled('proxy:record:requests')) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
       const paramsString = paramsPart ? `-(${paramsPart})` : ''
-      const filePath = path.join(process.cwd(), `.recorded/requests/${parsedUrl.pathname}${paramsString}.json`)
-      outputJsonSync(filePath, { url, method, headers, params, body }, { spaces: 2 })
+      const filePath = path.join(process.cwd(), `.recorded/requests/${parsedUrl.pathname}-${method.toUpperCase()}${paramsString}.json`)
+      const existing = readJSONSync(filePath, { throws: false }) || []
+
+      outputJsonSync(filePath, existing.concat({ url, method, headers, params, body }), { spaces: 2 })
     }
 
     /* c8 ignore stop */
@@ -41,9 +45,10 @@ export async function request (options: RequestOptions) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
       const paramsString = paramsPart ? `-(${paramsPart})` : ''
-      const filePath = path.join(process.cwd(), `.recorded/responses/${parsedUrl.pathname}${paramsString}.json`)
+      const filePath = path.join(process.cwd(), `.recorded/responses/${parsedUrl.pathname}-${method.toUpperCase()}${paramsString}.json`)
+      const existing = readJSONSync(filePath, { throws: false }) || []
 
-      outputJsonSync(filePath, { url, method, headers, params, body, response: response.data }, { spaces: 2 })
+      outputJsonSync(filePath, existing.concat({ request: { url, method, headers, params, body }, response: response.data }), { spaces: 2 })
     }
 
     /* c8 ignore stop */
