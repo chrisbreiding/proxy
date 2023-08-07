@@ -36,7 +36,7 @@ export async function updateShowsAndEpisodes () {
     })
   }
 
-  updateDoc('meta/data', {
+  await updateDoc('meta/data', {
     error: null,
     lastUpdated: currentDateTime,
   })
