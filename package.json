@@ -7,6 +7,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "build-factor-bookmarklet": "NODE_ENV=development ts-node ./scripts/bundle-factor-bookmarklet.ts",
+    "watch-factor-bookmarklet": "NODE_ENV=development ts-node ./scripts/bundle-factor-bookmarklet.ts --watch",
     "watch": "tsc --watch",
     "deploy": "git push dokku master",
     "ts-check": "tsc --noEmit",
@@ -61,6 +63,8 @@
     "@typescript-eslint/parser": "^5.41.0",
     "@vitest/coverage-c8": "^0.25.1",
     "babel-eslint": "^10.1.0",
+    "esbuild": "^0.19.2",
+    "esbuild-plugin-bookmarklet": "^1.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-crb": "^2.0.3",
     "foreman": "^3.0.1",

@@ -10,6 +10,7 @@ import type {
   ChildPageBlockObjectResponse,
   ColumnBlockObjectResponse,
   ColumnListBlockObjectResponse,
+  DatabaseObjectResponse,
   DividerBlockObjectResponse,
   EmbedBlockObjectResponse,
   EquationBlockObjectResponse,
@@ -324,14 +325,75 @@ interface QueryDatabasesOptions {
   notionToken: string
   databaseId: string
   filter?: QueryDatabaseBodyParameters['filter']
+  startCursor?: QueryDatabaseBodyParameters['start_cursor']
 }
 
-export function queryDatabases ({ notionToken, databaseId, filter }: QueryDatabasesOptions) {
+export function queryDatabases ({ notionToken, databaseId, filter, startCursor }: QueryDatabasesOptions) {
+  const body: QueryDatabaseBodyParameters = {}
+
+  if (filter) {
+    body.filter = filter
+  }
+
+  if (startCursor) {
+    body.start_cursor = startCursor
+  }
+
   return makeRequest<ListDatabasesResponse>({
     notionToken,
     method: 'post',
     path: `databases/${databaseId}/query`,
-    body: filter ? { filter } : undefined,
+    body: filter || startCursor ? body : undefined,
+  })
+}
+
+interface GetDatabasePagesOptions {
+  databaseId: string
+  notionToken: string
+  results?: DatabaseObjectResponse[]
+  startCursor?: string
+}
+
+export async function getDatabasePages (options: GetDatabasePagesOptions): Promise<DatabaseObjectResponse[]> {
+  const { databaseId, notionToken, startCursor } = options
+
+  const { next_cursor, has_more, results } = await queryDatabases({
+    databaseId,
+    notionToken,
+    startCursor,
+  })
+
+  if (!has_more) {
+    return (options.results || []).concat(results as DatabaseObjectResponse[])
+  }
+
+  return getDatabasePages({
+    databaseId,
+    notionToken,
+    results: results as DatabaseObjectResponse[],
+    startCursor: next_cursor || undefined,
+  })
+}
+
+interface AddDatabasePageOptions {
+  databaseId: string
+  notionToken: string
+  properties: Record<string, Record<string, any>>
+}
+
+export async function addDatabasePage (options: AddDatabasePageOptions): Promise<void> {
+  const { databaseId, notionToken, properties } = options
+
+  await makeRequest<ListDatabasesResponse>({
+    notionToken,
+    method: 'post',
+    path: 'pages',
+    body: {
+      parent: {
+        database_id: databaseId,
+      },
+      properties,
+    },
   })
 }
 

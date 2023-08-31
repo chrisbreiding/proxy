@@ -7,7 +7,7 @@ import type {
 import {
   getBlockChildren,
   getBlockPlainText,
-  queryDatabases,
+  getDatabasePages,
   richTextToPlainText,
   updatePage,
 } from './util'
@@ -18,12 +18,6 @@ import { getEnv } from '../util/env'
 interface UpdateRestaurantsLastVisitOptions {
   notionToken: string
   restaurantsDatabaseId: string
-}
-
-async function getDatabasePages ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
-  const { results } = await queryDatabases({ notionToken, databaseId: restaurantsDatabaseId })
-
-  return results as DatabaseObjectResponse[]
 }
 
 interface PageDate {
@@ -104,7 +98,7 @@ async function getMostRecentVisitDates ({ databasePages, notionToken }: GetMostR
 }
 
 export async function updateRestaurantsLastVisit ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
-  const databasePages = await getDatabasePages({ notionToken, restaurantsDatabaseId })
+  const databasePages = await getDatabasePages({ databaseId: restaurantsDatabaseId, notionToken })
   const pageDates = await getMostRecentVisitDates({ databasePages, notionToken })
 
   await updatePages({ notionToken, pageDates })

@@ -30,7 +30,7 @@ export function startServer (port: number) {
     app.use(morgan('tiny'))
   }
 
-  const corsOrigins = [
+  const corsOrigins: (string | RegExp)[] = [
     /^http:\/\/(\w+\.)?local(host)?:\d{4}$/,
     /^https:\/\/\w+\.crbapps\.com$/,
   ]
@@ -41,7 +41,12 @@ export function startServer (port: number) {
   }
 
   app.use(express.static('public'))
-  app.use(cors({ origin: corsOrigins }))
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const origin = req.url === `/notion/factor-meals/${process.env.API_KEY}`
+      ? corsOrigins.concat('https://www.factor75.com')
+      : corsOrigins
+    return cors({ origin })(req, res, next)
+  })
   app.use(bodyParser.json())
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.set('Content-Type', 'application/json')
@@ -63,6 +68,8 @@ export function startServer (port: number) {
   app.get('/garage/:key', ensureApiKey, garage.view)
   app.get('/notion/upcoming-week/:key', ensureApiKey, notion.upcomingWeekView)
   app.post('/notion/upcoming-week/:key', ensureApiKey, notion.addUpcomingWeek)
+  app.get('/notion/factor-meals/:key', ensureApiKey, notion.getFactorMeals)
+  app.post('/notion/factor-meals/:key', ensureApiKey, notion.addFactorMeal)
   app.get('/location-search', location.search)
   app.get('/location-details', location.details)
   app.get('/weather', weather.get)

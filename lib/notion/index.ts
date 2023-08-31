@@ -1,6 +1,7 @@
+import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/meals'
+import { onSocket } from './shopping'
 import { addUpcomingWeek, upcomingWeekView } from './upcoming-week'
 import { getBlockChildren } from './util'
-import { onSocket } from './shopping'
 
 interface GetDataOptions {
   notionToken: string
@@ -12,7 +13,9 @@ export function getNotionData ({ notionToken, notionPageId }: GetDataOptions) {
 }
 
 export {
+  addFactorMeal,
   addUpcomingWeek,
-  upcomingWeekView,
+  getFactorMeals,
   onSocket,
+  upcomingWeekView,
 }
