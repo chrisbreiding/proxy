@@ -3,177 +3,9 @@
   "results": [
     {
       "object": "page",
-      "id": "restaurant-1",
-      "created_time": "2022-10-27T21:30:00.000Z",
-      "last_edited_time": "2022-10-27T21:45:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "caed04eb-216e-4619-9857-e824995bbacc"
-      },
-      "archived": false,
-      "properties": {
-        "Rating": {
-          "id": "%22K%23s",
-          "type": "select",
-          "select": {
-            "id": "43935591-8bcd-48c3-b1ca-1d686eeee5aa",
-            "name": "★★★★☆",
-            "color": "green"
-          }
-        },
-        "Type": {
-          "id": "5%259x",
-          "type": "multi_select",
-          "multi_select": [
-            {
-              "id": "1faeb191-b396-413d-82c4-a6b903099dea",
-              "name": "Health",
-              "color": "default"
-            },
-            {
-              "id": "67aa07ae-b9b8-4c54-9c19-733e36567be3",
-              "name": "Salads",
-              "color": "default"
-            }
-          ]
-        },
-        "Schedule": {
-          "id": "CBkT",
-          "type": "rich_text",
-          "rich_text": [
-            {
-              "type": "text",
-              "text": {
-                "content": "S M T W T F S",
-                "link": null
-              },
-              "annotations": {
-                "bold": false,
-                "italic": false,
-                "strikethrough": false,
-                "underline": false,
-                "code": false,
-                "color": "default"
-              },
-              "plain_text": "S M T W T F S",
-              "href": null
-            }
-          ]
-        },
-        "⌖": {
-          "id": "IQuc",
-          "type": "checkbox",
-          "checkbox": true
-        },
-        "Price": {
-          "id": "%5ETUk",
-          "type": "select",
-          "select": {
-            "id": "1ec4c919-df9c-42b3-871a-59af09949a1a",
-            "name": "$$",
-            "color": "yellow"
-          }
-        },
-        "Menu": {
-          "id": "g*%5E.",
-          "type": "rich_text",
-          "rich_text": [
-            {
-              "type": "text",
-              "text": {
-                "content": "Menu",
-                "link": {
-                  "url": "https://example.com/restaurant-1"
-                }
-              },
-              "annotations": {
-                "bold": false,
-                "italic": false,
-                "strikethrough": false,
-                "underline": false,
-                "code": false,
-                "color": "default"
-              },
-              "plain_text": "Menu",
-              "href": "https://example.com/restaurant-1"
-            }
-          ]
-        },
-        "Location": {
-          "id": "iB!Y",
-          "type": "multi_select",
-          "multi_select": [
-            {
-              "id": "793a2d4c-b499-413c-8712-e2e9bc238c27",
-              "name": "Maine",
-              "color": "blue"
-            }
-          ]
-        },
-        "GF Options": {
-          "id": "uiy%3E",
-          "type": "select",
-          "select": {
-            "id": "c83aef93-9956-4b65-a4ae-71411b57ba04",
-            "name": "Yes",
-            "color": "green"
-          }
-        },
-        "Last Visit": {
-          "id": "wzD%3C",
-          "type": "date",
-          "date": {
-            "start": "2022-09-07",
-            "end": null,
-            "time_zone": null
-          }
-        },
-        "Archive": {
-          "id": "~ger",
-          "type": "checkbox",
-          "checkbox": false
-        },
-        "Name": {
-          "id": "title",
-          "type": "title",
-          "title": [
-            {
-              "type": "text",
-              "text": {
-                "content": "Restaurant 1",
-                "link": null
-              },
-              "annotations": {
-                "bold": false,
-                "italic": false,
-                "strikethrough": false,
-                "underline": false,
-                "code": false,
-                "color": "default"
-              },
-              "plain_text": "Restaurant 1",
-              "href": null
-            }
-          ]
-        }
-      },
-      "url": "https://www.notion.so/restaurant-1"
-    },
-    {
-      "object": "page",
-      "id": "restaurant-2",
-      "created_time": "2022-10-14T21:41:00.000Z",
-      "last_edited_time": "2022-10-15T15:05:00.000Z",
+      "id": "restaurant-4",
+      "created_time": "2022-06-14T21:25:00.000Z",
+      "last_edited_time": "2022-08-30T04:08:00.000Z",
       "created_by": {
         "object": "user",
         "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
@@ -204,13 +36,8 @@
           "type": "multi_select",
           "multi_select": [
             {
-              "id": "545102a6-b244-4cd2-8b7a-f0097e166eda",
-              "name": "Pizza",
-              "color": "default"
-            },
-            {
-              "id": "51636a12-4ade-47ab-a05c-25f609bed90d",
-              "name": "Italian",
+              "id": "d50ea508-f82b-473b-8580-2c557d6f6066",
+              "name": "Mexican",
               "color": "default"
             }
           ]
@@ -261,7 +88,7 @@
               "text": {
                 "content": "Menu",
                 "link": {
-                  "url": "https://example.com/restaurant-2"
+                  "url": "https://example.com/restaurant-4"
                 }
               },
               "annotations": {
@@ -273,7 +100,7 @@
                 "color": "default"
               },
               "plain_text": "Menu",
-              "href": "https://example.com/restaurant-2"
+              "href": "https://example.com/restaurant-4"
             }
           ]
         },
@@ -282,26 +109,22 @@
           "type": "multi_select",
           "multi_select": [
             {
-              "id": "614d150f-e520-442f-8e98-a8565920dfb9",
-              "name": "New Hampshire",
-              "color": "green"
+              "id": "9c3b4300-4cff-4df8-8823-495f64e6a24c",
+              "name": "Massachusetts",
+              "color": "blue"
             }
           ]
         },
         "GF Options": {
           "id": "uiy%3E",
           "type": "select",
-          "select": {
-            "id": "c83aef93-9956-4b65-a4ae-71411b57ba04",
-            "name": "Yes",
-            "color": "green"
-          }
+          "select": null
         },
         "Last Visit": {
           "id": "wzD%3C",
           "type": "date",
           "date": {
-            "start": "2022-10-14",
+            "start": "2022-08-29",
             "end": null,
             "time_zone": null
           }
@@ -318,7 +141,7 @@
             {
               "type": "text",
               "text": {
-                "content": "Restaurant 2",
+                "content": "Restaurant 4",
                 "link": null
               },
               "annotations": {
@@ -329,26 +152,26 @@
                 "code": false,
                 "color": "default"
               },
-              "plain_text": "Restaurant 2",
+              "plain_text": "Restaurant 4",
               "href": null
             }
           ]
         }
       },
-      "url": "https://www.notion.so/restaurant-2"
+      "url": "https://www.notion.so/restaurant-4"
     },
     {
       "object": "page",
-      "id": "restaurant-3",
-      "created_time": "2022-07-09T20:42:00.000Z",
-      "last_edited_time": "2022-09-01T20:18:00.000Z",
+      "id": "restaurant-5",
+      "created_time": "2022-06-10T17:24:00.000Z",
+      "last_edited_time": "2022-08-30T04:08:00.000Z",
       "created_by": {
         "object": "user",
         "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
       },
       "last_edited_by": {
         "object": "user",
-        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
       },
       "cover": null,
       "icon": null,
@@ -362,9 +185,9 @@
           "id": "%22K%23s",
           "type": "select",
           "select": {
-            "id": "9162a032-2036-4432-a541-f06bb1b6dfc2",
-            "name": "★★★★★",
-            "color": "blue"
+            "id": "43935591-8bcd-48c3-b1ca-1d686eeee5aa",
+            "name": "★★★★☆",
+            "color": "green"
           }
         },
         "Type": {
@@ -372,13 +195,8 @@
           "type": "multi_select",
           "multi_select": [
             {
-              "id": "d50ea508-f82b-473b-8580-2c557d6f6066",
-              "name": "American",
-              "color": "default"
-            },
-            {
-              "id": "51636a12-4ade-47ab-a05c-25f609bed90d",
-              "name": "French",
+              "id": "b2fcd879-eb1b-425b-9afb-9b037e91194e",
+              "name": "Japanese",
               "color": "default"
             }
           ]
@@ -390,7 +208,7 @@
             {
               "type": "text",
               "text": {
-                "content": "- - - W T F S",
+                "content": "S M T W T F S",
                 "link": null
               },
               "annotations": {
@@ -401,7 +219,7 @@
                 "code": false,
                 "color": "default"
               },
-              "plain_text": "- - - W T F S",
+              "plain_text": "S M T W T F S",
               "href": null
             }
           ]
@@ -415,9 +233,9 @@
           "id": "%5ETUk",
           "type": "select",
           "select": {
-            "id": "1ec4c919-df9c-42b3-871a-59af09949a1a",
-            "name": "$$",
-            "color": "yellow"
+            "id": "f4118633-f882-4708-8a1b-094b777a76dc",
+            "name": "$",
+            "color": "blue"
           }
         },
         "Menu": {
@@ -429,7 +247,7 @@
               "text": {
                 "content": "Menu",
                 "link": {
-                  "url": "https://example.com/restaurant-3"
+                  "url": "https://example.com/restaurant-5"
                 }
               },
               "annotations": {
@@ -441,7 +259,7 @@
                 "color": "default"
               },
               "plain_text": "Menu",
-              "href": "https://example.com/restaurant-3"
+              "href": "https://example.com/restaurant-5"
             }
           ]
         },
@@ -450,9 +268,9 @@
           "type": "multi_select",
           "multi_select": [
             {
-              "id": "fdd48121-081c-4336-8520-68d554e3a621",
-              "name": "Vermont",
-              "color": "green"
+              "id": "e569c326-ee27-47bf-a3bf-a3742079414b",
+              "name": "Connecticut",
+              "color": "blue"
             }
           ]
         },
@@ -460,16 +278,16 @@
           "id": "uiy%3E",
           "type": "select",
           "select": {
-            "id": "c83aef93-9956-4b65-a4ae-71411b57ba04",
-            "name": "Yes",
-            "color": "green"
+            "id": "mDQB",
+            "name": "No",
+            "color": "red"
           }
         },
         "Last Visit": {
           "id": "wzD%3C",
           "type": "date",
           "date": {
-            "start": "2022-07-29",
+            "start": "2022-06-10",
             "end": null,
             "time_zone": null
           }
@@ -486,7 +304,7 @@
             {
               "type": "text",
               "text": {
-                "content": "Restaurant 3",
+                "content": "Restaurant 5",
                 "link": null
               },
               "annotations": {
@@ -497,17 +315,17 @@
                 "code": false,
                 "color": "default"
               },
-              "plain_text": "Restaurant 3",
+              "plain_text": "Restaurant 5",
               "href": null
             }
           ]
         }
       },
-      "url": "https://www.notion.so/restaurant-3"
+      "url": "https://www.notion.so/restaurant-5"
     }
   ],
-  "next_cursor": "restaurant-pages-2",
-  "has_more": true,
+  "next_cursor": null,
+  "has_more": false,
   "type": "page",
   "page": {}
 }

@@ -1,0 +1,158 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns factor meals 1`] = `
+[
+  {
+    "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
+    "name": "Basil Corn Risotto & Shredded Beef",
+  },
+  {
+    "description": "with Scallion Green Beans & Carrots",
+    "name": "Creamy Garlic Chicken & Broccoli Penne",
+    "rating": 3,
+  },
+  {
+    "description": "with Parmesan Cauliflower",
+    "name": "Cheesy Pimento Chicken Pasta",
+    "rating": 4,
+  },
+  {
+    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
+    "name": "Hawaiian-Style Shredded Chicken",
+  },
+  {
+    "description": "with Roasted Zucchini & Parmesan Herb Butter",
+    "name": "Tomato & Romano Chicken",
+  },
+]
+`;
+
+exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns factor meals with multiple pages of meals 1`] = `
+[
+  {
+    "description": "with Roasted Tomatoes, Italian Cheese Blend & Garlic Broccoli",
+    "name": "Pesto Chicken & Roasted Mushrooms",
+    "rating": 1,
+  },
+  {
+    "description": "with Sauteed Kale & Garlicky Green Beans",
+    "name": "Four-Cheese Tortellini & Italian Sausage Pizzaiola",
+  },
+  {
+    "description": "with Garlic Kale & Pesto Zucchini",
+    "name": "Creamy Tomato-Basil Shrimp",
+    "rating": 2,
+  },
+  {
+    "description": "with Sour Cream & Chive Mashed Potatoes, Roasted Green Beans & Pearl Onions",
+    "name": "Honey-Mustard Pork Chop",
+  },
+  {
+    "description": "with Roasted Carrots, Jalapeño Mac ’n’ Cheese & Broccoli with Chili-Garlic Butter",
+    "name": "Smoky Tomato Chicken",
+    "rating": 3,
+  },
+  {
+    "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
+    "name": "Basil Corn Risotto & Shredded Beef",
+  },
+  {
+    "description": "with Scallion Green Beans & Carrots",
+    "name": "Creamy Garlic Chicken & Broccoli Penne",
+    "rating": 3,
+  },
+  {
+    "description": "with Parmesan Cauliflower",
+    "name": "Cheesy Pimento Chicken Pasta",
+    "rating": 4,
+  },
+  {
+    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
+    "name": "Hawaiian-Style Shredded Chicken",
+  },
+  {
+    "description": "with Roasted Zucchini & Parmesan Herb Butter",
+    "name": "Tomato & Romano Chicken",
+  },
+]
+`;
+
+exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to database 1`] = `
+{
+  "parent": {
+    "database_id": "meals-id",
+  },
+  "properties": {
+    "Date": {
+      "date": {
+        "start": "2021-12-01",
+      },
+    },
+    "Description": {
+      "rich_text": [
+        {
+          "text": {
+            "content": "meal description",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Name": {
+      "title": [
+        {
+          "text": {
+            "content": "meal name",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Rating": {
+      "select": {
+        "name": "– – – –",
+      },
+    },
+  },
+}
+`;
+
+exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > uses the right year for "earlier" month 1`] = `
+{
+  "parent": {
+    "database_id": "meals-id",
+  },
+  "properties": {
+    "Date": {
+      "date": {
+        "start": "2022-01-18",
+      },
+    },
+    "Description": {
+      "rich_text": [
+        {
+          "text": {
+            "content": "meal description",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Name": {
+      "title": [
+        {
+          "text": {
+            "content": "meal name",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Rating": {
+      "select": {
+        "name": "– – – –",
+      },
+    },
+  },
+}
+`;

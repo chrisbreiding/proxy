@@ -1,0 +1,438 @@
+{
+  "object": "list",
+  "results": [
+    {
+      "object": "page",
+      "id": "1380bf55-1f91-45a9-a8db-771346ee9ba0",
+      "created_time": "2023-08-06T12:37:00.000Z",
+      "last_edited_time": "2023-08-30T18:31:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "cover": null,
+      "icon": null,
+      "parent": {
+        "type": "database_id",
+        "database_id": "e98b2b8e-d8ed-4c7b-a2df-b0d6115c0f39"
+      },
+      "archived": false,
+      "properties": {
+        "Description": {
+          "id": "IzM%5D",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
+              "href": null
+            }
+          ]
+        },
+        "Rating": {
+          "id": "ZBW%3D",
+          "type": "select",
+          "select": {
+            "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
+            "name": "– – – –",
+            "color": "default"
+          }
+        },
+        "Date": {
+          "id": "_e__",
+          "type": "date",
+          "date": {
+            "start": "2023-08-28",
+            "end": null,
+            "time_zone": null
+          }
+        },
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Basil Corn Risotto & Shredded Beef",
+                "link": null
+              },
+              "annotations": {
+                "bold": true,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Basil Corn Risotto & Shredded Beef",
+              "href": null
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Basil-Corn-Risotto-Shredded-Beef-1380bf551f9145a9a8db771346ee9ba0",
+      "public_url": null
+    },
+    {
+      "object": "page",
+      "id": "bb327792-c49f-4ca5-94b6-f675ac9c5da9",
+      "created_time": "2023-07-17T11:56:00.000Z",
+      "last_edited_time": "2023-08-20T23:08:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "cover": null,
+      "icon": null,
+      "parent": {
+        "type": "database_id",
+        "database_id": "e98b2b8e-d8ed-4c7b-a2df-b0d6115c0f39"
+      },
+      "archived": false,
+      "properties": {
+        "Description": {
+          "id": "IzM%5D",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "with Scallion Green Beans & Carrots",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "with Scallion Green Beans & Carrots",
+              "href": null
+            }
+          ]
+        },
+        "Rating": {
+          "id": "ZBW%3D",
+          "type": "select",
+          "select": {
+            "id": "e`rt",
+            "name": "★★★☆",
+            "color": "green"
+          }
+        },
+        "Date": {
+          "id": "_e__",
+          "type": "date",
+          "date": null
+        },
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Creamy Garlic Chicken & Broccoli Penne",
+                "link": null
+              },
+              "annotations": {
+                "bold": true,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Creamy Garlic Chicken & Broccoli Penne",
+              "href": null
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Creamy-Garlic-Chicken-Broccoli-Penne-bb327792c49f4ca594b6f675ac9c5da9",
+      "public_url": null
+    },
+    {
+      "object": "page",
+      "id": "224502d7-8d3b-473e-80fd-3e9ec240e52f",
+      "created_time": "2023-07-17T11:54:00.000Z",
+      "last_edited_time": "2023-08-16T17:28:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "cover": null,
+      "icon": null,
+      "parent": {
+        "type": "database_id",
+        "database_id": "e98b2b8e-d8ed-4c7b-a2df-b0d6115c0f39"
+      },
+      "archived": false,
+      "properties": {
+        "Description": {
+          "id": "IzM%5D",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "with Parmesan Cauliflower",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "with Parmesan Cauliflower",
+              "href": null
+            }
+          ]
+        },
+        "Rating": {
+          "id": "ZBW%3D",
+          "type": "select",
+          "select": {
+            "id": "o~dQ",
+            "name": "★★★★",
+            "color": "purple"
+          }
+        },
+        "Date": {
+          "id": "_e__",
+          "type": "date",
+          "date": null
+        },
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Cheesy Pimento Chicken Pasta",
+                "link": null
+              },
+              "annotations": {
+                "bold": true,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Cheesy Pimento Chicken Pasta",
+              "href": null
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Cheesy-Pimento-Chicken-Pasta-224502d78d3b473e80fd3e9ec240e52f",
+      "public_url": null
+    },
+    {
+      "object": "page",
+      "id": "261d3e5e-ead4-472f-8c94-6d5c6cb19931",
+      "created_time": "2023-07-09T00:46:00.000Z",
+      "last_edited_time": "2023-07-17T11:55:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "cover": null,
+      "icon": null,
+      "parent": {
+        "type": "database_id",
+        "database_id": "e98b2b8e-d8ed-4c7b-a2df-b0d6115c0f39"
+      },
+      "archived": false,
+      "properties": {
+        "Description": {
+          "id": "IzM%5D",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "with Pineapple-Coconut Rice, Sesame Broccoli & \"Teriyaki\" Sauce",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "with Pineapple-Coconut Rice, Sesame Broccoli & \"Teriyaki\" Sauce",
+              "href": null
+            }
+          ]
+        },
+        "Rating": {
+          "id": "ZBW%3D",
+          "type": "select",
+          "select": {
+            "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
+            "name": "– – – –",
+            "color": "default"
+          }
+        },
+        "Date": {
+          "id": "_e__",
+          "type": "date",
+          "date": null
+        },
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Hawaiian-Style Shredded Chicken",
+                "link": null
+              },
+              "annotations": {
+                "bold": true,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Hawaiian-Style Shredded Chicken",
+              "href": null
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Hawaiian-Style-Shredded-Chicken-261d3e5eead4472f8c946d5c6cb19931",
+      "public_url": null
+    },
+    {
+      "object": "page",
+      "id": "01c165db-75e4-49a2-886a-9818d8039b08",
+      "created_time": "2023-07-09T00:45:00.000Z",
+      "last_edited_time": "2023-07-17T11:55:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "cover": null,
+      "icon": null,
+      "parent": {
+        "type": "database_id",
+        "database_id": "e98b2b8e-d8ed-4c7b-a2df-b0d6115c0f39"
+      },
+      "archived": false,
+      "properties": {
+        "Description": {
+          "id": "IzM%5D",
+          "type": "rich_text",
+          "rich_text": [
+            {
+              "type": "text",
+              "text": {
+                "content": "with Roasted Zucchini & Parmesan Herb Butter",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "with Roasted Zucchini & Parmesan Herb Butter",
+              "href": null
+            }
+          ]
+        },
+        "Rating": {
+          "id": "ZBW%3D",
+          "type": "select",
+          "select": {
+            "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
+            "name": "– – – –",
+            "color": "default"
+          }
+        },
+        "Date": {
+          "id": "_e__",
+          "type": "date",
+          "date": null
+        },
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Tomato & Romano Chicken",
+                "link": null
+              },
+              "annotations": {
+                "bold": true,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Tomato & Romano Chicken",
+              "href": null
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Tomato-Romano-Chicken-01c165db75e449a2886a9818d8039b08",
+      "public_url": null
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false,
+  "type": "page_or_database",
+  "page_or_database": {}
+}

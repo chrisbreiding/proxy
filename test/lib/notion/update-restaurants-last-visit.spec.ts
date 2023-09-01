@@ -24,6 +24,13 @@ describe('lib/notion/update-restaurants-last-visit', () => {
       fixture: 'restaurants/restaurant-pages',
     })
 
+    nockNotion({
+      method: 'post',
+      path: '/v1/databases/restaurants-id/query',
+      fixture: 'restaurants/restaurant-pages-2',
+      body: { start_cursor: 'restaurant-pages-2' },
+    })
+
     nockGetBlockChildren('restaurant-1', { reply: blocksWithDate('9/7/22') })
     nockGetBlockChildren('restaurant-2', { reply: blocksWithDate('11/2/22') })
     nockGetBlockChildren('restaurant-3', { reply: blocksWithDate('7/29/22') })

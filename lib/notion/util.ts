@@ -343,7 +343,7 @@ export function queryDatabases ({ notionToken, databaseId, filter, startCursor }
     notionToken,
     method: 'post',
     path: `databases/${databaseId}/query`,
-    body: filter || startCursor ? body : undefined,
+    body: (filter || startCursor) ? body : undefined,
   })
 }
 
@@ -371,7 +371,7 @@ export async function getDatabasePages (options: GetDatabasePagesOptions): Promi
     databaseId,
     notionToken,
     results: results as DatabaseObjectResponse[],
-    startCursor: next_cursor || undefined,
+    startCursor: next_cursor!,
   })
 }
 

@@ -22,6 +22,7 @@ interface GetOptions {
 
 interface NockOptions extends GetOptions {
   body?: object
+  error?: string | object
   method?: string
   path: string
 }
@@ -36,6 +37,11 @@ export function nockNotion (options: NockOptions) {
     options.body as nock.DataMatcherMap,
   )
   .times(options.times || 1)
+
+  if (options.error) {
+    return scope.replyWithError(options.error)
+  }
+
 
   const reply = options.fixture
     ? notionFixtureContents(options.fixture)
