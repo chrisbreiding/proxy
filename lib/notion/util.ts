@@ -375,13 +375,13 @@ export async function getDatabasePages (options: GetDatabasePagesOptions): Promi
   })
 }
 
-interface AddDatabasePageOptions {
+interface AddDatabasePageOptions<T> {
   databaseId: string
   notionToken: string
-  properties: Record<string, Record<string, any>>
+  properties: T
 }
 
-export async function addDatabasePage (options: AddDatabasePageOptions): Promise<void> {
+export async function addDatabasePage<T> (options: AddDatabasePageOptions<T>): Promise<void> {
   const { databaseId, notionToken, properties } = options
 
   await makeRequest<ListDatabasesResponse>({

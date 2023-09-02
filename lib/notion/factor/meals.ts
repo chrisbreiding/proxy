@@ -3,26 +3,10 @@ import type express from 'express'
 import { addDatabasePage, getDatabasePages, richTextToPlainText } from '../util'
 import { getEnv } from '../../util/env'
 import dayjs from 'dayjs'
+import type { Rating } from './types'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 const databaseId = getEnv('NOTION_FACTOR_MEALS_DATABASE_ID')!
-
-const ratingConversion = {
-  '★☆☆☆': 1,
-  '★★☆☆': 2,
-  '★★★☆': 3,
-  '★★★★': 4,
-}
-
-function ratingToNumber (rating: keyof typeof ratingConversion) {
-  return ratingConversion[rating]
-}
-
-export interface Meal {
-  name: string;
-  description: string;
-  rating: number;
-}
 
 export async function getMeals (req: express.Request, res: express.Response) {
   try {
@@ -38,7 +22,7 @@ export async function getMeals (req: express.Request, res: express.Response) {
       // @ts-ignore
       const description = richTextToPlainText(properties.Description.rich_text)
       // @ts-ignore
-      const rating = ratingToNumber(properties.Rating.select.name)
+      const rating = properties.Rating.select.name as Rating
 
       return {
         name,
@@ -71,18 +55,29 @@ const getDate = (dateString: string) => {
   return date
 }
 
+interface MealProperties {
+  Date?: { date: { start: string } }
+  Description: { rich_text: [{ type: 'text', text: { content: string } }] },
+  Rating: { select: { name: Rating } },
+  Name: { title: [{ type: 'text', text: { content: string } }] },
+}
+
 export async function addMeal (req: express.Request, res: express.Response) {
   try {
-    const { name, date: dateString, description } = req.body
-    const date = getDate(dateString)
+    const { name, date: dateString, description, rating } = req.body
     const properties = {
       Description: { rich_text: [{ type: 'text', text: { content: description } }] },
-      Rating: { select: { name: '– – – –' } },
-      Date: { date: { start: date.format('YYYY-MM-DD') } },
+      Rating: { select: { name: rating } },
       Name: { title: [{ type: 'text', text: { content: name } }] },
+    } as MealProperties
+
+    if (dateString) {
+      const date = getDate(dateString)
+
+      properties.Date = { date: { start: date.format('YYYY-MM-DD') } }
     }
 
-    await addDatabasePage({
+    await addDatabasePage<MealProperties>({
       notionToken,
       databaseId,
       properties,

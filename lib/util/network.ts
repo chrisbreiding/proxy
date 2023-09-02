@@ -61,17 +61,18 @@ export async function request (options: RequestOptions) {
     /* c8 ignore start */
     debug('--- axios error ---')
     debug(options)
-    debug('')
+    debug('---')
     debug({
       stack: error?.stack,
       callStack: error?.callStack,
       message: error?.data?.message || error?.message,
 
-      code: error?.data?.code,
+      code: error?.code || error?.data?.code,
+      data: error?.response?.data,
       status: error?.response?.status,
       statusText: error?.response?.statusText,
     })
-    debug('')
+    debug('---')
     Debug.enabled('proxy') && console.trace() // eslint-disable-line no-console
     debug('-------------------')
     /* c8 ignore stop */
