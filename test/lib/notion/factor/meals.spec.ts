@@ -106,9 +106,10 @@ describe('lib/notion/factor/meals', () => {
 
       const res = await ctx.request.post('/notion/factor-meals/key')
       .send({
-        name: 'meal name',
-        description: 'meal description',
         date: 'Thu, Dec 1',
+        description: 'meal description',
+        name: 'meal name',
+        rating: 'Unrated',
       })
 
       expect(res.status).to.equal(200)
@@ -123,9 +124,27 @@ describe('lib/notion/factor/meals', () => {
 
       const res = await ctx.request.post('/notion/factor-meals/key')
       .send({
+        date: 'Wed, Jan 18',
+        description: 'meal description',
+        name: 'meal name',
+        rating: 'Uninterested',
+      })
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({})
+    })
+
+    it('date can be omitted', async (ctx) => {
+      snapshotBody(nockNotion({
+        method: 'post',
+        path: '/v1/pages',
+      }))
+
+      const res = await ctx.request.post('/notion/factor-meals/key')
+      .send({
         name: 'meal name',
         description: 'meal description',
-        date: 'Wed, Jan 18',
+        rating: 'Diet-restricted',
       })
 
       expect(res.status).to.equal(200)

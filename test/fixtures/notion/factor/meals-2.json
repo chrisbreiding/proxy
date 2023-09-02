@@ -50,7 +50,7 @@
           "type": "select",
           "select": {
             "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
-            "name": "– – – –",
+            "name": "Unrated",
             "color": "default"
           }
         },
@@ -309,7 +309,7 @@
           "type": "select",
           "select": {
             "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
-            "name": "– – – –",
+            "name": "Uninterested",
             "color": "default"
           }
         },
@@ -394,7 +394,7 @@
           "type": "select",
           "select": {
             "id": "d53a0a82-f573-4ab3-88f9-255e0c3483ee",
-            "name": "– – – –",
+            "name": "Unrated",
             "color": "default"
           }
         },

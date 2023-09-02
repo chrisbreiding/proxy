@@ -5,24 +5,27 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
     "name": "Basil Corn Risotto & Shredded Beef",
+    "rating": "Unrated",
   },
   {
     "description": "with Scallion Green Beans & Carrots",
     "name": "Creamy Garlic Chicken & Broccoli Penne",
-    "rating": 3,
+    "rating": "★★★☆",
   },
   {
     "description": "with Parmesan Cauliflower",
     "name": "Cheesy Pimento Chicken Pasta",
-    "rating": 4,
+    "rating": "★★★★",
   },
   {
     "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
     "name": "Hawaiian-Style Shredded Chicken",
+    "rating": "Uninterested",
   },
   {
     "description": "with Roasted Zucchini & Parmesan Herb Butter",
     "name": "Tomato & Romano Chicken",
+    "rating": "Unrated",
   },
 ]
 `;
@@ -32,47 +35,52 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Roasted Tomatoes, Italian Cheese Blend & Garlic Broccoli",
     "name": "Pesto Chicken & Roasted Mushrooms",
-    "rating": 1,
+    "rating": "★☆☆☆",
   },
   {
     "description": "with Sauteed Kale & Garlicky Green Beans",
     "name": "Four-Cheese Tortellini & Italian Sausage Pizzaiola",
+    "rating": "Diet-restricted",
   },
   {
     "description": "with Garlic Kale & Pesto Zucchini",
     "name": "Creamy Tomato-Basil Shrimp",
-    "rating": 2,
+    "rating": "★★☆☆",
   },
   {
     "description": "with Sour Cream & Chive Mashed Potatoes, Roasted Green Beans & Pearl Onions",
     "name": "Honey-Mustard Pork Chop",
+    "rating": "Unrated",
   },
   {
     "description": "with Roasted Carrots, Jalapeño Mac ’n’ Cheese & Broccoli with Chili-Garlic Butter",
     "name": "Smoky Tomato Chicken",
-    "rating": 3,
+    "rating": "★★★☆",
   },
   {
     "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
     "name": "Basil Corn Risotto & Shredded Beef",
+    "rating": "Unrated",
   },
   {
     "description": "with Scallion Green Beans & Carrots",
     "name": "Creamy Garlic Chicken & Broccoli Penne",
-    "rating": 3,
+    "rating": "★★★☆",
   },
   {
     "description": "with Parmesan Cauliflower",
     "name": "Cheesy Pimento Chicken Pasta",
-    "rating": 4,
+    "rating": "★★★★",
   },
   {
     "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
     "name": "Hawaiian-Style Shredded Chicken",
+    "rating": "Uninterested",
   },
   {
     "description": "with Roasted Zucchini & Parmesan Herb Butter",
     "name": "Tomato & Romano Chicken",
+    "rating": "Unrated",
   },
 ]
 `;
@@ -110,7 +118,42 @@ exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to
     },
     "Rating": {
       "select": {
-        "name": "– – – –",
+        "name": "Unrated",
+      },
+    },
+  },
+}
+`;
+
+exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > date can be omitted 1`] = `
+{
+  "parent": {
+    "database_id": "meals-id",
+  },
+  "properties": {
+    "Description": {
+      "rich_text": [
+        {
+          "text": {
+            "content": "meal description",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Name": {
+      "title": [
+        {
+          "text": {
+            "content": "meal name",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Rating": {
+      "select": {
+        "name": "Diet-restricted",
       },
     },
   },
@@ -150,7 +193,7 @@ exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > uses the rig
     },
     "Rating": {
       "select": {
-        "name": "– – – –",
+        "name": "Uninterested",
       },
     },
   },
