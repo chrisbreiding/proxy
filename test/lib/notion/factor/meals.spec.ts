@@ -109,7 +109,7 @@ describe('lib/notion/factor/meals', () => {
         date: 'Thu, Dec 1',
         description: 'meal description',
         name: 'meal name',
-        rating: 'Unrated',
+        rating: 'Considering',
       })
 
       expect(res.status).to.equal(200)

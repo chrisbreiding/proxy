@@ -3,12 +3,12 @@ export enum Rating {
   TwoStars = '★★☆☆',
   ThreeStars = '★★★☆',
   FourStars = '★★★★',
-  Unrated = 'Unrated',
+  Considering = 'Considering',
   Uninterested = 'Uninterested',
   DietRestricted = 'Diet-restricted',
 }
 
-export interface RecordedMeal {
+export interface NotionMeal {
   name: string
   description: string
   rating: Rating

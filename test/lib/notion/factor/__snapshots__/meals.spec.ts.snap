@@ -5,7 +5,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
     "name": "Basil Corn Risotto & Shredded Beef",
-    "rating": "Unrated",
+    "rating": "Considering",
   },
   {
     "description": "with Scallion Green Beans & Carrots",
@@ -25,7 +25,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Roasted Zucchini & Parmesan Herb Butter",
     "name": "Tomato & Romano Chicken",
-    "rating": "Unrated",
+    "rating": "Considering",
   },
 ]
 `;
@@ -50,7 +50,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Sour Cream & Chive Mashed Potatoes, Roasted Green Beans & Pearl Onions",
     "name": "Honey-Mustard Pork Chop",
-    "rating": "Unrated",
+    "rating": "Considering",
   },
   {
     "description": "with Roasted Carrots, Jalapeño Mac ’n’ Cheese & Broccoli with Chili-Garlic Butter",
@@ -60,7 +60,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Tomato Relish, Roasted Zucchini & Parmesan-Basil Butter",
     "name": "Basil Corn Risotto & Shredded Beef",
-    "rating": "Unrated",
+    "rating": "Considering",
   },
   {
     "description": "with Scallion Green Beans & Carrots",
@@ -80,7 +80,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
   {
     "description": "with Roasted Zucchini & Parmesan Herb Butter",
     "name": "Tomato & Romano Chicken",
-    "rating": "Unrated",
+    "rating": "Considering",
   },
 ]
 `;
@@ -118,7 +118,7 @@ exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to
     },
     "Rating": {
       "select": {
-        "name": "Unrated",
+        "name": "Considering",
       },
     },
   },

@@ -1,14 +1,14 @@
-import { Rating, RecordedMeal } from './types'
+import { Rating, NotionMeal } from './types'
 
 interface Meal {
   card: Element
   description: string | null
-  name: string | null | undefined
-  meal?: RecordedMeal
   isGourmetPlus: boolean
-  isNonMeat: boolean
   isNew: boolean
+  isNonMeat: boolean
   isTopRated: boolean
+  name: string | null | undefined
+  notionMeal?: NotionMeal
 }
 
 enum Color {
@@ -32,7 +32,7 @@ interface ButtonProps {
   rating: Rating
 }
 
-type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
+type Ranking = 0|1|2|3|4|5|6|7|8|9|10|11|12|13
 
 (async () => {
   const ratingColors = {
@@ -40,7 +40,7 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
     [Rating.TwoStars]: Color.DarkRed,
     [Rating.ThreeStars]: Color.Blue,
     [Rating.FourStars]: Color.Green,
-    [Rating.Unrated]: Color.Grey,
+    [Rating.Considering]: Color.Grey,
     [Rating.Uninterested]: Color.Brown,
     [Rating.DietRestricted]: Color.Grey,
   }
@@ -115,45 +115,74 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
 
   function getMealRanking (meal: Meal): Ranking {
     //  0 - 4 stars
-    //  1 - "Top-Rated"
-    //  2 - "New"
-    //  3 - Unrated, in Notion
-    //  4 - Unrated, not in Notion
-    //  5 - 3 stars
-    //  6 - "Vegan/Vegetarian"
-    //  7 - 2 stars
-    //  8 - 1 star
-    //  9 - Uninterested
-    // 10 - Diet-restricted
-    // 11 - "Gourmet plus"
-
-    if (meal.meal?.rating) {
-      switch (meal.meal.rating) {
-        case Rating.FourStars: return 0
-        case Rating.ThreeStars: return 5
-        case Rating.TwoStars: return 7
-        case Rating.OneStar: return 8
-        case Rating.Unrated: return meal.isTopRated ? 1 : 3
-        case Rating.Uninterested: return 9
-        case Rating.DietRestricted: return 10
-        default: throw new Error(`Meal rating not handled: ${meal.meal.rating}`)
-      }
-    }
+    //  1 - "Top-Rated" & Considering
+    //  2 - "Top-Rated", not in Notion
+    //  3 - "New" & Considering
+    //  4 - "New", not in Notion
+    //  5 - Considering
+    //  6 - Unrated / Not yet considered
+    //  7 - 3 stars
+    //  8 - "Vegan/Vegetarian"
+    //  9 - 2 stars
+    // 10 - 1 star
+    // 11 - Uninterested
+    // 12 - Diet-restricted
+    // 13 - "Gourmet plus"
 
     if (meal.isGourmetPlus) {
+      return 13
+    }
+
+    if (meal.notionMeal?.rating === Rating.DietRestricted) {
+      return 12
+    }
+
+    if (meal.notionMeal?.rating === Rating.Uninterested) {
       return 11
     }
 
-    if (meal.isNonMeat) {
-      return 6
+    if (meal.notionMeal?.rating === Rating.OneStar) {
+      return 10
     }
 
-    if (meal.isNew) {
+    if (meal.notionMeal?.rating === Rating.TwoStars) {
+      return 9
+    }
+
+    if (meal.isNonMeat) {
+      return 8
+    }
+
+    if (meal.notionMeal?.rating === Rating.ThreeStars) {
+      return 7
+    }
+
+    if (meal.isNew && !meal.notionMeal) {
+      return 4
+    }
+
+    if (meal.isNew && meal.notionMeal?.rating === Rating.Considering) {
+      return 3
+    }
+
+    if (meal.isTopRated && !meal.notionMeal) {
       return 2
     }
 
-    // Rest are the unrated ones that aren't in Notion
-    return 4
+    if (meal.isTopRated && meal.notionMeal?.rating === Rating.Considering) {
+      return 1
+    }
+
+    if (meal.notionMeal?.rating === Rating.Considering) {
+      return 5
+    }
+
+    if (meal.notionMeal?.rating === Rating.FourStars) {
+      return 0
+    }
+
+    // unrated / not yet considered
+    return 6
   }
 
   function hasMeal (meal?: Meal): meal is Meal {
@@ -167,12 +196,12 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
 
   // const url = `http://localhost:3333/notion/factor-meals/${process.env.API_KEY}`
   const url = `https://proxy.crbapps.com/notion/factor-meals/${process.env.API_KEY}`
-  const recordedMeals = (await (await fetch(url)).json()) as RecordedMeal[]
+  const recordedMeals = (await (await fetch(url)).json()) as NotionMeal[]
   const mealsIndex = recordedMeals.reduce((memo, meal) => {
     memo[indexString(meal.name)] = meal
 
     return memo
-  }, {} as Record<string, RecordedMeal>)
+  }, {} as Record<string, NotionMeal>)
 
   const mealDescriptionNodes = document.querySelectorAll('[data-recipe-card-headline="true"]')
   const dateNode = document.querySelector('.web-1brazu4')
@@ -192,7 +221,7 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
       adornCard(card as HTMLElement, matchingMeal.rating)
     } else {
       const onClick = () => {
-        unratedButton.remove()
+        consideringButton.remove()
         uninterestedButton.remove()
         dietRestrictedButton.remove()
       }
@@ -204,10 +233,10 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
         onClick,
       }
 
-      const unratedButton = createButton({
+      const consideringButton = createButton({
         ...commonProperties,
         color: Color.Green,
-        rating: Rating.Unrated,
+        rating: Rating.Considering,
       })
       const uninterestedButton = createButton({
         ...commonProperties,
@@ -236,7 +265,7 @@ type Ranking = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
       isNew: !!card.querySelector('[title="New"]'),
       isNonMeat: !!card.querySelector('[title="Vegan"]') || !!card.querySelector('[title="Vegetarian"]'),
       isTopRated: !!card.querySelector('[title="Top-Rated"]'),
-      meal: matchingMeal,
+      notionMeal: matchingMeal,
       name,
     } as Meal
   })
