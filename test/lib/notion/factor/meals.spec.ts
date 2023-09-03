@@ -6,7 +6,7 @@ process.env.NOTION_TOKEN = 'notion-token'
 process.env.NOTION_FACTOR_MEALS_DATABASE_ID = 'meals-id'
 
 import { startServer } from '../../../../index'
-import { nockNotion, notionFixtureContents } from '../util'
+import { nockNotion } from '../util'
 import { handleServer, snapshotBody } from '../../../util'
 
 class RequestError extends Error {
@@ -113,7 +113,6 @@ describe('lib/notion/factor/meals', () => {
       })
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({})
     })
 
     it('uses the right year for "earlier" month', async (ctx) => {
@@ -131,7 +130,6 @@ describe('lib/notion/factor/meals', () => {
       })
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({})
     })
 
     it('date can be omitted', async (ctx) => {
@@ -148,7 +146,6 @@ describe('lib/notion/factor/meals', () => {
       })
 
       expect(res.status).to.equal(200)
-      expect(res.body).to.deep.equal({})
     })
 
     it('sends 500 with error if request errors', async (ctx) => {

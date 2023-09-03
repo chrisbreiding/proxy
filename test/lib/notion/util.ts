@@ -157,3 +157,12 @@ block.bullet = ({ id, text }: BlockOptions) => {
 block.toggle = ({ id, text }: BlockOptions) => {
   return block({ id, text, type: 'toggle' })
 }
+
+block.divider = ({ id }: { id?: string } = {}) => {
+  return {
+    object: 'block',
+    id: id || uniqueId('block-'),
+    type: 'divider',
+    divider: {},
+  } as BlockObjectResponse
+}

@@ -46,10 +46,10 @@ import { clone, compact } from '../util/collections'
 import { debug } from '../util/debug'
 import { request } from '../util/network'
 
-export const dateRegex = /(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{1,2}\/\d{1,2})/
+export const dateRegex = /^(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{1,2}\/\d{1,2})/
 
 export function getDateFromText (text: string) {
-  const [dateText] = text.match(dateRegex) || []
+  const [dateText] = text.trim().match(dateRegex) || []
 
   if (!dateText) return {}
 
@@ -200,7 +200,7 @@ interface AppendBlockChildrenOptions {
 }
 
 // appends block children with a limit of 2 levels of nesting
-export async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+export async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   function moveChildren (blocks: NotionBlock[] | OwnBlock[]) {
     return blocks.map((block) => {
       const convertedBlock = convertBlockToOutgoingBlock(block)
@@ -214,7 +214,7 @@ export async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ notionTok
     })
   }
 
-  return makeAppendRequest({ notionToken, pageId, blocks: moveChildren(blocks) })
+  return makeAppendRequest({ afterId, notionToken, pageId, blocks: moveChildren(blocks) })
 }
 
 interface GetAfterIdOptions {

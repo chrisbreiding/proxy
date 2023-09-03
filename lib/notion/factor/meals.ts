@@ -83,7 +83,7 @@ export async function addMeal (req: express.Request, res: express.Response) {
       properties,
     })
 
-    res.json({})
+    res.sendStatus(200)
   } catch (error: any) {
     res.status(500).json({
       error: {

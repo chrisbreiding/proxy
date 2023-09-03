@@ -1,4 +1,16 @@
-import { getBlockChildren, getBlockPlainText, NotionBlock } from './util'
+import type express from 'express'
+import {
+  appendBlockChildrenWithUpToTwoLevelsOfNesting,
+  dateRegex,
+  getBlockChildren,
+  getBlockPlainText,
+  makeBlock,
+  NotionBlock,
+} from './util'
+import { getEnv } from '../util/env'
+
+const notionToken = getEnv('NOTION_TOKEN')!
+const questsId = getEnv('NOTION_QUESTS_ID')!
 
 async function findUpcomingId (blocks: NotionBlock[]) {
   const block = blocks.find((block) => {
@@ -23,4 +35,42 @@ export async function getAllQuests ({ notionToken, pageId }: GetAllOptions) {
   const upcomingBlocks = await getBlockChildren({ notionToken, pageId: upcomingId })
 
   return [...questBlocks, ...upcomingBlocks]
+}
+
+function isNextDate (block: NotionBlock, index: number) {
+  return (
+    index !== 0
+    && dateRegex.test(getBlockPlainText(block) || '')
+  )
+}
+
+async function getNewQuestAfterId (blocks: NotionBlock[]) {
+  const index = blocks.findIndex((block, index) => {
+    return isNextDate(block, index) || block.type === 'divider'
+  })
+
+  if (index === -1) return
+
+  return blocks[index - 1].id
+}
+
+export async function addQuest (req: express.Request, res: express.Response) {
+  const quest = req.body.quest
+  const questBlocks = await getBlockChildren({
+    notionToken,
+    pageId: questsId,
+  })
+  const afterId = await getNewQuestAfterId(questBlocks)
+
+  await appendBlockChildrenWithUpToTwoLevelsOfNesting({
+    afterId,
+    blocks: [makeBlock({
+      text: quest,
+      type: 'bulleted_list_item',
+    })],
+    notionToken,
+    pageId: questsId,
+  })
+
+  res.sendStatus(200)
 }
