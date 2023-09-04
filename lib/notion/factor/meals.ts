@@ -1,9 +1,11 @@
 import type express from 'express'
 
-import { addDatabasePage, getDatabasePages, richTextToPlainText } from '../util'
 import { getEnv } from '../../util/env'
 import dayjs from 'dayjs'
 import type { Rating } from './types'
+import { getDatabasePages } from '../util/queries'
+import { addDatabasePage } from '../util/updates'
+import { richTextToPlainText } from '../util/conversions'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 const databaseId = getEnv('NOTION_FACTOR_MEALS_DATABASE_ID')!
@@ -18,9 +20,11 @@ export async function getMeals (req: express.Request, res: express.Response) {
     const meals = databasePages.map((databasePage) => {
       const { properties } = databasePage
       // @ts-ignore
-      const name = richTextToPlainText(properties.Name.title)
+      const nameRichText = properties.Name.title
+      const name = richTextToPlainText(nameRichText)
       // @ts-ignore
-      const description = richTextToPlainText(properties.Description.rich_text)
+      const descriptionRichText = properties.Description.rich_text
+      const description = richTextToPlainText(descriptionRichText)
       // @ts-ignore
       const rating = properties.Rating.select.name as Rating
 

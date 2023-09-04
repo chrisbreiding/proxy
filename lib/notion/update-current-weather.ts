@@ -1,17 +1,14 @@
 import dayjs from 'dayjs'
 
-import {
-  getBlockChildrenDeep,
-  makeBlock,
-  makeTextPart,
-  OwnBlock,
-  updateBlock,
-} from './util'
+import { makeBlock, makeTextPart } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { DayWeather, getWeatherIcon, getCurrentAndDailyWeather, CurrentAndDailyWeather } from '../weather'
-import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './weather'
+import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './util/weather'
+import type { OwnBlock } from './types'
+import { getBlockChildrenDeep } from './util/queries'
+import { updateBlock } from './util/updates'
 
 function getColor (temp: number) {
   if (temp <= 32) return 'purple'

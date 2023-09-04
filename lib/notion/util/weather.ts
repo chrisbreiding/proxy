@@ -1,6 +1,6 @@
-import { compact } from '../util/collections'
-import { DayWeather, getWeatherIcon } from '../weather'
-import { makeTextPart } from './util'
+import { compact } from '../../util/collections'
+import { DayWeather, getWeatherIcon } from '../../weather'
+import { makeTextPart } from './general'
 
 export function makePrecipPart (condition: boolean, info: string) {
   return condition ? makeTextPart(`(${info}) `, 'gray') : undefined

@@ -1,17 +1,12 @@
 import dayjs from 'dayjs'
 
-import {
-  Block,
-  getBlockChildrenDeep,
-  getBlockPlainText,
-  makeTextPart,
-  NotionBlock,
-  OwnBlock,
-  updateBlock,
-} from './util'
+import { getBlockPlainText, makeTextPart } from './util/general'
 import { compact, mapPromisesSerially } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
+import { getBlockChildrenDeep } from './util/queries'
+import type { Block, NotionBlock, OwnBlock } from './types'
+import { updateBlock } from './util/updates'
 
 interface GetCategoryBlocksOptions {
   notionToken: string

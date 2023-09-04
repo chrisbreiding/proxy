@@ -2,7 +2,7 @@ import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/m
 import { addQuest } from './quests'
 import { onSocket } from './shopping'
 import { addUpcomingWeek, upcomingWeekView } from './upcoming-week'
-import { getBlockChildren } from './util'
+import { getBlockChildren } from './util/queries'
 
 interface GetDataOptions {
   notionToken: string

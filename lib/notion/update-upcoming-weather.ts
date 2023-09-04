@@ -2,16 +2,16 @@ import dayjs from 'dayjs'
 
 import {
   getBlockPlainText,
-  getDateFromText,
   makeTextPart,
-  NotionBlock,
-  updateBlock,
-} from './util'
+} from './util/general'
 import { getAllQuests } from './quests'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import { makeConditionParts, makeTemperatureParts } from './weather'
+import { makeConditionParts, makeTemperatureParts } from './util/weather'
 import { DayWeather, getDailyWeather } from '../weather'
+import type { NotionBlock } from './types'
+import { getDateFromText } from '../util/dates'
+import { updateBlock } from './util/updates'
 
 interface DateObject {
   date: string

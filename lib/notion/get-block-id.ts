@@ -1,8 +1,9 @@
 import minimist from 'minimist'
 
-import { getBlockChildren, getBlockPlainText } from './util'
+import { getBlockPlainText } from './util/general'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
+import { getBlockChildren } from './util/queries'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 

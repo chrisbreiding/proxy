@@ -1,20 +1,14 @@
 import dayjs from 'dayjs'
 import minimist from 'minimist'
 
-import {
-  appendBlockChildrenWithUnlimitedNesting,
-  getBlockChildren,
-  getBlockChildrenDeep,
-  getBlockPlainText,
-  getMonthNameFromIndex,
-  getMonths,
-  makeBlock,
-  NotionBlock,
-  OwnBlock,
-} from './util'
+import { getBlockPlainText, makeBlock } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
+import type { NotionBlock, OwnBlock } from './types'
+import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
+import { getMonthNameFromIndex, getMonths } from '../util/dates'
+import { appendBlockChildrenWithUnlimitedNesting } from './util/updates'
 
 interface YearTemplateItem {
   rule: string

@@ -1,5 +1,5 @@
 import type { DatabaseObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-import { queryDatabases } from './util'
+import { queryDatabases } from './util/queries'
 
 interface GetGrindSizesOptions {
   notionToken: string

@@ -4,16 +4,13 @@ import type {
   DateDatabasePropertyConfigResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
-import {
-  getBlockChildren,
-  getBlockPlainText,
-  getDatabasePages,
-  richTextToPlainText,
-  updatePage,
-} from './util'
+import { getBlockPlainText } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
+import { getBlockChildren, getDatabasePages } from './util/queries'
+import { updatePage } from './util/updates'
+import { richTextToPlainText } from './util/conversions'
 
 interface UpdateRestaurantsLastVisitOptions {
   notionToken: string
@@ -88,7 +85,8 @@ async function getMostRecentVisitDates ({ databasePages, notionToken }: GetMostR
     const lastVisit = properties['Last Visit'] as DateDatabasePropertyConfigResponse
     const currentDate = lastVisit?.date?.start as string | undefined
     // @ts-ignore
-    const name = richTextToPlainText(properties.Name.title)
+    const nameRichText = properties.Name.title
+    const name = richTextToPlainText(nameRichText)
     const newDate = await getMostRecentVisitDate({ name, notionToken, pageId: id })
 
     if (currentDate !== newDate?.date) return newDate

@@ -1,20 +1,11 @@
 import dayjs from 'dayjs'
 import type express from 'express'
 
-import {
-  appendBlockChildrenWithUnlimitedNesting,
-  areIdsEqual,
-  deleteBlock,
-  getBlockChildren,
-  getBlockChildrenDeep,
-  getBlockPlainText,
-  getDateFromText,
-  getMonths,
-  makeBlock,
-  NotionBlock,
-  OwnBlock,
-  updateBlock,
-} from './util'
+import { areIdsEqual, getBlockPlainText, makeBlock } from './util/general'
+import { getDateFromText, getMonths } from '../util/dates'
+import type { NotionBlock, OwnBlock } from './types'
+import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
+import { appendBlockChildrenWithUnlimitedNesting, deleteBlock, updateBlock } from './util/updates'
 
 const daysOfWeek = 'Sun|Mon|Tue|Wed|Thu|Fri|Sat'.split('|')
 const daysOfWeekRegex = /(Sun|Mon|Tue|Wed|Thu|Fri|Sat),/

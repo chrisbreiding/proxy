@@ -1,18 +1,15 @@
 import type { ChildPageBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import minimist from 'minimist'
 
-import {
-  appendBlockChildrenWithUpToTwoLevelsOfNesting,
-  dateRegex,
-  getBlockChildren,
-  getBlockPlainText,
-  makeBlock,
-  NotionBlock,
-} from './util'
+import { getBlockPlainText, makeBlock } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { patienceDiffPlus } from '../util/patience-diff'
+import type { NotionBlock } from './types'
+import { getBlockChildren } from './util/queries'
+import { dateRegex } from '../util/dates'
+import { appendBlockChildrenWithUpToTwoLevelsOfNesting } from './util/updates'
 
 function findId (
   blocks: NotionBlock[],

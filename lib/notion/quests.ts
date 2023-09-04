@@ -1,13 +1,11 @@
 import type express from 'express'
-import {
-  appendBlockChildrenWithUpToTwoLevelsOfNesting,
-  dateRegex,
-  getBlockChildren,
-  getBlockPlainText,
-  makeBlock,
-  NotionBlock,
-} from './util'
+
+import { getBlockPlainText, makeBlock } from './util/general'
 import { getEnv } from '../util/env'
+import type { NotionBlock } from './types'
+import { getBlockChildren } from './util/queries'
+import { dateRegex } from '../util/dates'
+import { appendBlockChildrenWithUpToTwoLevelsOfNesting } from './util/updates'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 const questsId = getEnv('NOTION_QUESTS_ID')!
