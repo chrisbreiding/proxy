@@ -5,7 +5,7 @@ import { areIdsEqual, getBlockPlainText, makeBlock } from './util/general'
 import { getDateFromText, getMonths } from '../util/dates'
 import type { NotionBlock, OwnBlock } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
-import { appendBlockChildrenWithUnlimitedNesting, deleteBlock, updateBlock } from './util/updates'
+import { appendBlockChildren, deleteBlock, updateBlock } from './util/updates'
 
 const daysOfWeek = 'Sun|Mon|Tue|Wed|Thu|Fri|Sat'.split('|')
 const daysOfWeekRegex = /(Sun|Mon|Tue|Wed|Thu|Fri|Sat),/
@@ -309,7 +309,7 @@ async function addFollowingWeekAndUpdateButton ({ query, params }: { query: Quer
   const { blocks, dates, idsOfExtrasUsed } = await getDayBlocks({ notionToken, startDate, upcomingBlocks, weekTemplatePageId })
   const afterId = await getLastUpcomingBlockId({ addFollowingWeekButtonId, upcomingBlocks })
 
-  await appendBlockChildrenWithUnlimitedNesting({ afterId, notionToken, blocks, pageId: upcomingId })
+  await appendBlockChildren({ afterId, notionToken, blocks, pageId: upcomingId })
   await deleteExtrasUsed({ idsOfExtrasUsed, notionToken })
   await updateAddFollowingWeekButton({ query, params, dates })
 }
@@ -355,7 +355,14 @@ export async function addUpcomingWeek (req: express.Request, res: express.Respon
       </html>`,
     )
   } catch (error: any) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({
+      error: {
+        code: error?.code,
+        message: error?.message,
+        stack: error?.stack,
+      },
+      data: error?.response?.data,
+    })
   }
 }
 

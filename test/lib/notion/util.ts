@@ -2,7 +2,7 @@ import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoin
 import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 
-import { fixture, uniqueId } from '../../util'
+import { createUniqueId, fixture } from '../../util'
 
 const notionVersion = '2022-06-28'
 
@@ -94,75 +94,113 @@ export function nockDeleteBlock (id: string) {
   .reply(200)
 }
 
+export function richText (text?: string) {
+  if (!text) return []
+
+  return [
+    {
+      type: 'text',
+      text: {
+        content: text,
+        link: null,
+      },
+      annotations: {
+        bold: false,
+        italic: false,
+        strikethrough: false,
+        underline: false,
+        code: false,
+        color: 'default',
+      },
+      plain_text: text,
+      href: null,
+    },
+  ]
+}
+
 interface BlockOptions {
+  content?: any
+  hasChildren?: boolean
   id?: string
-  text: string
+  parentId?: string
+  text?: string
   type?: string
 }
 
-export function block ({ id, text, type }: BlockOptions) {
+function getHasChildren (type: string, hasChildren?: boolean) {
+  if (hasChildren != null) return hasChildren
+
+  return type === 'toggle'
+}
+
+export function blockFactory ({ parentId }: { parentId?: string } = {}) {
+  const uniqueId = createUniqueId()
+
+  function block (options: BlockOptions = {}) {
+    const { content, id, parentId: parentIdOverride, text } = options
+    const type = options.type || 'paragraph'
+    const hasChildren = getHasChildren(type, options.hasChildren)
+    const generatedId = uniqueId()
+
+    return {
+      object: 'block',
+      id: id || `block-${generatedId}`,
+      parent: {
+        type: 'page_id',
+        page_id: parentIdOverride || parentId || `parent-${generatedId}`,
+      },
+      created_time: '2022-0829T23:00.000Z',
+      last_edited_time: '2022-0829T23:00.000Z',
+      created_by: {
+        object: 'user',
+        id: `user-${generatedId}`,
+      },
+      last_edited_by: {
+        object: 'user',
+        id: `user-${generatedId}`,
+      },
+      has_children: hasChildren,
+      archived: false,
+      type,
+      [type]: content || {
+        rich_text: richText(text),
+        color: 'default',
+      },
+    } as BlockObjectResponse
+  }
+
+  block.p = (options: Omit<BlockOptions, 'type'> = {}) => {
+    return block({ ...options, type: 'paragraph' })
+  }
+
+  block.bullet = (options: Omit<BlockOptions, 'type'> = {}) => {
+    return block({ ...options, type: 'bulleted_list_item' })
+  }
+
+  block.toggle = (options: Omit<BlockOptions, 'type'> = {}) => {
+    return block({ ...options, type: 'toggle' })
+  }
+
+  block.to_do = (options: Omit<BlockOptions, 'type'> = {}) => {
+    return block({ ...options, type: 'to_do' })
+  }
+
+  block.divider = ({ id }: { id?: string } = {}) => {
+    return block({ id, type: 'divider', content: {} })
+  }
+
+  return block
+}
+
+export const block = blockFactory()
+
+export function listResults (results: BlockObjectResponse[], next?: string) {
   return {
-    object: 'block',
-    id: id || uniqueId('block-'),
-    parent: {
-      type: 'page_id',
-      page_id: uniqueId('page-'),
-    },
-    created_time: '2022-0829T23:00.000Z',
-    last_edited_time: '2022-0829T23:00.000Z',
-    created_by: {
-      object: 'user',
-      id: uniqueId('user-'),
-    },
-    last_edited_by: {
-      object: 'user',
-      id: uniqueId('user-'),
-    },
-    has_children: type === 'toggle',
-    archived: false,
-    type: type || 'paragraph',
-    [type || 'paragraph']: {
-      rich_text: [
-        {
-          type: 'text',
-          text: {
-            content: text,
-            link: null,
-          },
-          annotations: {
-            bold: false,
-            italic: false,
-            strikethrough: false,
-            underline: false,
-            code: false,
-            color: 'default',
-          },
-          plain_text: text,
-          href: null,
-        },
-      ],
-      color: 'default',
-    },
-  } as BlockObjectResponse
-}
-
-block.p = ({ id, text }: BlockOptions) => {
-  return block({ id, text, type: 'paragraph' })
-}
-
-block.bullet = ({ id, text }: BlockOptions) => {
-  return block({ id, text, type: 'bulleted_list_item' })
-}
-
-block.toggle = ({ id, text }: BlockOptions) => {
-  return block({ id, text, type: 'toggle' })
-}
-
-block.divider = ({ id }: { id?: string } = {}) => {
-  return {
-    object: 'block',
-    id: id || uniqueId('block-'),
-    type: 'divider',
-    divider: {},
-  } as BlockObjectResponse
+    object: 'list',
+    next_cursor: next || null,
+    has_more: !!next,
+    type: 'block',
+    block: {},
+    results,
+  }
 }

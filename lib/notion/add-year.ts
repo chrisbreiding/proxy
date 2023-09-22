@@ -8,7 +8,7 @@ import { getEnv } from '../util/env'
 import type { NotionBlock, OwnBlock } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { getMonthNameFromIndex, getMonths } from '../util/dates'
-import { appendBlockChildrenWithUnlimitedNesting } from './util/updates'
+import { appendBlockChildren } from './util/updates'
 
 interface YearTemplateItem {
   rule: string
@@ -322,7 +322,7 @@ export async function addYear ({ notionToken, futurePageId, year }: AddYearOptio
   const monthsData = getMonthsData(yearTemplateBlocks, extras)
   const blocks = makeBlocks(monthsData, year)
 
-  await appendBlockChildrenWithUnlimitedNesting({ notionToken, blocks, pageId: dropZoneId })
+  await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId })
 }
 
 export default async function main () {

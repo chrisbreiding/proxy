@@ -1,9 +1,11 @@
+import type express from 'express'
 import type {
   ApiColor,
   BlockObjectResponse,
   RichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints'
-import type { Block, NotionBlock, OwnBlock } from '../types'
+
+import type { Block, Content, NotionBlock, OwnBlock } from '../types'
 import { richTextToPlainText } from './conversions'
 
 export function getRichText (block: OwnBlock): RichTextItemResponse[] | undefined {
@@ -14,16 +16,19 @@ export function getRichText (block: OwnBlock): RichTextItemResponse[] | undefine
 interface MakeBlockOptions {
   annotations?: Partial<RichTextItemResponse['annotations']>
   children?: OwnBlock[] | NotionBlock[]
-  text: string
+  content?: Content
+  text?: string
   type: BlockObjectResponse['type']
 }
 
-export function makeBlock ({ text, type = 'paragraph', annotations, children }: MakeBlockOptions) {
+export function makeBlock (options: MakeBlockOptions) {
+  const { annotations, children, content, text, type = 'paragraph' } = options
+
   return {
     type,
     children,
-    content: {
-      rich_text: [
+    content: content || {
+      rich_text: typeof text === 'string' ? [
         {
           type: 'text',
           text: {
@@ -32,7 +37,7 @@ export function makeBlock ({ text, type = 'paragraph', annotations, children }: 
           annotations,
           plain_text: text,
         },
-      ],
+      ] : [],
     },
   } as OwnBlock
 }
@@ -74,4 +79,25 @@ export function makeTextPart (content: string, color?: ApiColor) {
 // compare guids without dashes in case one does not include dashes
 export function areIdsEqual (id1: string, id2: string) {
   return id1.replaceAll('-', '') === id2.replaceAll('-', '')
+}
+
+function getBlockChildrenDepth (block: Block, depth: number): number {
+  if (!block.children) {
+    return depth
+  }
+
+  return getBlocksChildrenDepth(block.children, depth + 1)
+}
+
+export function getBlocksChildrenDepth (blocks: Block[], depth = 0) {
+  if (!blocks.length) return depth
+
+  return Math.max(...blocks.map((block) => getBlockChildrenDepth(block, depth)))
+}
+
+export function sendHtml (res: express.Response, statusCode: number, message: string) {
+  res
+  .status(statusCode)
+  .set('Content-Type', 'text/html')
+  .send(message)
 }

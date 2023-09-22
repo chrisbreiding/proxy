@@ -63,7 +63,7 @@ describe('lib/notion/update-upcoming-weather', () => {
     nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
     nockGetBlockChildren('upcoming-id', { reply: { results: upcomingBlocks } })
 
-    const snapshotUpdates = [6, 8, 10, 12, 14, 16, 18, 20, 22].map((num) => {
+    const snapshotUpdates = [6, 9, 11, 13, 15, 17, 19, 21, 23].map((num) => {
       return snapshotBody(nockNotion({
         method: 'patch',
         path: `/v1/blocks/block-${num}`,

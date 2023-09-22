@@ -6,7 +6,7 @@ const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 import { updateWeather } from '../../../lib/notion/update-current-weather'
 import type { ConditionCode } from '../../../lib/weather'
 import { fixtureContents, getBody, weatherUrlBasePath } from '../../util'
-import { nockGetBlockChildren, nockUpdateBlock } from './util'
+import { block, nockGetBlockChildren, nockUpdateBlock } from './util'
 
 interface WeatherProps {
   conditionCode?: ConditionCode
@@ -19,7 +19,7 @@ describe('lib/notion/update-current-weather', () => {
   function makeTableRows () {
     return {
       results: Array(8).fill(1).map((_, i) => (
-        { id: `row-${i + 1}`, type: 'table_row', table_row: {} }
+        block({ id: `row-${i + 1}`, type: 'table_row', content: {} })
       )),
     }
   }
@@ -217,14 +217,8 @@ describe('lib/notion/update-current-weather', () => {
   it('errors if first child of current weather block is not a table', async () => {
     nockWeather()
     nockGetBlockChildren('current-weather-id', { reply: { results: [
-      {
-        type: 'paragraph',
-        paragraph: {},
-      },
-      {
-        type: 'paragraph',
-        paragraph: {},
-      },
+      block.p(),
+      block.p(),
     ] } })
     nockUpdateBlock('current-weather-id')
 
@@ -238,14 +232,8 @@ describe('lib/notion/update-current-weather', () => {
   it('errors if second child of current weather block is not a table', async () => {
     nockWeather()
     nockGetBlockChildren('current-weather-id', { reply: { results: [
-      {
-        type: 'table',
-        table: {},
-      },
-      {
-        type: 'table',
-        table: {},
-      },
+      block({ type: 'table', content: {} }),
+      block({ type: 'table', content: {} }),
     ] } })
     nockUpdateBlock('current-weather-id')
 

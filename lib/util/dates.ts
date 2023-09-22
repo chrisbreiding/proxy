@@ -1,11 +1,12 @@
 import dayjs from 'dayjs'
+import { times } from './collections'
 
 export function getMonthNameFromIndex (monthIndex: number, short = false) {
   return dayjs().month(monthIndex).format(short ? 'MMM' : 'MMMM')
 }
 
 export function getMonths ({ short }: { short?: boolean } = {}) {
-  return Array.from(new Array(12)).map((_, i) => {
+  return times(12).map((_, i) => {
     return getMonthNameFromIndex(i, short)
   })
 }

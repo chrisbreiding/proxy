@@ -27,6 +27,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "aeb55ad0-de19-4f6a-8c8a-b00b6b006e25",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
@@ -54,6 +55,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "7ff8f624-1aa1-4cec-9a2f-b0d4d0cffed5",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
@@ -149,6 +151,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "d6679deb-4419-4d39-8e63-5a65a5c3d3de",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "paragraph",
   },
   {
@@ -176,6 +179,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "4238e2e9-4a5b-4954-b9b9-6b5909401533",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
@@ -203,6 +207,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "ec5b7337-30df-4a7d-a6d3-e313cb097b0c",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
@@ -230,6 +235,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "aa5f3dec-e418-459b-b5ff-bad3f204977c",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
@@ -257,12 +263,14 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "2a2c118a-9929-4e9c-b054-67ba777e44a0",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "bulleted_list_item",
   },
   {
     "content": {},
     "has_children": false,
     "id": "fb8eb4c1-dc6e-4eb5-bb43-4f6d398d2685",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "divider",
   },
   {
@@ -271,12 +279,14 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": true,
     "id": "941bf143-a1ce-4baf-8d07-fb5328cedc63",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "child_page",
   },
   {
     "content": {},
     "has_children": false,
     "id": "4dae0678-dfb3-4baf-ad2b-ac4865c2169c",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "divider",
   },
   {
@@ -304,6 +314,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": true,
     "id": "upcoming-id",
+    "parentId": "646656c9-5541-4f87-97de-a186671115fe",
     "type": "toggle",
   },
   {
@@ -331,6 +342,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "dfbd2f12-eeff-4c16-8f72-5570b98a0751",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -426,6 +438,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "dfbd2f12-eeff-4c16-8f72-5570b98a0751",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -453,6 +466,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "31357e81-a95f-4ef3-996e-40cc1fa7d90b",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -480,6 +494,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "01308fcf-c6c4-41c0-a41d-54e8fbb60101",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -507,6 +522,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "c47fb2b8-4a56-4317-8b55-4824ad449e0a",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -585,6 +601,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "7e8b86d0-b8a4-4904-9cbe-a565be11f048",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -612,6 +629,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "last-upcoming-id",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -621,12 +639,14 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "button-id",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "embed",
   },
   {
     "content": {},
     "has_children": false,
     "id": "2c715df6-e475-4151-8e19-41afab14a367",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "divider",
   },
   {
@@ -654,6 +674,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "no-date-yet",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -662,6 +683,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "no-text",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "child_page",
   },
   {
@@ -740,6 +762,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "extra-date-1",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -767,6 +790,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "extra-item-1",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -794,6 +818,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "extra-date-2",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "paragraph",
   },
   {
@@ -821,6 +846,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": false,
     "id": "extra-item-2",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
@@ -848,12 +874,14 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": true,
     "id": "extra-with-children",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "bulleted_list_item",
   },
   {
     "content": {},
     "has_children": false,
     "id": "c0097bb8-72be-4369-98f8-aaf6fe1ab584",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "divider",
   },
   {
@@ -862,6 +890,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": true,
     "id": "1a7837b5-bee5-4812-8906-25bdc50e99ab",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "child_page",
   },
   {
@@ -870,6 +899,7 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     },
     "has_children": true,
     "id": "8024ae92-01f4-47f4-8496-0f0db2a95af4",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "child_page",
   },
 ]

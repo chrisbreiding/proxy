@@ -74,6 +74,7 @@ export interface NotionBlock extends OwnBlock {
   children?: NotionBlock[]
   has_children: boolean
   id: string
+  parentId: string
 }
 
 export type Block = OwnBlock | NotionBlock

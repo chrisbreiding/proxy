@@ -46,6 +46,20 @@ export async function getBlockChildrenDeep ({ notionToken, pageId, filter, inclu
   return compact(blocksWithChildren)
 }
 
+interface GetColumnBlocksOptions {
+  columnListId: string
+  notionToken: string
+}
+
+export async function getColumnBlocks ({ columnListId, notionToken }: GetColumnBlocksOptions) {
+  const columns = await getBlockChildren({ notionToken, pageId: columnListId })
+  const columnsBlocks = await Promise.all(columns.map(async (column) => {
+    return getBlockChildrenDeep({ notionToken, pageId: column.id })
+  }))
+
+  return columnsBlocks.flat()
+}
+
 interface QueryDatabasesOptions {
   notionToken: string
   databaseId: string

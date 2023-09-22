@@ -7,15 +7,7 @@ process.env.NOTION_FACTOR_MEALS_DATABASE_ID = 'meals-id'
 
 import { startServer } from '../../../../index'
 import { nockNotion } from '../util'
-import { handleServer, snapshotBody } from '../../../util'
-
-class RequestError extends Error {
-  constructor (message: string, extras: object) {
-    super(message)
-
-    Object.assign(this, extras)
-  }
-}
+import { RequestError, handleServer, snapshotBody } from '../../../util'
 
 describe('lib/notion/factor/meals', () => {
   handleServer(startServer)

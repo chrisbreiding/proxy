@@ -8,14 +8,6 @@ export function compact<T> (array: (T | undefined)[]): T[] {
   }, [] as T[])
 }
 
-export function insertAtIndex (array: any[], toInsert: any[], index: number) {
-  return [
-    ...array.slice(0, index),
-    ...toInsert,
-    ...array.slice(index),
-  ]
-}
-
 export async function mapPromisesSerially<T, U> (array: U[], callback: (arg: U) => Promise<T>) {
   const result: T[] = []
 
@@ -26,6 +18,6 @@ export async function mapPromisesSerially<T, U> (array: U[], callback: (arg: U) 
   return result
 }
 
-export function times (num: number) {
-  return (new Array(num)).fill(undefined)
+export function times (num: number, filler?: any) {
+  return (new Array(num)).fill(filler)
 }

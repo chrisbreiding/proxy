@@ -57,23 +57,57 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
     nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
 
-    const snapshots = (new Array(2)).fill(0).map((_, index) => {
-      const num = index + 1
-
-      return [
-        snapshotBody(nockAppendBlockChildren({
-          id: 'drop-zone-id',
-          reply: { results: [{ id: `drop-zone-${num}-id` }] },
-        }), `drop-zone-${num}`),
-        snapshotBody(nockAppendBlockChildren({
-          id: `drop-zone-${num}-id`,
-        }), `drop-zone-${num}-nested`),
-      ]
-    }).flat()
-
-    snapshotBody(nockAppendBlockChildren({
+    const snapshot = snapshotBody(nockAppendBlockChildren({
       id: 'drop-zone-id',
-    }), 'drop-zone-3')
+    }))
+
+    await addYear({
+      notionToken: 'notion-token',
+      futurePageId: 'future-page-id',
+      year: 2023,
+    })
+
+    await snapshot
+  })
+
+  it('handles deeply nested quests', async () => {
+    nockGetBlockChildren('future-page-id', { reply: { results: [
+      block({ id: 'year-template-id', type: 'child_page', content: { title: 'Year Template' }, hasChildren: true }),
+      block({ id: 'drop-zone-id', type: 'synced_block', content: {} }),
+    ] } })
+    nockGetBlockChildren('year-template-id', { reply: { results: [
+      block.p({ id: 'month-id', text: 'January', hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('month-id', { reply: { results: [
+      block.bullet({ id: 'quest-id', text: 'Quest', hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('quest-id', { reply: { results: [
+      block.bullet({ id: 'nested-1-id', text: 'Nested 1', hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('nested-1-id', { reply: { results: [
+      block.bullet({ id: 'nested-2-id', text: 'Nested 2', hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('nested-2-id', { reply: { results: [
+      block.bullet({ text: 'Nested 3' }),
+    ] } })
+
+    const snapshots = [
+      snapshotBody(nockAppendBlockChildren({
+        id: 'drop-zone-id',
+        reply: { results: [{ id: 'drop-1-id' }] },
+      })),
+      snapshotBody(nockAppendBlockChildren({
+        id: 'drop-1-id',
+        reply: { results: [{ id: 'drop-2-id' }] },
+      })),
+      snapshotBody(nockAppendBlockChildren({
+        id: 'drop-2-id',
+        reply: { results: [{ id: 'drop-3-id' }] },
+      })),
+      snapshotBody(nockAppendBlockChildren({
+        id: 'drop-3-id',
+      })),
+    ]
 
     await addYear({
       notionToken: 'notion-token',
@@ -102,28 +136,17 @@ describe('lib/notion/add-year', () => {
       return block.child_page?.title !== '2023'
     })
     nockGetBlockChildren('future-page-id', { reply: futureBlocks })
-
-    nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { reply: yearTemplateBlocks })
 
-    snapshotBody(nockAppendBlockChildren({
-      id: 'drop-zone-id',
-      reply: { results: [{ id: 'drop-zone-1-id' }] },
-    }), 'drop-zone-1')
-
-    snapshotBody(nockAppendBlockChildren({
-      id: 'drop-zone-1-id',
-    }), 'drop-zone-1-nested'),
-
-    snapshotBody(nockAppendBlockChildren({
-      id: 'drop-zone-id',
-    }), 'drop-zone-2')
+    const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'drop-zone-id' }))
 
     await addYear({
       notionToken: 'notion-token',
       futurePageId: 'future-page-id',
       year: 2023,
     })
+
+    await snapshot
   })
 
   it('errors if drop zone cannot be found', async () => {

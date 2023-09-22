@@ -7,7 +7,7 @@ import type {
 import type { Block, NotionBlock, OutgoingBlock, OwnBlock } from '../types'
 import { makeRequest } from './requests'
 import { convertBlockToOutgoingBlock } from './conversions'
-import { areIdsEqual } from './general'
+import { areIdsEqual, getBlocksChildrenDepth } from './general'
 
 interface MakeAppendRequestOptions {
   afterId?: string
@@ -38,7 +38,7 @@ interface AppendBlockChildrenOptions {
 }
 
 // appends block children with a limit of 2 levels of nesting
-export async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   function moveChildren (blocks: NotionBlock[] | OwnBlock[]) {
     return blocks.map((block) => {
       const convertedBlock = convertBlockToOutgoingBlock(block)
@@ -71,7 +71,7 @@ function getAfterId ({ numAdded, previousAfterId, results }: GetAfterIdOptions) 
 }
 
 // appends blocks children with no limit to the levels of nesting
-export async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
   let currentAfterId = afterId
   let toAppend: OutgoingBlock[] = []
 
@@ -89,6 +89,7 @@ export async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notion
         pageId,
         blocks: toAppend,
       })
+
       const lastAddedId = getAfterId({
         numAdded: toAppend.length,
         previousAfterId: currentAfterId,
@@ -119,6 +120,14 @@ export async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notion
       blocks: toAppend,
     })
   }
+}
+
+export async function appendBlockChildren (options: AppendBlockChildrenOptions) {
+  if (getBlocksChildrenDepth(options.blocks) > 2) {
+    return appendBlockChildrenWithUnlimitedNesting(options)
+  }
+
+  return appendBlockChildrenWithUpToTwoLevelsOfNesting(options)
 }
 
 interface UpdateBlockOptions {

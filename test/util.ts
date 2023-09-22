@@ -41,7 +41,7 @@ export function fixtureContents (name: string) {
   return readJsonSync(fixture(name))
 }
 
-function createUniqueId () {
+export function createUniqueId () {
   const tracker: { [key: string]: number } = {}
   let defaultCount = 0
 
@@ -62,7 +62,19 @@ export const uniqueId = createUniqueId()
 
 export function getBody (scope: nock.Scope) {
   return new Promise<void>((resolve, reject) => {
+    let timedOut = false
+
+    const timerId = setTimeout(() => {
+      timedOut = true
+
+      reject(`Timed out after 10 seconds awaiting request body for: ${scope.activeMocks().join(', ')}`)
+    }, 2000) // 2 seconds
+
     scope.on('request', (_, __, body) => {
+      clearTimeout(timerId)
+
+      if (timedOut) return
+
       try {
         resolve(JSON.parse(body))
       } catch (error: any) {
@@ -83,3 +95,11 @@ export function replaceStackLines (value: string) {
 }
 
 export const weatherUrlBasePath = '/api/v1/weather/en/lat/lng?country=US&timezone=America%2FNew_York'
+
+export class RequestError extends Error {
+  constructor (message: string, extras: object) {
+    super(message)
+
+    Object.assign(this, extras)
+  }
+}

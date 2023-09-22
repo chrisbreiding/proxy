@@ -9,7 +9,7 @@ import { patienceDiffPlus } from '../util/patience-diff'
 import type { NotionBlock } from './types'
 import { getBlockChildren } from './util/queries'
 import { dateRegex } from '../util/dates'
-import { appendBlockChildrenWithUpToTwoLevelsOfNesting } from './util/updates'
+import { appendBlockChildren } from './util/updates'
 
 function findId (
   blocks: NotionBlock[],
@@ -219,7 +219,7 @@ export async function yearInReview ({ donePageId, notionToken, year }: YearInRev
   const data = await getData({ months, notionToken })
   const blocks = makeBlocks(data)
 
-  await appendBlockChildrenWithUpToTwoLevelsOfNesting({ blocks, notionToken, pageId: yearId })
+  await appendBlockChildren({ blocks, notionToken, pageId: yearId })
 }
 
 export default async function main () {

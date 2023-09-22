@@ -5,7 +5,7 @@ import { getEnv } from '../util/env'
 import type { NotionBlock } from './types'
 import { getBlockChildren } from './util/queries'
 import { dateRegex } from '../util/dates'
-import { appendBlockChildrenWithUpToTwoLevelsOfNesting } from './util/updates'
+import { appendBlockChildren } from './util/updates'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 const questsId = getEnv('NOTION_QUESTS_ID')!
@@ -60,7 +60,7 @@ export async function addQuest (req: express.Request, res: express.Response) {
   })
   const afterId = await getNewQuestAfterId(questBlocks)
 
-  await appendBlockChildrenWithUpToTwoLevelsOfNesting({
+  await appendBlockChildren({
     afterId,
     blocks: [makeBlock({
       text: quest,

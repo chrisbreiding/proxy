@@ -7,11 +7,11 @@ import {
   nockAppendBlockChildren,
   nockDeleteBlock,
   nockGetBlockChildren,
+  nockNotion,
   nockUpdateBlock,
   notionFixtureContents,
 } from './util'
-import { handleServer, snapshotBody } from '../../util'
-import { insertAtIndex, times } from '../../../lib/util/collections'
+import { RequestError, handleServer, snapshotBody } from '../../util'
 
 process.env.API_KEY = 'key'
 
@@ -64,43 +64,10 @@ describe('lib/notion/upcoming-week', () => {
       nockGetBlockChildren('week-template-id', { fixture: 'upcoming-week/week-template-blocks' })
       nockGetBlockChildren('nested-parent-id', { fixture: 'blocks' })
 
-      function insertBlocks (
-        originalResults: any[],
-        num: number,
-        previousLastId: string,
-        lastId: string,
-      ) {
-        const lastIndex = originalResults.findIndex((block: { id: string }) => {
-          return block.id === previousLastId
-        })
-        const newBlocks = times(num).map((_, i) => {
-          return block.p({
-            text: `Block #${i + 1}`,
-            id: i === num - 1 ? lastId : undefined,
-          })
-        })
-
-        return {
-          results: insertAtIndex(originalResults, newBlocks, lastIndex + 1),
-        }
-      }
-
-      // append results have all the page's blocks, including the inserted blocks
-      const firstAppendResults = insertBlocks(upcomingBlocks.results, 12, 'last-upcoming-id', 'nested-parent-id')
-      const secondAppendResults = insertBlocks(firstAppendResults.results, 3, 'nested-parent-id', 'extra-with-children')
-
       const snapshots = [
         snapshotBody(nockAppendBlockChildren({
           id: 'upcoming-id',
-          reply: firstAppendResults,
-        }), 'append-1'),
-        snapshotBody(nockAppendBlockChildren({ id: 'nested-parent-id' }), 'nested-1'),
-        snapshotBody(nockAppendBlockChildren({
-          id: 'upcoming-id',
-          reply: secondAppendResults,
-        }), 'append-2'),
-        snapshotBody(nockAppendBlockChildren({ id: 'extra-with-children' }), 'nested-2'),
-        snapshotBody(nockAppendBlockChildren({ id: 'upcoming-id' }), 'append-3'),
+        }), 'upcoming'),
         snapshotBody(nockUpdateBlock('button-id'), 'button'),
       ]
 
@@ -136,7 +103,7 @@ describe('lib/notion/upcoming-week', () => {
       const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'upcoming-id',
         fixture: 'upcoming-week/append-1-result',
-      }), 'append-1')
+      }))
 
       const query = makeQuery()
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
@@ -148,44 +115,112 @@ describe('lib/notion/upcoming-week', () => {
       await snapshot
     })
 
+    it('handles deeply nested quests', async (ctx) => {
+      nockGetBlockChildren('upcoming-id', { reply: { results: [
+        block.bullet({ id: 'last-quest-id', text: 'Last quest' }),
+        block({ id: 'button-id' }),
+      ] } })
+      nockGetBlockChildren('week-template-id', { reply: { results: [
+        block.p({ text: 'Mon, ' }),
+        block.bullet({ id: 'quest-id', text: 'Quest', hasChildren: true }),
+      ] } })
+      nockGetBlockChildren('quest-id', { reply: { results: [
+        block.bullet({ id: 'nested-1-id', text: 'Nested 1', hasChildren: true }),
+      ] } })
+      nockGetBlockChildren('nested-1-id', { reply: { results: [
+        block.bullet({ id: 'nested-2-id', text: 'Nested 2', hasChildren: true }),
+      ] } })
+      nockGetBlockChildren('nested-2-id', { reply: { results: [
+        block.bullet({ text: 'Nested 3' }),
+      ] } })
+      nockUpdateBlock('button-id')
+
+      const snapshots = [
+        snapshotBody(nockAppendBlockChildren({
+          id: 'upcoming-id',
+          reply: { results: [{ id: 'last-quest-id' }, {}, { id: 'upcoming-1-id' }] },
+        })),
+        snapshotBody(nockAppendBlockChildren({
+          id: 'upcoming-1-id',
+          reply: { results: [{ id: 'upcoming-2-id' }] },
+        })),
+        snapshotBody(nockAppendBlockChildren({
+          id: 'upcoming-2-id',
+          reply: { results: [{ id: 'upcoming-3-id' }] },
+        })),
+        snapshotBody(nockAppendBlockChildren({
+          id: 'upcoming-3-id',
+        })),
+      ]
+
+      const query = makeQuery()
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+
+      expect(res.text).to.include('Following week successfully added!')
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.status).to.equal(200)
+
+      await Promise.all(snapshots)
+    })
+
     it('sends 500 with error if no addFollowingWeekButtonId specified', async (ctx) => {
       const query = makeQuery().replace('addFollowingWeekButtonId=button-id', '')
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
+      expect(res.body.error.message).to.equal('A value for \'addFollowingWeekButtonId\' must be provided in the query string')
       expect(res.status).to.equal(500)
-      expect(res.body).to.deep.equal({ error: 'A value for \'addFollowingWeekButtonId\' must be provided in the query string' })
     })
 
     it('sends 500 with error if no upcomingId specified', async (ctx) => {
       const query = makeQuery().replace('upcomingId=upcoming-id', '')
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
+      expect(res.body.error.message).to.equal('A value for \'upcomingId\' must be provided in the query string')
       expect(res.status).to.equal(500)
-      expect(res.body).to.deep.equal({ error: 'A value for \'upcomingId\' must be provided in the query string' })
     })
 
     it('sends 500 with error if no notionToken specified', async (ctx) => {
       const query = makeQuery().replace('notionToken=notion-token', '')
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
+      expect(res.body.error.message).to.equal('A value for \'notionToken\' must be provided in the query string')
       expect(res.status).to.equal(500)
-      expect(res.body).to.deep.equal({ error: 'A value for \'notionToken\' must be provided in the query string' })
     })
 
     it('sends 500 with error if no startDate specified', async (ctx) => {
       const query = makeQuery().replace('startDate=2021-12-26T12:00:00.000Z', '')
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
+      expect(res.body.error.message).to.equal('A value for \'startDate\' must be provided in the query string')
       expect(res.status).to.equal(500)
-      expect(res.body).to.deep.equal({ error: 'A value for \'startDate\' must be provided in the query string' })
     })
 
     it('sends 500 with error if no weekTemplatePageId specified', async (ctx) => {
       const query = makeQuery().replace('weekTemplatePageId=week-template-id', '')
       const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
 
+      expect(res.body.error.message).to.equal('A value for \'weekTemplatePageId\' must be provided in the query string')
       expect(res.status).to.equal(500)
-      expect(res.body).to.deep.equal({ error: 'A value for \'weekTemplatePageId\' must be provided in the query string' })
+    })
+
+    it('sends 500 with error if request errors', async (ctx) => {
+      const error = new RequestError('notion error', {
+        code: 42,
+        response: {
+          data: {
+            code: 24,
+            message: 'error data',
+          },
+        },
+      })
+
+      nockNotion({ error, path: '/v1/blocks/upcoming-id/children' })
+
+      const query = makeQuery()
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+
+      expect(res.body.data.message).to.equal('error data')
+      expect(res.status).to.equal(500)
     })
 
     it('status 403 if key does not match', async (ctx) => {

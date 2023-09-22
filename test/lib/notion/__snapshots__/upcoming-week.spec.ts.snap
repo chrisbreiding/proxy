@@ -1,6 +1,17 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-1 1`] = `
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > button 1`] = `
+{
+  "embed": {
+    "caption": [],
+    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id",
+  },
+  "object": "block",
+  "type": "embed",
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > upcoming 1`] = `
 {
   "after": "last-upcoming-id",
   "children": [
@@ -171,6 +182,60 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
     },
     {
       "bulleted_list_item": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "Task 1",
+                  "text": {
+                    "content": "Task 1",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "Task 2",
+                  "text": {
+                    "content": "Task 2",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
         "rich_text": [
           {
             "plain_text": "Wed task 1 (has children)",
@@ -184,14 +249,6 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-2 1`] = `
-{
-  "after": "nested-parent-id",
-  "children": [
     {
       "bulleted_list_item": {
         "rich_text": [
@@ -224,6 +281,60 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
     },
     {
       "bulleted_list_item": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "Task 1",
+                  "text": {
+                    "content": "Task 1",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "Task 2",
+                  "text": {
+                    "content": "Task 2",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
         "rich_text": [
           {
             "plain_text": "From the future for Wednesday with children",
@@ -237,14 +348,6 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > append-3 1`] = `
-{
-  "after": "extra-with-children",
-  "children": [
     {
       "object": "block",
       "paragraph": {
@@ -354,136 +457,7 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week 
 }
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > button 1`] = `
-{
-  "embed": {
-    "caption": [],
-    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id",
-  },
-  "object": "block",
-  "type": "embed",
-}
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested-1 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 1",
-            "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > nested-2 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 1",
-            "text": {
-              "content": "Task 1",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "Task 2",
-            "text": {
-              "content": "Task 2",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully handles absence of button block and variables block > append-1 1`] = `
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully handles absence of button block and variables block 1`] = `
 {
   "children": [
     {
@@ -568,6 +542,143 @@ exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully
             "plain_text": "Mon \${var2}",
             "text": {
               "content": "Mon \${var2}",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 1`] = `
+{
+  "after": "last-quest-id",
+  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Mon, 12/27",
+            "text": {
+              "content": "Mon, 12/27",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "plain_text": "Quest",
+            "text": {
+              "content": "Quest",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 2`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 1",
+            "text": {
+              "content": "Nested 1",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 3`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 2",
+            "text": {
+              "content": "Nested 2",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 4`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 3",
+            "text": {
+              "content": "Nested 3",
+              "link": null,
             },
             "type": "text",
           },

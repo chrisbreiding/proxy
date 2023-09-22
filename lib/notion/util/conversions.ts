@@ -6,11 +6,14 @@ export function convertNotionBlockToOwnBlock (block: BlockObjectResponse): Notio
   const type = block.type
   // @ts-ignore
   const content = block[type] as Content
+  // @ts-ignore
+  const parentId = block.parent[block.parent.type]
 
   return {
     content: clone(content),
     has_children: block.has_children,
     id: block.id,
+    parentId,
     type,
   }
 }

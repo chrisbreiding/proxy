@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-1 1`] = `
+exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras 1`] = `
 {
   "children": [
     {
@@ -415,6 +415,34 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
     {
       "object": "block",
       "toggle": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "blocks-from-toggle-id task",
+                  "text": {
+                    "content": "blocks-from-toggle-id task",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
         "color": "default",
         "rich_text": [
           {
@@ -438,46 +466,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       },
       "type": "toggle",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-1-nested 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "blocks-from-toggle-id task",
-            "text": {
-              "content": "blocks-from-toggle-id task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2 1`] = `
-{
-  "children": [
     {
       "object": "block",
       "paragraph": {
@@ -803,6 +791,34 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
     },
     {
       "bulleted_list_item": {
+        "children": [
+          {
+            "bulleted_list_item": {
+              "color": "default",
+              "rich_text": [
+                {
+                  "annotations": {
+                    "bold": false,
+                    "code": false,
+                    "color": "default",
+                    "italic": false,
+                    "strikethrough": false,
+                    "underline": false,
+                  },
+                  "href": null,
+                  "plain_text": "blocks-from-nested-id task",
+                  "text": {
+                    "content": "blocks-from-nested-id task",
+                    "link": null,
+                  },
+                  "type": "text",
+                },
+              ],
+            },
+            "object": "block",
+            "type": "bulleted_list_item",
+          },
+        ],
         "color": "default",
         "rich_text": [
           {
@@ -827,46 +843,6 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
       "object": "block",
       "type": "bulleted_list_item",
     },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-2-nested 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "color": "default",
-        "rich_text": [
-          {
-            "annotations": {
-              "bold": false,
-              "code": false,
-              "color": "default",
-              "italic": false,
-              "strikethrough": false,
-              "underline": false,
-            },
-            "href": null,
-            "plain_text": "blocks-from-nested-id task",
-            "text": {
-              "content": "blocks-from-nested-id task",
-              "link": null,
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
-`;
-
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras > drop-zone-3 1`] = `
-{
-  "children": [
     {
       "bulleted_list_item": {
         "color": "default",
@@ -2736,7 +2712,187 @@ exports[`lib/notion/add-year > appends blocks in the drop zone based on the year
 }
 `;
 
-exports[`lib/notion/add-year > handles months that have no quests and lack of extras > drop-zone-1 1`] = `
+exports[`lib/notion/add-year > handles deeply nested quests 1`] = `
+{
+  "children": [
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "",
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": true,
+            },
+            "plain_text": "January",
+            "text": {
+              "content": "January",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "object": "block",
+      "paragraph": {
+        "rich_text": [
+          {
+            "plain_text": "Sun, 1/1",
+            "text": {
+              "content": "Sun, 1/1",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "type": "paragraph",
+    },
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Quest",
+            "text": {
+              "content": "Quest",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/add-year > handles deeply nested quests 2`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 1",
+            "text": {
+              "content": "Nested 1",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/add-year > handles deeply nested quests 3`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 2",
+            "text": {
+              "content": "Nested 2",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/add-year > handles deeply nested quests 4`] = `
+{
+  "children": [
+    {
+      "bulleted_list_item": {
+        "color": "default",
+        "rich_text": [
+          {
+            "annotations": {
+              "bold": false,
+              "code": false,
+              "color": "default",
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+            },
+            "href": null,
+            "plain_text": "Nested 3",
+            "text": {
+              "content": "Nested 3",
+              "link": null,
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "object": "block",
+      "type": "bulleted_list_item",
+    },
+  ],
+}
+`;
+
+exports[`lib/notion/add-year > handles months that have no quests and lack of extras 1`] = `
 {
   "children": [
     {

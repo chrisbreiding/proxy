@@ -61,7 +61,7 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'quests-id',
       }))
 
@@ -69,6 +69,8 @@ describe('lib/notion/quests', () => {
       .send({ quest: 'A new quest' })
 
       expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('adds it before second date if first date is first item', async (ctx) => {
@@ -82,7 +84,7 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'quests-id',
       }))
 
@@ -90,6 +92,8 @@ describe('lib/notion/quests', () => {
       .send({ quest: 'A new quest' })
 
       expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('adds it before divider if first date is first item and there is no second date', async (ctx) => {
@@ -103,7 +107,7 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'quests-id',
       }))
 
@@ -111,6 +115,8 @@ describe('lib/notion/quests', () => {
       .send({ quest: 'A new quest' })
 
       expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('adds it before divider if there are no dates', async (ctx) => {
@@ -123,7 +129,7 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'quests-id',
       }))
 
@@ -131,6 +137,8 @@ describe('lib/notion/quests', () => {
       .send({ quest: 'A new quest' })
 
       expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('adds it at the end if there are somehow no dates and no dividers', async (ctx) => {
@@ -142,7 +150,7 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotBody(nockAppendBlockChildren({
         id: 'quests-id',
       }))
 
@@ -150,6 +158,8 @@ describe('lib/notion/quests', () => {
       .send({ quest: 'A new quest' })
 
       expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('status 403 if key does not match', async (ctx) => {
