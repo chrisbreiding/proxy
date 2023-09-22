@@ -204,3 +204,12 @@ export function listResults (results: BlockObjectResponse[], next?: string) {
     results,
   }
 }
+
+export function toQueryString (keysAndValues: Record<string, string | null>) {
+  return Object.entries(keysAndValues)
+  .filter(([, value]) => !!value)
+  .map(([key, value]) => {
+    return `${key}=${value}`
+  })
+  .join('&')
+}

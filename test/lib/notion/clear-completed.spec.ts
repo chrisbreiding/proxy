@@ -20,6 +20,7 @@ import {
   nockDeleteBlock,
   nockGetBlockChildren,
   nockNotion,
+  toQueryString,
 } from './util'
 
 function nockDeletedBlocks (ids: string[]) {
@@ -32,12 +33,13 @@ describe('lib/notion/clear-completed', () => {
   handleServer(startServer)
 
   describe('GET /notion/action/:key?action=clearCompleted', () => {
-    function makeQuery () {
-      return [
-        ['action', 'clearCompleted'],
-        ['pageId', 'page-id'],
-        ['notionToken', 'notion-token'],
-      ].map(([key, value]) => `${key}=${value}`).join('&')
+    function makeQuery (updates: Record<string, string | null> = {}) {
+      return toQueryString({
+        action: 'clearCompleted',
+        pageId: 'page-id',
+        notionToken: 'notion-token',
+        ...updates,
+      })
     }
 
     it('removes completed items', async (ctx) => {
@@ -146,16 +148,14 @@ describe('lib/notion/clear-completed', () => {
     })
 
     it('sends 400 with error if no pageId specified', async (ctx) => {
-      const query = makeQuery().replace('&pageId=page-id', '')
-      const res = await ctx.request.get(`/notion/action/key?${query}`)
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ pageId: null })}`)
 
       expect(res.text).to.equal('<p>A value for <em>pageId</em> must be provided in the query string</p>')
       expect(res.status).to.equal(400)
     })
 
     it('sends 400 with error if no notionToken specified', async (ctx) => {
-      const query = makeQuery().replace('&notionToken=notion-token', '')
-      const res = await ctx.request.get(`/notion/action/key?${query}`)
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
 
       expect(res.text).to.equal('<p>A value for <em>notionToken</em> must be provided in the query string</p>')
       expect(res.status).to.equal(400)

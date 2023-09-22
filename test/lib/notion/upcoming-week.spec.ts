@@ -10,6 +10,7 @@ import {
   nockNotion,
   nockUpdateBlock,
   notionFixtureContents,
+  toQueryString,
 } from './util'
 import { RequestError, handleServer, snapshotBody } from '../../util'
 
@@ -35,14 +36,15 @@ describe('lib/notion/upcoming-week', () => {
   })
 
   describe('POST /notion/upcoming-week/:key', () => {
-    function makeQuery () {
-      return [
-        ['addFollowingWeekButtonId', 'button-id'],
-        ['notionToken', 'notion-token'],
-        ['startDate', '2021-12-26T12:00:00.000Z'],
-        ['upcomingId', 'upcoming-id'],
-        ['weekTemplatePageId', 'week-template-id'],
-      ].map(([key, value]) => `${key}=${value}`).join('&')
+    function makeQuery (updates: Record<string, string | null> = {}) {
+      return toQueryString({
+        addFollowingWeekButtonId: 'button-id',
+        notionToken: 'notion-token',
+        startDate: '2021-12-26T12:00:00.000Z',
+        upcomingId: 'upcoming-id',
+        weekTemplatePageId: 'week-template-id',
+        ...updates,
+      })
     }
 
     beforeEach(() => {
@@ -77,8 +79,7 @@ describe('lib/notion/upcoming-week', () => {
       nockDeleteBlock('extra-item-2')
       nockDeleteBlock('extra-with-children')
 
-      const query = makeQuery()
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery()}`)
 
       expect(res.status).to.equal(200)
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
@@ -105,8 +106,7 @@ describe('lib/notion/upcoming-week', () => {
         fixture: 'upcoming-week/append-1-result',
       }))
 
-      const query = makeQuery()
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery()}`)
 
       expect(res.status).to.equal(200)
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
@@ -153,8 +153,7 @@ describe('lib/notion/upcoming-week', () => {
         })),
       ]
 
-      const query = makeQuery()
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery()}`)
 
       expect(res.text).to.include('Following week successfully added!')
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
@@ -164,40 +163,35 @@ describe('lib/notion/upcoming-week', () => {
     })
 
     it('sends 500 with error if no addFollowingWeekButtonId specified', async (ctx) => {
-      const query = makeQuery().replace('addFollowingWeekButtonId=button-id', '')
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery({ addFollowingWeekButtonId: null })}`)
 
       expect(res.body.error.message).to.equal('A value for \'addFollowingWeekButtonId\' must be provided in the query string')
       expect(res.status).to.equal(500)
     })
 
     it('sends 500 with error if no upcomingId specified', async (ctx) => {
-      const query = makeQuery().replace('upcomingId=upcoming-id', '')
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery({ upcomingId: null })}`)
 
       expect(res.body.error.message).to.equal('A value for \'upcomingId\' must be provided in the query string')
       expect(res.status).to.equal(500)
     })
 
     it('sends 500 with error if no notionToken specified', async (ctx) => {
-      const query = makeQuery().replace('notionToken=notion-token', '')
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery({ notionToken: null })}`)
 
       expect(res.body.error.message).to.equal('A value for \'notionToken\' must be provided in the query string')
       expect(res.status).to.equal(500)
     })
 
     it('sends 500 with error if no startDate specified', async (ctx) => {
-      const query = makeQuery().replace('startDate=2021-12-26T12:00:00.000Z', '')
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery({ startDate: null })}`)
 
       expect(res.body.error.message).to.equal('A value for \'startDate\' must be provided in the query string')
       expect(res.status).to.equal(500)
     })
 
     it('sends 500 with error if no weekTemplatePageId specified', async (ctx) => {
-      const query = makeQuery().replace('weekTemplatePageId=week-template-id', '')
-      const res = await ctx.request.post(`/notion/upcoming-week/key?${query}`)
+      const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery({ weekTemplatePageId: null })}`)
 
       expect(res.body.error.message).to.equal('A value for \'weekTemplatePageId\' must be provided in the query string')
       expect(res.status).to.equal(500)
