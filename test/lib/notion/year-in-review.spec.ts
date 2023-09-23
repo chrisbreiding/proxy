@@ -2,8 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { yearInReview } from '../../../lib/notion/year-in-review'
 import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
-import { snapshotBody } from '../../util'
-import { nockGetBlockChildren, nockAppendBlockChildren } from './util'
+import { nockGetBlockChildren, snapshotAppendChildren } from './util'
 
 describe('lib/notion/year-in-review', () => {
   it('adds year summmary', async () => {
@@ -22,7 +21,7 @@ describe('lib/notion/year-in-review', () => {
     nockGetBlockChildren('november-id', { reply: monthBlocks.november })
     nockGetBlockChildren('december-id', { reply: monthBlocks.december })
 
-    const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'year-id' }))
+    const snapshot = snapshotAppendChildren({ id: 'year-id' })
 
     await yearInReview({
       donePageId: 'done-page-id',

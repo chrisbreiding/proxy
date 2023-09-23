@@ -1,8 +1,11 @@
-import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { BlockObjectResponse, ListBlockChildrenResponse } from '@notionhq/client/build/src/api-endpoints'
 import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
+import { NotionToMarkdown } from 'notion-to-md'
 
-import { createUniqueId, fixture } from '../../util'
+import { createUniqueId, fixture, getBody } from '../../util'
+import { expect } from 'vitest'
+import type { OutgoingBlock } from '../../../lib/notion/types'
 
 const notionVersion = '2022-06-28'
 
@@ -212,4 +215,55 @@ export function toQueryString (keysAndValues: Record<string, string | null>) {
     return `${key}=${value}`
   })
   .join('&')
+}
+
+// @ts-expect-error
+const n2m = new NotionToMarkdown({ notionClient: {} })
+
+function moveChildren (blocks: OutgoingBlock[]) {
+  return blocks.map((block) => {
+    // @ts-ignore
+    if (!block[block.type].children) return block
+
+    // @ts-ignore
+    block.children = moveChildren(block[block.type].children)
+    // @ts-ignore
+    delete block[block.type].children
+
+    return block
+  }) as ListBlockChildrenResponse['results']
+}
+
+async function convertBlocksToMarkdown (blocks: OutgoingBlock[]) {
+  const mdBlocks = await n2m.blocksToMarkdown(moveChildren(blocks))
+
+  return n2m.toMarkdownString(mdBlocks).parent
+}
+
+interface AppendShape {
+  after?: string
+  children: OutgoingBlock[]
+}
+
+interface SnapshotAppendChildrenOptions extends AppendOptions {
+  after?: string
+  message?: string
+}
+
+export async function snapshotAppendChildren (options: SnapshotAppendChildrenOptions) {
+  const scope = nockAppendBlockChildren(options)
+  const body = await getBody<AppendShape>(scope)
+
+  if (options.after) {
+    expect(body.after).to.equal(options.after)
+  }
+
+  if (body.after && !options.after) {
+    throw new Error(`snapshotAppendChildren: need to assert the after id: ${body.after}`)
+  }
+
+  const md = await convertBlocksToMarkdown(body.children)
+
+  expect(typeof md).toEqual('string')
+  expect(md).toMatchSnapshot(options.message)
 }

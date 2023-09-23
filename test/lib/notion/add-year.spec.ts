@@ -3,12 +3,11 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { addYear } from '../../../lib/notion/add-year'
 import { compact } from '../../../lib/util/collections'
-import { snapshotBody } from '../../util'
 import {
   nockGetBlockChildren,
-  nockAppendBlockChildren,
   notionFixtureContents,
   block,
+  snapshotAppendChildren,
 } from './util'
 
 function makeBlocks (prefix: string, toggle = false, empty = false) {
@@ -57,9 +56,9 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
     nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
 
-    const snapshot = snapshotBody(nockAppendBlockChildren({
+    const snapshot = snapshotAppendChildren({
       id: 'drop-zone-id',
-    }))
+    })
 
     await addYear({
       notionToken: 'notion-token',
@@ -92,21 +91,21 @@ describe('lib/notion/add-year', () => {
     ] } })
 
     const snapshots = [
-      snapshotBody(nockAppendBlockChildren({
+      snapshotAppendChildren({
         id: 'drop-zone-id',
         reply: { results: [{ id: 'drop-1-id' }] },
-      })),
-      snapshotBody(nockAppendBlockChildren({
+      }),
+      snapshotAppendChildren({
         id: 'drop-1-id',
         reply: { results: [{ id: 'drop-2-id' }] },
-      })),
-      snapshotBody(nockAppendBlockChildren({
+      }),
+      snapshotAppendChildren({
         id: 'drop-2-id',
         reply: { results: [{ id: 'drop-3-id' }] },
-      })),
-      snapshotBody(nockAppendBlockChildren({
+      }),
+      snapshotAppendChildren({
         id: 'drop-3-id',
-      })),
+      }),
     ]
 
     await addYear({
@@ -138,7 +137,9 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('future-page-id', { reply: futureBlocks })
     nockGetBlockChildren('year-template-id', { reply: yearTemplateBlocks })
 
-    const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'drop-zone-id' }))
+    const snapshot = snapshotAppendChildren({
+      id: 'drop-zone-id',
+    })
 
     await addYear({
       notionToken: 'notion-token',

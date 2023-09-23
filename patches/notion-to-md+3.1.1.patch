@@ -1,0 +1,101 @@
+diff --git a/node_modules/notion-to-md/build/notion-to-md.js b/node_modules/notion-to-md/build/notion-to-md.js
+index 3e74a11..c484352 100644
+--- a/node_modules/notion-to-md/build/notion-to-md.js
++++ b/node_modules/notion-to-md/build/notion-to-md.js
+@@ -57,7 +57,7 @@ class NotionToMarkdown {
+             // adding a toggle check prevents duplicate
+             // rendering of toggle title
+             // process parent blocks
+-            if (mdBlocks.parent &&
++            if (typeof mdBlocks.parent === 'string' &&
+                 mdBlocks.type !== "toggle" &&
+                 mdBlocks.type !== "child_page") {
+                 if (mdBlocks.type !== "to_do" &&
+@@ -66,7 +66,7 @@ class NotionToMarkdown {
+                     // initialize if key doesn't exist
+                     mdOutput[pageIdentifier] = mdOutput[pageIdentifier] || "";
+                     // add extra line breaks non list blocks
+-                    mdOutput[pageIdentifier] += `\n${md.addTabSpace(mdBlocks.parent, nestingLevel)}\n\n`;
++                    mdOutput[pageIdentifier] += `${md.addTabSpace(mdBlocks.parent, nestingLevel)}\n`;
+                 }
+                 else {
+                     // initialize if key doesn't exist
+@@ -108,7 +108,7 @@ class NotionToMarkdown {
+                     // convert children md object to md string
+                     const toggle_children_md_string = this.toMarkdownString(mdBlocks.children);
+                     mdOutput[pageIdentifier] = mdOutput[pageIdentifier] || "";
+-                    mdOutput[pageIdentifier] += md.toggle(mdBlocks.parent, toggle_children_md_string["parent"]);
++                    mdOutput[pageIdentifier] += md.toggle(mdBlocks.parent, toggle_children_md_string["parent"], nestingLevel + 1);
+                 }
+                 else {
+                     let mdstr = this.toMarkdownString(mdBlocks.children, pageIdentifier, nestingLevel + 1);
+@@ -154,6 +154,7 @@ class NotionToMarkdown {
+             return mdBlocks;
+         for (let i = 0; i < blocks.length; i++) {
+             let block = blocks[i];
++            let child_blocks;
+             // @ts-ignore
+             if (block.type === "child_page" && !this.config.parseChildPages) {
+                 continue;
+@@ -164,7 +165,14 @@ class NotionToMarkdown {
+                     ? block.synced_block.synced_from.block_id
+                     : block.id;
+                 // Get children of this block.
+-                let child_blocks = await (0, notion_1.getBlockChildren)(this.notionClient, block_id, totalPage);
++                child_blocks = await (0, notion_1.getBlockChildren)(this.notionClient, block_id, totalPage);
++            }
++
++            if ("children" in block) {
++                child_blocks = block.children;
++            }
++
++            if (child_blocks) {
+                 // Push this block to mdBlocks.
+                 mdBlocks.push({
+                     type: block.type,
+@@ -438,7 +446,7 @@ class NotionToMarkdown {
+      * @param {Annotations} annotations - Annotation object of a notion block
+      * @returns {string} - Annotated text
+      */
+-    annotatePlainText(text, annotations) {
++    annotatePlainText(text, annotations = {}) {
+         // if text is all spaces, don't annotate
+         if (text.match(/^\s*$/))
+             return text;
+diff --git a/node_modules/notion-to-md/build/utils/md.js b/node_modules/notion-to-md/build/utils/md.js
+index add7c5e..21b2e41 100644
+--- a/node_modules/notion-to-md/build/utils/md.js
++++ b/node_modules/notion-to-md/build/utils/md.js
+@@ -109,7 +109,13 @@ const addTabSpace = (text, n = 0) => {
+     const tab = "	";
+     for (let i = 0; i < n; i++) {
+         if (text.includes("\n")) {
+-            const multiLineText = text.split(/(?:^|\n)/).join(`\n${tab}`);
++            let lines = text.split(/(?:^|\n)/)
++            // keep empty last line from adding <newline><tab> to end of children
++            const lastLine = lines[lines.length - 1]
++            if (!lastLine) {
++                lines.pop()
++            }
++            const multiLineText = lines.join(`\n${tab}`) + (!lastLine ? '\n' : '');
+             text = tab + multiLineText;
+         }
+         else
+@@ -122,13 +128,12 @@ const divider = () => {
+     return "---";
+ };
+ exports.divider = divider;
+-const toggle = (summary, children) => {
++const toggle = (summary, children, nestingLevel = 0) => {
+     if (!summary)
+         return children || "";
+-    return `<details>
+-<summary>${summary}</summary>
+-${children || ""}
+-</details>\n\n`;
++    if (!children)
++        return `> ${summary}`
++    return `> ${summary}\n${addTabSpace(children, nestingLevel) || ""}`;
+ };
+ exports.toggle = toggle;
+ const table = (cells) => {

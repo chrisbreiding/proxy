@@ -4,12 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { startServer } from '../../../index'
 import {
   block,
-  nockAppendBlockChildren,
   nockDeleteBlock,
   nockGetBlockChildren,
   nockNotion,
   nockUpdateBlock,
   notionFixtureContents,
+  snapshotAppendChildren,
   toQueryString,
 } from './util'
 import { RequestError, handleServer, snapshotBody } from '../../util'
@@ -67,9 +67,11 @@ describe('lib/notion/upcoming-week', () => {
       nockGetBlockChildren('nested-parent-id', { fixture: 'blocks' })
 
       const snapshots = [
-        snapshotBody(nockAppendBlockChildren({
+        snapshotAppendChildren({
           id: 'upcoming-id',
-        }), 'upcoming'),
+          after: 'last-upcoming-id',
+          message: 'upcoming',
+        }),
         snapshotBody(nockUpdateBlock('button-id'), 'button'),
       ]
 
@@ -101,10 +103,10 @@ describe('lib/notion/upcoming-week', () => {
       nockGetBlockChildren('week-template-id', { reply: weekTemplateBlocks })
       nockUpdateBlock('button-id')
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'upcoming-id',
         fixture: 'upcoming-week/append-1-result',
-      }))
+      })
 
       const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery()}`)
 
@@ -136,21 +138,26 @@ describe('lib/notion/upcoming-week', () => {
       nockUpdateBlock('button-id')
 
       const snapshots = [
-        snapshotBody(nockAppendBlockChildren({
+        snapshotAppendChildren({
           id: 'upcoming-id',
-          reply: { results: [{ id: 'last-quest-id' }, {}, { id: 'upcoming-1-id' }] },
-        })),
-        snapshotBody(nockAppendBlockChildren({
+          after: 'last-quest-id',
+          reply: { results: [
+            { id: 'last-quest-id' },
+            {},
+            { id: 'upcoming-1-id' },
+          ] },
+        }),
+        snapshotAppendChildren({
           id: 'upcoming-1-id',
           reply: { results: [{ id: 'upcoming-2-id' }] },
-        })),
-        snapshotBody(nockAppendBlockChildren({
+        }),
+        snapshotAppendChildren({
           id: 'upcoming-2-id',
           reply: { results: [{ id: 'upcoming-3-id' }] },
-        })),
-        snapshotBody(nockAppendBlockChildren({
+        }),
+        snapshotAppendChildren({
           id: 'upcoming-3-id',
-        })),
+        }),
       ]
 
       const res = await ctx.request.post(`/notion/upcoming-week/key?${makeQuery()}`)

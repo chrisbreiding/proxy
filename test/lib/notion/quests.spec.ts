@@ -9,11 +9,11 @@ process.env.NOTION_QUESTS_ID = 'quests-id'
 import {
   block,
   notionFixture as fixture,
-  nockAppendBlockChildren,
   nockGetBlockChildren,
+  snapshotAppendChildren,
 } from './util'
 import { getAllQuests } from '../../../lib/notion/quests'
-import { handleServer, snapshotBody } from '../../util'
+import { handleServer } from '../../util'
 import { startServer } from '../../..'
 
 describe('lib/notion/quests', () => {
@@ -61,9 +61,10 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'quests-id',
-      }))
+        after: 'after-me',
+      })
 
       const res = await ctx.request.post('/notion/quests/key')
       .send({ quest: 'A new quest' })
@@ -84,9 +85,10 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'quests-id',
-      }))
+        after: 'after-me',
+      })
 
       const res = await ctx.request.post('/notion/quests/key')
       .send({ quest: 'A new quest' })
@@ -107,9 +109,10 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'quests-id',
-      }))
+        after: 'after-me',
+      })
 
       const res = await ctx.request.post('/notion/quests/key')
       .send({ quest: 'A new quest' })
@@ -129,9 +132,10 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'quests-id',
-      }))
+        after: 'after-me',
+      })
 
       const res = await ctx.request.post('/notion/quests/key')
       .send({ quest: 'A new quest' })
@@ -150,9 +154,9 @@ describe('lib/notion/quests', () => {
         },
       })
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({
+      const snapshot = snapshotAppendChildren({
         id: 'quests-id',
-      }))
+      })
 
       const res = await ctx.request.post('/notion/quests/key')
       .send({ quest: 'A new quest' })

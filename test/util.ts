@@ -60,8 +60,8 @@ export function createUniqueId () {
 
 export const uniqueId = createUniqueId()
 
-export function getBody (scope: nock.Scope) {
-  return new Promise<void>((resolve, reject) => {
+export function getBody<T> (scope: nock.Scope) {
+  return new Promise<T>((resolve, reject) => {
     let timedOut = false
 
     const timerId = setTimeout(() => {
@@ -85,7 +85,7 @@ export function getBody (scope: nock.Scope) {
 }
 
 export async function snapshotBody (scope: nock.Scope, message?: string) {
-  expect(await getBody(scope)).toMatchSnapshot(message)
+  expect(await getBody<any>(scope)).toMatchSnapshot(message)
 }
 
 const stackLineRegex = /at\s.*(?::\d+:\d+|\s\((?:.*:\d+:\d+|<unknown>)\))\)?/s

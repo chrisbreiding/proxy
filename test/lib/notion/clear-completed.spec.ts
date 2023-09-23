@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 process.env.API_KEY = 'key'
 
 import { startServer } from '../../../index'
-import { RequestError, handleServer, snapshotBody } from '../../util'
+import { RequestError, handleServer } from '../../util'
 import {
   column1,
   column2,
@@ -16,10 +16,10 @@ import {
   recentlyCleared,
 } from '../../fixtures/notion/clear-completed.fixtures'
 import {
-  nockAppendBlockChildren,
   nockDeleteBlock,
   nockGetBlockChildren,
   nockNotion,
+  snapshotAppendChildren,
   toQueryString,
 } from './util'
 
@@ -63,8 +63,10 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('recently-cleared-id', { reply: recentlyCleared })
       nockDeletedBlocks(['1-1', '2-1', '2-2', '4-1', '5-1'])
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'recently-cleared-id' }))
-
+      const snapshot = snapshotAppendChildren({
+        id: 'recently-cleared-id',
+        after: 'recently-cleared-divider-id',
+      })
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
       expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
@@ -81,8 +83,8 @@ describe('lib/notion/clear-completed', () => {
       nockDeletedBlocks(['1-1', '2-1', '2-2', '2-3', '4-1', '4-2', '5-1'])
 
       const snapshots = [
-        snapshotBody(nockAppendBlockChildren({ id: 'column-1-id' })),
-        snapshotBody(nockAppendBlockChildren({ id: 'column-2-id' })),
+        snapshotAppendChildren({ id: 'column-1-id', after: 'store-2-id' }),
+        snapshotAppendChildren({ id: 'column-2-id', after: 'store-4-id' }),
       ]
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
@@ -104,7 +106,10 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('recently-cleared-id', { reply: recentlyCleared })
       nockDeletedBlocks(['1-1', '2-1', '2-2', '4-1', '5-1'])
 
-      const snapshot = snapshotBody(nockAppendBlockChildren({ id: 'recently-cleared-id' }))
+      const snapshot = snapshotAppendChildren({
+        id: 'recently-cleared-id',
+        after: 'recently-cleared-divider-id',
+      })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 

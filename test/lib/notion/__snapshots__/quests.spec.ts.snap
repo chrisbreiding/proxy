@@ -906,115 +906,26 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
 `;
 
 exports[`lib/notion/quests > POST /notion/quests/:key > adds it at the end if there are somehow no dates and no dividers 1`] = `
-{
-  "children": [
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "A new quest",
-            "text": {
-              "content": "A new quest",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
+"- A new quest
+"
 `;
 
 exports[`lib/notion/quests > POST /notion/quests/:key > adds it before divider if first date is first item and there is no second date 1`] = `
-{
-  "after": "after-me",
-  "children": [
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "A new quest",
-            "text": {
-              "content": "A new quest",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
+"- A new quest
+"
 `;
 
 exports[`lib/notion/quests > POST /notion/quests/:key > adds it before divider if there are no dates 1`] = `
-{
-  "after": "after-me",
-  "children": [
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "A new quest",
-            "text": {
-              "content": "A new quest",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
+"- A new quest
+"
 `;
 
 exports[`lib/notion/quests > POST /notion/quests/:key > adds it before second date if first date is first item 1`] = `
-{
-  "after": "after-me",
-  "children": [
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "A new quest",
-            "text": {
-              "content": "A new quest",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
+"- A new quest
+"
 `;
 
 exports[`lib/notion/quests > POST /notion/quests/:key > adds quests before next date 1`] = `
-{
-  "after": "after-me",
-  "children": [
-    {
-      "bulleted_list_item": {
-        "rich_text": [
-          {
-            "plain_text": "A new quest",
-            "text": {
-              "content": "A new quest",
-            },
-            "type": "text",
-          },
-        ],
-      },
-      "object": "block",
-      "type": "bulleted_list_item",
-    },
-  ],
-}
+"- A new quest
+"
 `;
