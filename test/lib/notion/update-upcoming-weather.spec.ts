@@ -5,8 +5,8 @@ const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 delete process.env.TZ
 
 import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
-import { fixtureContents, snapshotBody, weatherUrlBasePath } from '../../util'
-import { block, nockGetBlockChildren, nockNotion } from './util'
+import { fixtureContents, weatherUrlBasePath } from '../../util'
+import { block, nockGetBlockChildren, snapshotUpdateBlocks } from './util'
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
@@ -63,12 +63,17 @@ describe('lib/notion/update-upcoming-weather', () => {
     nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
     nockGetBlockChildren('upcoming-id', { reply: { results: upcomingBlocks } })
 
-    const snapshotUpdates = [6, 9, 11, 13, 15, 17, 19, 21, 23].map((num) => {
-      return snapshotBody(nockNotion({
-        method: 'patch',
-        path: `/v1/blocks/block-${num}`,
-      }), `block-${num}-update`)
-    })
+    const snapshot = snapshotUpdateBlocks([
+      'block-6',
+      'block-9',
+      'block-11',
+      'block-13',
+      'block-15',
+      'block-17',
+      'block-19',
+      'block-21',
+      'block-23',
+    ])
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -76,6 +81,6 @@ describe('lib/notion/update-upcoming-weather', () => {
       location: 'lat,lng',
     })
 
-    await Promise.all(snapshotUpdates)
+    await snapshot
   })
 })

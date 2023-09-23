@@ -5,8 +5,8 @@ const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 
 import { updateWeather } from '../../../lib/notion/update-current-weather'
 import type { ConditionCode } from '../../../lib/weather'
-import { fixtureContents, getBody, weatherUrlBasePath } from '../../util'
-import { block, nockGetBlockChildren, nockUpdateBlock } from './util'
+import { fixtureContents, weatherUrlBasePath } from '../../util'
+import { block, nockGetBlockChildren, nockUpdateBlock, snapshotUpdateBlocks } from './util'
 
 interface WeatherProps {
   conditionCode?: ConditionCode
@@ -61,18 +61,18 @@ describe('lib/notion/update-current-weather', () => {
     nockGetBlockChildren('current-weather-id', { fixture: 'weather/current-weather-children' })
     nockGetBlockChildren('table-id', { reply: tableRows })
 
-    return [
-      getBody(nockUpdateBlock('current-weather-id')),
-      getBody(nockUpdateBlock('row-1')),
-      getBody(nockUpdateBlock('row-2')),
-      getBody(nockUpdateBlock('row-3')),
-      getBody(nockUpdateBlock('row-4')),
-      getBody(nockUpdateBlock('row-5')),
-      getBody(nockUpdateBlock('row-6')),
-      getBody(nockUpdateBlock('row-7')),
-      getBody(nockUpdateBlock('row-8')),
-      getBody(nockUpdateBlock('updated-id')),
-    ]
+    return snapshotUpdateBlocks([
+      'current-weather-id',
+      'row-1',
+      'row-2',
+      'row-3',
+      'row-4',
+      'row-5',
+      'row-6',
+      'row-7',
+      'row-8',
+      'updated-id',
+    ])
   }
 
   function toCelsius (fahrenheit: number) {
@@ -89,7 +89,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('updates the current weather block and daily weather table', async () => {
-    const getBodies = nockItUp({ conditionCode: 'Blizzard' })
+    const snapshot = nockItUp({ conditionCode: 'Blizzard' })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -97,13 +97,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies).toMatchSnapshot()
+    await snapshot
   })
 
   it('colors cool temperature blue', async () => {
-    const getBodies = nockItUp({
+    const snapshot = nockItUp({
       // @ts-expect-error
       conditionCode: 'Other',
       temperature: toCelsius(40),
@@ -115,13 +113,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('colors warm temperature green', async () => {
-    const getBodies = nockItUp({
+    const snapshot = nockItUp({
       conditionCode: 'Cloudy',
       temperature: toCelsius(60),
     })
@@ -132,13 +128,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('colors hot temperature orange', async () => {
-    const getBodies = nockItUp({ temperature: toCelsius(85) })
+    const snapshot = nockItUp({ temperature: toCelsius(85) })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -146,13 +140,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('colors sweltering temperature red', async () => {
-    const getBodies = nockItUp({
+    const snapshot = nockItUp({
       temperature: toCelsius(100),
       conditionCode: 'MixedSnowAndSleet',
     })
@@ -163,13 +155,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('displays rain icon and probability if rain', async () => {
-    const getBodies = nockItUp({
+    const snapshot = nockItUp({
       conditionCode: 'Rain',
       precipitationChance: 0.45,
     })
@@ -180,13 +170,11 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('displays snow icon and accumulation if snow', async () => {
-    const getBodies = nockItUp({
+    const snapshot = nockItUp({
       conditionCode: 'Snow',
       precipitationAmount: 25,
     })
@@ -197,9 +185,7 @@ describe('lib/notion/update-current-weather', () => {
       location: 'lat,lng',
     })
 
-    const bodies = await Promise.all(getBodies)
-
-    expect(bodies[0]).toMatchSnapshot()
+    await snapshot
   })
 
   it('errors if current weather block does not have exactly 2 children', async () => {

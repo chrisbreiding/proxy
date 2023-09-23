@@ -1,14 +1,8 @@
 // Vitest Snapshot v1
 
 exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > button 1`] = `
-{
-  "embed": {
-    "caption": [],
-    "url": "https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id",
-  },
-  "object": "block",
-  "type": "embed",
-}
+"[embed](https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id)
+"
 `;
 
 exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > upcoming 1`] = `

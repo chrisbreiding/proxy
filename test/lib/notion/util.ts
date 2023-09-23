@@ -250,6 +250,13 @@ interface SnapshotAppendChildrenOptions extends AppendOptions {
   message?: string
 }
 
+async function assertSnapshot (content: any, message?: string) {
+  const md = await convertBlocksToMarkdown(content)
+
+  expect(typeof md).toEqual('string')
+  expect(md).toMatchSnapshot(message)
+}
+
 export async function snapshotAppendChildren (options: SnapshotAppendChildrenOptions) {
   const scope = nockAppendBlockChildren(options)
   const body = await getBody<AppendShape>(scope)
@@ -262,8 +269,27 @@ export async function snapshotAppendChildren (options: SnapshotAppendChildrenOpt
     throw new Error(`snapshotAppendChildren: need to assert the after id: ${body.after}`)
   }
 
-  const md = await convertBlocksToMarkdown(body.children)
+  await assertSnapshot(body.children, options.message)
+}
 
-  expect(typeof md).toEqual('string')
-  expect(md).toMatchSnapshot(options.message)
+interface SnapshotUpdateBlockOptions extends UpdateOptions {
+  message?: string
+}
+
+async function getUpdateBody (id: string, options: SnapshotUpdateBlockOptions = {}) {
+  const scope = nockUpdateBlock(id, options)
+
+  return getBody<OutgoingBlock>(scope)
+}
+
+export async function snapshotUpdateBlock (id: string, options: SnapshotUpdateBlockOptions = {}) {
+  const body = await getUpdateBody(id, options)
+
+  await assertSnapshot([body], options.message)
+}
+
+export async function snapshotUpdateBlocks (ids: string[], options: SnapshotUpdateBlockOptions = {}) {
+  const bodies = await Promise.all(ids.map((id) => getUpdateBody(id, options)))
+
+  await assertSnapshot(bodies, options.message)
 }

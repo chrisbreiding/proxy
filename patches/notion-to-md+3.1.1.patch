@@ -1,5 +1,5 @@
 diff --git a/node_modules/notion-to-md/build/notion-to-md.js b/node_modules/notion-to-md/build/notion-to-md.js
-index 3e74a11..c484352 100644
+index 3e74a11..5482c85 100644
 --- a/node_modules/notion-to-md/build/notion-to-md.js
 +++ b/node_modules/notion-to-md/build/notion-to-md.js
 @@ -57,7 +57,7 @@ class NotionToMarkdown {
@@ -53,7 +53,39 @@ index 3e74a11..c484352 100644
                  // Push this block to mdBlocks.
                  mdBlocks.push({
                      type: block.type,
-@@ -438,7 +446,7 @@ class NotionToMarkdown {
+@@ -333,6 +341,22 @@ class NotionToMarkdown {
+                 }
+                 return md.table(tableArr);
+             }
++            case "table_row": {
++                const cells = block[block.type]["cells"];
++                /**
++                 * this is more like a hack since matching the type text was
++                 * difficult. So converting each cell to paragraph type to
++                 * reuse the blockToMarkdown function
++                 */
++                const row = await Promise.all(cells.map((cell) => {
++                    return this.blockToMarkdown({
++                        type: "paragraph",
++                        paragraph: { rich_text: cell },
++                    });
++                }));
++
++                return md.table([row]);
++            }
+             // Rest of the types
+             // "paragraph"
+             // "heading_1"
+@@ -363,7 +387,7 @@ class NotionToMarkdown {
+                         return;
+                     }
+                     const annotations = content.annotations;
+-                    let plain_text = content.plain_text;
++                    let plain_text = content.plain_text || content.text.content;
+                     plain_text = this.annotatePlainText(plain_text, annotations);
+                     if (content["href"])
+                         plain_text = md.link(plain_text, content["href"]);
+@@ -438,7 +462,7 @@ class NotionToMarkdown {
       * @param {Annotations} annotations - Annotation object of a notion block
       * @returns {string} - Annotated text
       */
@@ -62,11 +94,54 @@ index 3e74a11..c484352 100644
          // if text is all spaces, don't annotate
          if (text.match(/^\s*$/))
              return text;
+@@ -458,6 +482,8 @@ class NotionToMarkdown {
+                 text = md.strikethrough(text);
+             if (annotations.underline)
+                 text = md.underline(text);
++            if (annotations.color)
++                text = md.color(text, annotations.color);
+         }
+         return leading_space + text + trailing_space;
+     }
 diff --git a/node_modules/notion-to-md/build/utils/md.js b/node_modules/notion-to-md/build/utils/md.js
-index add7c5e..21b2e41 100644
+index add7c5e..4aa4a74 100644
 --- a/node_modules/notion-to-md/build/utils/md.js
 +++ b/node_modules/notion-to-md/build/utils/md.js
-@@ -109,7 +109,13 @@ const addTabSpace = (text, n = 0) => {
+@@ -34,6 +34,33 @@ const link = (text, href) => {
+     return `[${text}](${href})`;
+ };
+ exports.link = link;
++const color = (text, color) => {
++    const colors = {
++        blue: "💙",
++        blue_background: "🟦",
++        brown: "🤎",
++        brown_background: "🟫",
++        gray: "🩶",
++        gray_background: "⬜",
++        green: "💚",
++        green_background: "🟩",
++        orange: "🧡",
++        orange_background: "🟧",
++        pink: "🩷",
++        pink_background: "🎟️",
++        purple: "💜",
++        purple_background: "🟪",
++        red: "💔",
++        red_background: "🟥",
++        yellow: "💛",
++        yellow_background: "🟨",
++    }
++
++    const colorString = colors[color] ? ` {${colors[color]}}` : ''
++
++    return `${text}${colorString}`;
++};
++exports.color = color;
+ const codeBlock = (text, language) => {
+     if (language === "plain text")
+         language = "text";
+@@ -109,7 +136,13 @@ const addTabSpace = (text, n = 0) => {
      const tab = "	";
      for (let i = 0; i < n; i++) {
          if (text.includes("\n")) {
@@ -81,7 +156,7 @@ index add7c5e..21b2e41 100644
              text = tab + multiLineText;
          }
          else
-@@ -122,13 +128,12 @@ const divider = () => {
+@@ -122,13 +155,12 @@ const divider = () => {
      return "---";
  };
  exports.divider = divider;

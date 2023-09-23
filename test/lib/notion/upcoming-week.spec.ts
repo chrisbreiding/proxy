@@ -10,9 +10,10 @@ import {
   nockUpdateBlock,
   notionFixtureContents,
   snapshotAppendChildren,
+  snapshotUpdateBlock,
   toQueryString,
 } from './util'
-import { RequestError, handleServer, snapshotBody } from '../../util'
+import { RequestError, handleServer } from '../../util'
 
 process.env.API_KEY = 'key'
 
@@ -72,7 +73,7 @@ describe('lib/notion/upcoming-week', () => {
           after: 'last-upcoming-id',
           message: 'upcoming',
         }),
-        snapshotBody(nockUpdateBlock('button-id'), 'button'),
+        snapshotUpdateBlock('button-id', { message: 'button' }),
       ]
 
       nockDeleteBlock('extra-date-1')
