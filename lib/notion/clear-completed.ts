@@ -2,7 +2,7 @@ import type express from 'express'
 import type { ToDoBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
 import type { Block, NotionBlock } from './types'
-import { getBlockPlainText, makeBlock, sendHtml } from './util/general'
+import { getBlockPlainText, makeBlock, sendHtml, sendHtmlError } from './util/general'
 import { getBlockChildren, getColumnBlocks } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
@@ -159,15 +159,6 @@ async function clearPage ({ notionToken, pageId }: ClearPageOptions) {
   return
 }
 
-function errorPart (label: string, value: string) {
-  if (!value) return ''
-
-  return `
-    <p>${label}</p>
-    <pre>${value}</pre>
-  `
-}
-
 export async function clearCompleted (req: express.Request, res: express.Response) {
   try {
     const { notionToken, pageId } = req.query
@@ -183,25 +174,74 @@ export async function clearCompleted (req: express.Request, res: express.Respons
 
     sendHtml(res, 200, '<h3>Successfully cleared completed items</h3>')
   } catch (error: any) {
-    sendHtml(res, 500, `
-      <style>
-        body {
-          padding: 20px;
-        }
-        pre {
-          background: #f8f8f8;
-          border: solid 1px #d7d7d7;
-          overflow: auto;
-          padding: 10px;
-        }
-      </style>
-      <h3>Clearing completed failed with the following error:</h3>
-      ${errorPart('Code', error?.code)}
-      ${errorPart('Message', error?.message)}
-      ${errorPart('Stack', error?.stack)}
-      ${errorPart('Data code', error?.response?.data?.code)}
-      ${errorPart('Data status', error?.response?.data?.status)}
-      ${errorPart('Data message', error?.response?.data?.message)}
-    `)
+    sendHtmlError({
+      error,
+      message: 'Clearing completed failed with the following error:',
+      res,
+      statusCode: 500,
+    })
+  }
+}
+
+interface DeleteClearedOptions {
+  notionToken: string
+  recentlyClearedId: string
+}
+
+async function getBlocksToDelete ({ notionToken, recentlyClearedId }: DeleteClearedOptions) {
+  const blocks = await getBlockChildren({ notionToken, pageId: recentlyClearedId })
+
+  return blocks.reduce((memo, block) => {
+    if (memo.foundSecondDivider) {
+      memo.blocks.push(block)
+
+      return memo
+    }
+
+    if (block.type === 'divider') {
+      if (memo.foundFirstDivider) {
+        memo.foundSecondDivider = true
+      } else {
+        memo.foundFirstDivider = true
+      }
+    }
+
+    return memo
+  }, {
+    foundFirstDivider: false,
+    foundSecondDivider: false,
+    blocks: [] as NotionBlock[],
+  }).blocks
+}
+
+async function deleteCleared ({ notionToken, recentlyClearedId }: DeleteClearedOptions) {
+  const blocks = await getBlocksToDelete({ notionToken, recentlyClearedId })
+
+  for (const block of blocks) {
+    await deleteBlock({ id: block.id, notionToken })
+  }
+}
+
+export async function deleteRecentlyCleared (req: express.Request, res: express.Response) {
+  try {
+    const { notionToken, recentlyClearedId } = req.query
+
+    if (!notionToken || typeof notionToken !== 'string') {
+      return sendHtml(res, 400, '<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+    }
+    if (!recentlyClearedId || typeof recentlyClearedId !== 'string') {
+      return sendHtml(res, 400, '<p>A value for <em>recentlyClearedId</em> must be provided in the query string</p>')
+    }
+
+    await deleteCleared({ notionToken, recentlyClearedId })
+
+    sendHtml(res, 200, '<h3>Successfully deleted recently cleared items</h3>')
+  } catch (error: any) {
+    sendHtmlError({
+      error,
+      message: 'Deleting recently cleared failed with the following error:',
+      res,
+      statusCode: 500,
+    })
   }
 }

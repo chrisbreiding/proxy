@@ -25,7 +25,7 @@ import {
 
 function nockDeletedBlocks (ids: string[]) {
   ids.forEach((id) => {
-    nockDeleteBlock(`item-${id}-id`)
+    nockDeleteBlock(`${id}-id`)
   })
 }
 
@@ -47,7 +47,7 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('column-list-id', { reply: columns })
       nockGetBlockChildren('column-1-id', { reply: column1() })
       nockGetBlockChildren('column-2-id', { reply: column2() })
-      nockDeletedBlocks(['1-1', '2-1', '2-2', '4-1', '5-1'])
+      nockDeletedBlocks(['item-1-1', 'item-2-1', 'item-2-2', 'item-4-1', 'item-5-1'])
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
@@ -61,7 +61,7 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('column-1-id', { reply: column1() })
       nockGetBlockChildren('column-2-id', { reply: column2() })
       nockGetBlockChildren('recently-cleared-id', { reply: recentlyCleared })
-      nockDeletedBlocks(['1-1', '2-1', '2-2', '4-1', '5-1'])
+      nockDeletedBlocks(['item-1-1', 'item-2-1', 'item-2-2', 'item-4-1', 'item-5-1'])
 
       const snapshot = snapshotAppendChildren({
         id: 'recently-cleared-id',
@@ -80,7 +80,7 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('column-list-id', { reply: columns })
       nockGetBlockChildren('column-1-id', { reply: column1(true) })
       nockGetBlockChildren('column-2-id', { reply: column2(true) })
-      nockDeletedBlocks(['1-1', '2-1', '2-2', '2-3', '4-1', '4-2', '5-1'])
+      nockDeletedBlocks(['item-1-1', 'item-2-1', 'item-2-2', 'item-2-3', 'item-4-1', 'item-4-2', 'item-5-1'])
 
       const snapshots = [
         snapshotAppendChildren({ id: 'column-1-id', after: 'store-2-id' }),
@@ -104,7 +104,7 @@ describe('lib/notion/clear-completed', () => {
       nockGetBlockChildren('item-5-1-id', { reply: nested2 })
       nockGetBlockChildren('toggle-id', { reply: nested3 })
       nockGetBlockChildren('recently-cleared-id', { reply: recentlyCleared })
-      nockDeletedBlocks(['1-1', '2-1', '2-2', '4-1', '5-1'])
+      nockDeletedBlocks(['item-1-1', 'item-2-1', 'item-2-2', 'item-4-1', 'item-5-1'])
 
       const snapshot = snapshotAppendChildren({
         id: 'recently-cleared-id',
@@ -182,6 +182,79 @@ describe('lib/notion/clear-completed', () => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
       expect(res.text).to.include('Clearing completed failed with the following error:')
+      expect(res.text).to.include('<pre>error data</pre>')
+      expect(res.text).not.to.include('Data status')
+      expect(res.status).to.equal(500)
+    })
+
+    it('status 403 if key does not match', async (ctx) => {
+      const res = await ctx.request.get('/notion/action/nope')
+
+      expect(res.status).to.equal(403)
+    })
+  })
+
+  describe('GET /notion/action/:key?action=deleteRecentlyCleared', () => {
+    function makeQuery (updates: Record<string, string | null> = {}) {
+      return toQueryString({
+        action: 'deleteRecentlyCleared',
+        recentlyClearedId: 'recently-cleared-id',
+        notionToken: 'notion-token',
+        ...updates,
+      })
+    }
+
+    it('deletes recently cleared items', async (ctx) => {
+      nockGetBlockChildren('recently-cleared-id', { reply: recentlyCleared })
+      nockDeletedBlocks(['store-1', 'item-1-1', 'store-2', 'item-2-1', 'item-2-2'])
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.equal('<h3>Successfully deleted recently cleared items</h3>')
+      expect(res.status).to.equal(200)
+    })
+
+    it('gracefully handles absence of recently cleared items', async (ctx) => {
+      const emptyRecentlyCleared = { results: recentlyCleared.results.slice(3) }
+
+      nockGetBlockChildren('recently-cleared-id', { reply: emptyRecentlyCleared })
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.equal('<h3>Successfully deleted recently cleared items</h3>')
+      expect(res.status).to.equal(200)
+    })
+
+    it('sends 400 with error if no recentlyClearedId specified', async (ctx) => {
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ recentlyClearedId: null })}`)
+
+      expect(res.text).to.equal('<p>A value for <em>recentlyClearedId</em> must be provided in the query string</p>')
+      expect(res.status).to.equal(400)
+    })
+
+    it('sends 400 with error if no notionToken specified', async (ctx) => {
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
+
+      expect(res.text).to.equal('<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+      expect(res.status).to.equal(400)
+    })
+
+    it('sends 500 with error if request errors', async (ctx) => {
+      const error = new RequestError('notion error', {
+        code: 42,
+        response: {
+          data: {
+            code: 24,
+            message: 'error data',
+          },
+        },
+      })
+
+      nockNotion({ error, path: '/v1/blocks/recently-cleared-id/children' })
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.include('Deleting recently cleared failed with the following error:')
       expect(res.text).to.include('<pre>error data</pre>')
       expect(res.text).not.to.include('Data status')
       expect(res.status).to.equal(500)

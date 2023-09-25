@@ -101,3 +101,42 @@ export function sendHtml (res: express.Response, statusCode: number, message: st
   .set('Content-Type', 'text/html')
   .send(message)
 }
+
+function htmlErrorPart (label: string, value: string) {
+  if (!value) return ''
+
+  return `
+    <p>${label}</p>
+    <pre>${value}</pre>
+  `
+}
+
+interface HtmlErrorOptions {
+  error: any
+  message: string
+  res: express.Response
+  statusCode: number
+}
+
+export function sendHtmlError ({ error, message, res, statusCode }: HtmlErrorOptions) {
+  sendHtml(res, statusCode, `
+    <style>
+      body {
+        padding: 20px;
+      }
+      pre {
+        background: #f8f8f8;
+        border: solid 1px #d7d7d7;
+        overflow: auto;
+        padding: 10px;
+      }
+    </style>
+    <h3>${message}</h3>
+    ${htmlErrorPart('Code', error?.code)}
+    ${htmlErrorPart('Message', error?.message)}
+    ${htmlErrorPart('Stack', error?.stack)}
+    ${htmlErrorPart('Data code', error?.response?.data?.code)}
+    ${htmlErrorPart('Data status', error?.response?.data?.status)}
+    ${htmlErrorPart('Data message', error?.response?.data?.message)}
+  `)
+}

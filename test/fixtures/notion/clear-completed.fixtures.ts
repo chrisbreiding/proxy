@@ -26,8 +26,11 @@ export const recentlyCleared = listResults([
   block.divider(),
   block.p({ text: 'Permanently Delete Recently Cleared' }),
   block.divider({ id: 'recently-cleared-divider-id' }),
-  block.p({ text: 'Previously Deleted Store' }),
-  block.to_do({ content: { rich_text: richText('Previously Removed'), checked: false } }),
+  block.p({ id: 'store-1-id', text: 'Previously Deleted Store 1' }),
+  block.to_do({ id: 'item-1-1-id', content: { rich_text: richText('Previously Removed 1'), checked: false } }),
+  block.p({ id: 'store-2-id', text: 'Previously Deleted Store 2' }),
+  block.to_do({ id: 'item-2-1-id', content: { rich_text: richText('Previously Removed 2'), checked: false } }),
+  block.to_do({ id: 'item-2-2-id', content: { rich_text: richText('Previously Removed 3'), checked: false } }),
 ])
 
 export const column1 = (empty = false, allUnchecked = false) => {

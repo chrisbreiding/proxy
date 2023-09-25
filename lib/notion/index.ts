@@ -4,7 +4,7 @@ import { addQuest } from './quests'
 import { onSocket } from './shopping'
 import { addUpcomingWeek, upcomingWeekView } from './upcoming-week'
 import { getBlockChildren } from './util/queries'
-import { clearCompleted } from './clear-completed'
+import { clearCompleted, deleteRecentlyCleared } from './clear-completed'
 import { sendHtml } from './util/general'
 
 interface GetDataOptions {
@@ -28,6 +28,8 @@ export function action (req: express.Request, res: express.Response) {
   switch (action) {
     case 'clearCompleted':
       return clearCompleted(req, res)
+    case 'deleteRecentlyCleared':
+      return deleteRecentlyCleared(req, res)
     default:
       sendHtml(res, 400, `<p>Action not supported: ${action}</p>`)
   }
