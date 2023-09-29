@@ -186,12 +186,6 @@ describe('lib/notion/clear-completed', () => {
       expect(res.text).not.to.include('Data status')
       expect(res.status).to.equal(500)
     })
-
-    it('status 403 if key does not match', async (ctx) => {
-      const res = await ctx.request.get('/notion/action/nope')
-
-      expect(res.status).to.equal(403)
-    })
   })
 
   describe('GET /notion/action/:key?action=deleteRecentlyCleared', () => {
@@ -258,12 +252,6 @@ describe('lib/notion/clear-completed', () => {
       expect(res.text).to.include('<pre>error data</pre>')
       expect(res.text).not.to.include('Data status')
       expect(res.status).to.equal(500)
-    })
-
-    it('status 403 if key does not match', async (ctx) => {
-      const res = await ctx.request.get('/notion/action/nope')
-
-      expect(res.status).to.equal(403)
     })
   })
 })

@@ -1,13 +1,13 @@
-import dayjs from 'dayjs'
+import type dayjs from 'dayjs'
 import type express from 'express'
 
-import { areIdsEqual, getBlockPlainText, makeBlock } from './util/general'
+import { getBlockPlainText, isChildPageWithTitle, makeBlock, sendHtml, sendHtmlError } from './util/general'
 import { getDateFromText, getMonths } from '../util/dates'
 import type { NotionBlock, OwnBlock } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
-import { appendBlockChildren, deleteBlock, updateBlock } from './util/updates'
+import { appendBlockChildren, deleteBlock } from './util/updates'
 
-const daysOfWeek = 'Sun|Mon|Tue|Wed|Thu|Fri|Sat'.split('|')
+const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const
 const daysOfWeekRegex = /(Sun|Mon|Tue|Wed|Thu|Fri|Sat),/
 const monthPattern = `(?:${getMonths({ short: true }).join('|')})`
 const monthsConditionRegex = new RegExp(`( ?if (${monthPattern}(?:(?:, )${monthPattern})*))`)
@@ -41,34 +41,25 @@ async function getVariables ({ blocks, notionToken }: GetVariablesOptions) {
   }, {} as { [key: string]: string })
 }
 
-type DatesObject = { [key: string]: dayjs.Dayjs }
-
-interface DatesTracker {
-  dates: DatesObject
-  nextDate: string
-}
+type DayOfWeek = typeof daysOfWeek[number]
+type DatesObject = Record<DayOfWeek, dayjs.Dayjs>
 
 function makeDateString (date: dayjs.Dayjs) {
   return date.format('YYYY-MM-DD')
 }
 
-function getDates (startDate: string): DatesTracker {
-  const { nextDate, dates } = daysOfWeek.reduce((memo, day) => {
+function getDates (startDate: dayjs.Dayjs) {
+  return daysOfWeek.reduce((memo, day) => {
     memo.dates[day] = memo.nextDate
     memo.nextDate = memo.nextDate.add(1, 'day')
 
     return memo
-  }, { nextDate: dayjs(startDate), dates: {} as DatesObject })
-
-  return {
-    dates,
-    nextDate: nextDate.toISOString(),
-  }
+  }, { nextDate: startDate, dates: {} as DatesObject }).dates
 }
 
 interface GetTextOptions {
   block: NotionBlock
-  dates: DatesTracker
+  dates: DatesObject
   currentDate?: dayjs.Dayjs
 }
 
@@ -85,7 +76,7 @@ function getText ({ block, dates, currentDate }: GetTextOptions): TextDate {
   const [, day] = text.match(daysOfWeekRegex) || []
 
   if (day) {
-    const date = dates.dates[day]
+    const date = dates[day as DayOfWeek]
     const text = `${day}, ${date.month() + 1}/${date.date()}`
 
     return { date, text }
@@ -106,27 +97,56 @@ function getText ({ block, dates, currentDate }: GetTextOptions): TextDate {
 interface ExtrasMemo {
   currentDate?: dayjs.Dayjs
   extras: { [key: string]: { id: string, block?: OwnBlock }[] }
-  finished: boolean
-  started: boolean
+  lastDate?: dayjs.Dayjs
+  lastQuestId?: string
+  numDividersFound: number
+  weekTemplateId?: string
 }
 
-function getExtras (upcomingBlocks: NotionBlock[]) {
-  return upcomingBlocks.reduce((memo, block) => {
-    // extras exist between two dividers, so ignore anything before or after
-    if (!memo.started && block.type === 'divider') {
-      memo.started = true
+function getRelevantPieces (upcomingBlocks: NotionBlock[]) {
+  const extrasMemo = {
+    extras: {},
+    numDividersFound: 0,
+  } as ExtrasMemo
+
+  const {
+    extras,
+    lastDate,
+    lastQuestId,
+    weekTemplateId,
+  } = upcomingBlocks.reduce((memo, block) => {
+    if (block.type === 'divider') {
+      memo.numDividersFound++
 
       return memo
     }
 
-    if (!memo.started || memo.finished) return memo
+    // get the date last found until the first divider
+    if (memo.numDividersFound === 0) {
+      const text = getBlockPlainText(block)
 
-    if (memo.started && block.type === 'divider') {
-      memo.finished = true
+      if (!text) return memo
+
+      const { date } = getDateFromText(text)
+
+      if (date) {
+        memo.lastDate = date
+      } else {
+        memo.lastQuestId = block.id
+      }
+    }
+
+    if (memo.numDividersFound !== 2) {
+      if (isChildPageWithTitle(block, (title) => title.includes('Week Template'))) {
+        memo.weekTemplateId = block.id
+
+        return memo
+      }
 
       return memo
     }
 
+    // extras exist between the 2nd and 3rd dividers
     const text = getBlockPlainText(block)
 
     if (!text) return memo
@@ -155,28 +175,41 @@ function getExtras (upcomingBlocks: NotionBlock[]) {
     })
 
     return memo
-  }, { extras: {}, finished: false, started: false } as ExtrasMemo).extras
+  }, extrasMemo)
+
+  if (!lastDate) {
+    throw new Error('Could not find a date to put the upcoming week after. There should be at least one date present in the first part of Upcoming.')
+  }
+
+  if (!weekTemplateId) {
+    throw new Error('Could not find the Week Template. It should be a page after the third divider.')
+  }
+
+  return {
+    extras,
+    lastQuestId,
+    startDate: lastDate.add(1, 'day'),
+    weekTemplateId,
+  }
 }
 
 interface GetDayBlocksOptions {
   notionToken: string
-  startDate: string
   upcomingBlocks: NotionBlock[]
-  weekTemplatePageId: string
 }
 
 interface BlocksMemo {
   blocks: OwnBlock[]
   currentDate?: dayjs.Dayjs
   finished: boolean
-  idsOfExtrasUsed: string[],
+  idsOfExtrasUsed: string[]
 }
 
-async function getDayBlocks ({ notionToken, startDate, upcomingBlocks, weekTemplatePageId }: GetDayBlocksOptions) {
-  const weekTemplateBlocks = await getBlockChildrenDeep({ notionToken, pageId: weekTemplatePageId })
+async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOptions) {
+  const { extras, lastQuestId, startDate, weekTemplateId } = getRelevantPieces(upcomingBlocks)
+  const weekTemplateBlocks = await getBlockChildrenDeep({ notionToken, pageId: weekTemplateId })
   const variables = await getVariables({ blocks: weekTemplateBlocks, notionToken })
   const dates = getDates(startDate)
-  const extras = getExtras(upcomingBlocks)
 
   const { blocks, idsOfExtrasUsed } = weekTemplateBlocks.reduce((memo, block) => {
     if (memo.finished) return memo
@@ -232,64 +265,15 @@ async function getDayBlocks ({ notionToken, startDate, upcomingBlocks, weekTempl
   }, { blocks: [], idsOfExtrasUsed: [], finished: false } as BlocksMemo)
 
   return {
-    dates,
     blocks,
     idsOfExtrasUsed,
+    lastQuestId,
   }
 }
 
-interface Query {
-  addFollowingWeekButtonId: string
+interface Details {
   notionToken: string
-  startDate: string
   upcomingId: string
-  weekTemplatePageId: string
-}
-
-interface Params {
-  key: string
-}
-
-interface UpdateAddFollowingWeekButtonOptions {
-  query: Query
-  params: Params
-  dates: DatesTracker
-}
-
-function updateAddFollowingWeekButton ({ query, params, dates }: UpdateAddFollowingWeekButtonOptions) {
-  const { notionToken } = query
-  const urlQuery = [
-    `addFollowingWeekButtonId=${query.addFollowingWeekButtonId}`,
-    `notionToken=${query.notionToken}`,
-    `startDate=${dates.nextDate}`,
-    `upcomingId=${query.upcomingId}`,
-    `weekTemplatePageId=${query.weekTemplatePageId}`,
-  ].join('&')
-  const url = `https://proxy.crbapps.com/notion/upcoming-week/${params.key}?${urlQuery}`
-  const block = {
-    type: 'embed' as const,
-    content: {
-      url,
-      caption: [],
-    },
-  }
-
-  return updateBlock({ notionToken, block, blockId: query.addFollowingWeekButtonId })
-}
-
-interface GetLastUpcomingBlockIdOptions {
-  addFollowingWeekButtonId: string
-  upcomingBlocks: NotionBlock[]
-}
-
-async function getLastUpcomingBlockId ({ addFollowingWeekButtonId, upcomingBlocks }: GetLastUpcomingBlockIdOptions) {
-  const addFollowingWeekButtonIndex = upcomingBlocks.findIndex((block) => {
-    return areIdsEqual(block.id, addFollowingWeekButtonId)
-  })
-
-  if (addFollowingWeekButtonIndex === -1) return
-
-  return upcomingBlocks[addFollowingWeekButtonIndex - 1].id
 }
 
 interface DeleteExtrasUsedOptions {
@@ -303,27 +287,22 @@ async function deleteExtrasUsed ({ idsOfExtrasUsed, notionToken }: DeleteExtrasU
   }
 }
 
-async function addFollowingWeekAndUpdateButton ({ query, params }: { query: Query, params: Params }) {
-  const { addFollowingWeekButtonId, weekTemplatePageId, notionToken, startDate, upcomingId } = query
+async function addFollowingWeek (details: Details) {
+  const { notionToken, upcomingId } = details
   const upcomingBlocks = await getBlockChildrenDeep({ notionToken, pageId: upcomingId })
-  const { blocks, dates, idsOfExtrasUsed } = await getDayBlocks({ notionToken, startDate, upcomingBlocks, weekTemplatePageId })
-  const afterId = await getLastUpcomingBlockId({ addFollowingWeekButtonId, upcomingBlocks })
+  const { blocks, idsOfExtrasUsed, lastQuestId } = await getDayBlocks({ notionToken, upcomingBlocks })
 
-  await appendBlockChildren({ afterId, notionToken, blocks, pageId: upcomingId })
+  await appendBlockChildren({ afterId: lastQuestId, notionToken, blocks, pageId: upcomingId })
   await deleteExtrasUsed({ idsOfExtrasUsed, notionToken })
-  await updateAddFollowingWeekButton({ query, params, dates })
 }
 
 export async function addUpcomingWeek (req: express.Request, res: express.Response) {
-  const { query, params } = req
+  const { query } = req
 
   try {
     [
-      'addFollowingWeekButtonId',
       'notionToken',
-      'startDate',
       'upcomingId',
-      'weekTemplatePageId',
     ].forEach((name) => {
       const value = req.query[name]
 
@@ -332,21 +311,12 @@ export async function addUpcomingWeek (req: express.Request, res: express.Respon
       }
     })
 
-    await addFollowingWeekAndUpdateButton({
-      query: {
-        addFollowingWeekButtonId: query.addFollowingWeekButtonId as string,
-        notionToken: query.notionToken as string,
-        startDate: query.startDate as string,
-        upcomingId: query.upcomingId as string,
-        weekTemplatePageId: query.weekTemplatePageId as string,
-      },
-      params: {
-        key: params.key,
-      },
+    await addFollowingWeek({
+      notionToken: query.notionToken as string,
+      upcomingId: query.upcomingId as string,
     })
 
-    res.set('Content-Type', 'text/html')
-    res.send(
+    sendHtml(res, 200,
       `<!DOCTYPE html>
       <html>
         <body>
@@ -355,18 +325,11 @@ export async function addUpcomingWeek (req: express.Request, res: express.Respon
       </html>`,
     )
   } catch (error: any) {
-    res.status(500).json({
-      error: {
-        code: error?.code,
-        message: error?.message,
-        stack: error?.stack,
-      },
-      data: error?.response?.data,
+    sendHtmlError({
+      error,
+      message: 'Adding upcoming week failed with the following error:',
+      res,
+      statusCode: 500,
     })
   }
-}
-
-export async function upcomingWeekView (req: express.Request, res: express.Response) {
-  res.set('Content-Type', 'text/html')
-  res.render('upcoming-week', { layout: false })
 }

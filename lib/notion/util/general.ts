@@ -95,6 +95,18 @@ export function getBlocksChildrenDepth (blocks: Block[], depth = 0) {
   return Math.max(...blocks.map((block) => getBlockChildrenDepth(block, depth)))
 }
 
+export function isChildPageWithTitle (block: Block, titleOrComparison: string | ((title: string) => boolean)) {
+  return (
+    block.type === 'child_page'
+    && 'title' in block.content
+    && (
+      typeof titleOrComparison === 'string'
+        ? block.content.title === titleOrComparison
+        : titleOrComparison(block.content.title)
+    )
+  )
+}
+
 export function sendHtml (res: express.Response, statusCode: number, message: string) {
   res
   .status(statusCode)

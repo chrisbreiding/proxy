@@ -69,7 +69,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Tue, 11/1    ☔️ ",
+              "content": "Fri, 12/24    ☔️ ",
               "link": null
             },
             "annotations": {
@@ -80,7 +80,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Tue, 11/1    ☔️ ",
+            "plain_text": "Fri, 12/24    ☔️ ",
             "href": null
           },
           {
@@ -309,7 +309,7 @@
           {
             "type": "text",
             "text": {
-              "content": "Wed, 11/2    ☀️ ",
+              "content": "Sat, 12/25    ☀️ ",
               "link": null
             },
             "annotations": {
@@ -320,7 +320,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "Wed, 11/2    ☀️ ",
+            "plain_text": "Sat, 12/25    ☀️ ",
             "href": null
           },
           {
@@ -423,27 +423,69 @@
     },
     {
       "object": "block",
-      "id": "button-id",
+      "id": "2c715df6-e475-4151-8e19-41afab14a367",
       "parent": {
         "type": "block_id",
         "block_id": "b947d72a-b658-4663-816e-3505e4776078"
       },
-      "created_time": "2022-02-18T02:43:00.000Z",
-      "last_edited_time": "2022-10-26T16:25:00.000Z",
+      "created_time": "2022-03-01T05:00:00.000Z",
+      "last_edited_time": "2022-03-01T05:00:00.000Z",
       "created_by": {
         "object": "user",
         "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
       },
       "last_edited_by": {
         "object": "user",
-        "id": "32a19581-e14a-4b11-be6f-fd4766d9542b"
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
       },
       "has_children": false,
       "archived": false,
-      "type": "embed",
-      "embed": {
-        "caption": [],
-        "url": "https://proxy.crbapps.com/notion/upcoming-week/"
+      "type": "divider",
+      "divider": {}
+    },
+    {
+      "object": "block",
+      "id": "80d3f02a-8869-4a7a-b406-290641fd1bf2",
+      "parent": {
+        "type": "block_id",
+        "block_id": "8c8a6ce7-ffe4-46f4-beab-31f1f524b8be"
+      },
+      "created_time": "2023-09-28T02:08:00.000Z",
+      "last_edited_time": "2023-09-28T02:12:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "paragraph",
+      "paragraph": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Add following week",
+              "link": {
+                "url": "http://localhost:3333/notion/action/key?action=addUpcomingWeek&notionToken=notion-token&upcomingId=upcoming-id"
+              }
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Add following week",
+            "href": "http://localhost:3333/notion/action/key?action=addUpcomingWeek&notionToken=notion-token&upcomingId=upcoming-id"
+          }
+        ],
+        "color": "blue"
       }
     },
     {
@@ -825,7 +867,7 @@
     },
     {
       "object": "block",
-      "id": "1a7837b5-bee5-4812-8906-25bdc50e99ab",
+      "id": "week-template-id",
       "parent": {
         "type": "block_id",
         "block_id": "b947d72a-b658-4663-816e-3505e4776078"
@@ -844,7 +886,7 @@
       "archived": false,
       "type": "child_page",
       "child_page": {
-        "title": "Week Template"
+        "title": "Week Template (extra text)"
       }
     },
     {

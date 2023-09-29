@@ -8,6 +8,12 @@ import { handleServer } from '../../util'
 describe('lib/notion/index', () => {
   handleServer(startServer)
 
+  it('status 403 if key does not match', async (ctx) => {
+    const res = await ctx.request.get('/notion/action/nope')
+
+    expect(res.status).to.equal(403)
+  })
+
   it('errors if action not specified', async (ctx) => {
     const res = await ctx.request.get('/notion/action/key')
 

@@ -359,9 +359,9 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
             "underline": false,
           },
           "href": null,
-          "plain_text": "Tue, 11/1    ☔️ ",
+          "plain_text": "Fri, 12/24    ☔️ ",
           "text": {
-            "content": "Tue, 11/1    ☔️ ",
+            "content": "Fri, 12/24    ☔️ ",
             "link": null,
           },
           "type": "text",
@@ -539,9 +539,9 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
             "underline": false,
           },
           "href": null,
-          "plain_text": "Wed, 11/2    ☀️ ",
+          "plain_text": "Sat, 12/25    ☀️ ",
           "text": {
-            "content": "Wed, 11/2    ☀️ ",
+            "content": "Sat, 12/25    ☀️ ",
             "link": null,
           },
           "type": "text",
@@ -633,14 +633,41 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
     "type": "bulleted_list_item",
   },
   {
+    "content": {},
+    "has_children": false,
+    "id": "2c715df6-e475-4151-8e19-41afab14a367",
+    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
+    "type": "divider",
+  },
+  {
     "content": {
-      "caption": [],
-      "url": "https://proxy.crbapps.com/notion/upcoming-week/",
+      "color": "blue",
+      "rich_text": [
+        {
+          "annotations": {
+            "bold": false,
+            "code": false,
+            "color": "default",
+            "italic": false,
+            "strikethrough": false,
+            "underline": false,
+          },
+          "href": "http://localhost:3333/notion/action/key?action=addUpcomingWeek&notionToken=notion-token&upcomingId=upcoming-id",
+          "plain_text": "Add following week",
+          "text": {
+            "content": "Add following week",
+            "link": {
+              "url": "http://localhost:3333/notion/action/key?action=addUpcomingWeek&notionToken=notion-token&upcomingId=upcoming-id",
+            },
+          },
+          "type": "text",
+        },
+      ],
     },
     "has_children": false,
-    "id": "button-id",
-    "parentId": "b947d72a-b658-4663-816e-3505e4776078",
-    "type": "embed",
+    "id": "80d3f02a-8869-4a7a-b406-290641fd1bf2",
+    "parentId": "8c8a6ce7-ffe4-46f4-beab-31f1f524b8be",
+    "type": "paragraph",
   },
   {
     "content": {},
@@ -886,10 +913,10 @@ exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
   },
   {
     "content": {
-      "title": "Week Template",
+      "title": "Week Template (extra text)",
     },
     "has_children": true,
-    "id": "1a7837b5-bee5-4812-8906-25bdc50e99ab",
+    "id": "week-template-id",
     "parentId": "b947d72a-b658-4663-816e-3505e4776078",
     "type": "child_page",
   },

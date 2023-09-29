@@ -1,11 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > button 1`] = `
-"[embed](https://proxy.crbapps.com/notion/upcoming-week/key?addFollowingWeekButtonId=button-id&notionToken=notion-token&startDate=2022-01-02T12:00:00.000Z&upcomingId=upcoming-id&weekTemplatePageId=week-template-id)
-"
-`;
-
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > adds week based on template and updates button url > upcoming 1`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > adds week based on template 1`] = `
 "Sun, 12/26
 - Value 1
 - Sun task 2
@@ -35,7 +30,7 @@ Sat, 1/1
 "
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > gracefully handles absence of button block and variables block 1`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > gracefully handles absence of variables block 1`] = `
 "Sun, 12/26
 - \${var1}
 - Sun task 2
@@ -45,23 +40,23 @@ Mon, 12/27
 "
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 1`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > handles deeply nested quests 1`] = `
 "Mon, 12/27
 - Quest
 "
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 2`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > handles deeply nested quests 2`] = `
 "- Nested 1
 "
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 3`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > handles deeply nested quests 3`] = `
 "- Nested 2
 "
 `;
 
-exports[`lib/notion/upcoming-week > POST /notion/upcoming-week/:key > handles deeply nested quests 4`] = `
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > handles deeply nested quests 4`] = `
 "- Nested 3
 "
 `;

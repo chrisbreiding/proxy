@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import minimist from 'minimist'
 
-import { getBlockPlainText, makeBlock } from './util/general'
+import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
@@ -282,11 +282,7 @@ async function getPageIds (year: number | string, notionToken: string, futurePag
   const blocks = await getBlockChildren({ notionToken, pageId: futurePageId })
 
   const extrasId = findId(blocks, (block) => {
-    return (
-      block.type === 'child_page'
-      && 'title' in block.content
-      && block.content.title === `${year}`
-    )
+    return isChildPageWithTitle(block, `${year}`)
   })
 
   const dropZoneId = findId(blocks, (block) => {
@@ -294,11 +290,7 @@ async function getPageIds (year: number | string, notionToken: string, futurePag
   }, 'Could not find drop zone')!
 
   const yearTemplateId = findId(blocks, (block) => {
-    return (
-      block.type === 'child_page'
-      && 'title' in block.content
-      && block.content.title === 'Year Template'
-    )
+    return isChildPageWithTitle(block, 'Year Template')
   }, 'Could not find year template')!
 
   return {

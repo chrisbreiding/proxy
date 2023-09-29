@@ -1,7 +1,7 @@
 import type { ChildPageBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import minimist from 'minimist'
 
-import { getBlockPlainText, makeBlock } from './util/general'
+import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
@@ -47,11 +47,7 @@ async function getPageIds ({ donePageId, notionToken, year }: GetPageIdsOptions)
   const doneBlocks = await getBlockChildren({ notionToken, pageId: donePageId })
 
   const yearId = findId(doneBlocks, (block) => {
-    return (
-      block.type === 'child_page'
-      && 'title' in block.content
-      && block.content.title === `${year}`
-    )
+    return isChildPageWithTitle(block, `${year}`)
   }, `Could not find page for year: ${year}`)!
 
   const yearBlocks = await getBlockChildren({ notionToken, pageId: yearId })

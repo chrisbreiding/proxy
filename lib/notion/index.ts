@@ -2,7 +2,7 @@ import type express from 'express'
 import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/meals'
 import { addQuest } from './quests'
 import { onSocket } from './shopping'
-import { addUpcomingWeek, upcomingWeekView } from './upcoming-week'
+import { addUpcomingWeek } from './upcoming-week'
 import { getBlockChildren } from './util/queries'
 import { clearCompleted, deleteRecentlyCleared } from './clear-completed'
 import { sendHtml } from './util/general'
@@ -26,6 +26,8 @@ export function action (req: express.Request, res: express.Response) {
   }
 
   switch (action) {
+    case 'addUpcomingWeek':
+      return addUpcomingWeek(req, res)
     case 'clearCompleted':
       return clearCompleted(req, res)
     case 'deleteRecentlyCleared':
@@ -38,8 +40,6 @@ export function action (req: express.Request, res: express.Response) {
 export {
   addFactorMeal,
   addQuest,
-  addUpcomingWeek,
   getFactorMeals,
   onSocket,
-  upcomingWeekView,
 }

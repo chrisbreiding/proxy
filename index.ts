@@ -68,8 +68,6 @@ export function startServer (port: number) {
   app.get('/garage/:key', ensureApiKey, garage.view)
   app.post('/notion/quests/:key', ensureApiKey, notion.addQuest)
   app.get('/notion/action/:key', ensureApiKey, notion.action)
-  app.get('/notion/upcoming-week/:key', ensureApiKey, notion.upcomingWeekView)
-  app.post('/notion/upcoming-week/:key', ensureApiKey, notion.addUpcomingWeek)
   app.get('/notion/factor-meals/:key', ensureApiKey, notion.getFactorMeals)
   app.post('/notion/factor-meals/:key', ensureApiKey, notion.addFactorMeal)
   app.get('/location-search', location.search)
