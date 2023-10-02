@@ -287,8 +287,7 @@ async function deleteExtrasUsed ({ idsOfExtrasUsed, notionToken }: DeleteExtrasU
   }
 }
 
-async function addFollowingWeek (details: Details) {
-  const { notionToken, upcomingId } = details
+async function addFollowingWeek ({ notionToken, upcomingId }: Details) {
   const upcomingBlocks = await getBlockChildrenDeep({ notionToken, pageId: upcomingId })
   const { blocks, idsOfExtrasUsed, lastQuestId } = await getDayBlocks({ notionToken, upcomingBlocks })
 

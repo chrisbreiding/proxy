@@ -1,0 +1,9 @@
+// Vitest Snapshot v1
+
+exports[`lib/notion/promote-day > GET /notion/action/:key?action=promoteDay > moves up next upcoming day into quests 1`] = `
+"Tue, 12/24
+- Quest 3
+- Quest 4
+- 
+"
+`;

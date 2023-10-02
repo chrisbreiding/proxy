@@ -6,6 +6,7 @@ import { addUpcomingWeek } from './upcoming-week'
 import { getBlockChildren } from './util/queries'
 import { clearCompleted, deleteRecentlyCleared } from './clear-completed'
 import { sendHtml } from './util/general'
+import { promoteDay } from './promote-day'
 
 interface GetDataOptions {
   notionToken: string
@@ -32,6 +33,8 @@ export function action (req: express.Request, res: express.Response) {
       return clearCompleted(req, res)
     case 'deleteRecentlyCleared':
       return deleteRecentlyCleared(req, res)
+    case 'promoteDay':
+      return promoteDay(req, res)
     default:
       sendHtml(res, 400, `<p>Action not supported: ${action}</p>`)
   }
