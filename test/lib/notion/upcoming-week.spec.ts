@@ -47,12 +47,10 @@ describe('lib/notion/upcoming-week', () => {
       nockGetBlockChildren('week-template-id', { fixture: 'upcoming-week/week-template-blocks' })
       nockGetBlockChildren('nested-parent-id', { fixture: 'blocks' })
 
-      const snapshots = [
-        snapshotAppendChildren({
-          id: 'upcoming-id',
-          after: 'last-upcoming-id',
-        }),
-      ]
+      const snapshot = snapshotAppendChildren({
+        id: 'upcoming-id',
+        after: 'last-upcoming-id',
+      })
 
       nockDeleteBlock('extra-date-1')
       nockDeleteBlock('extra-date-2')
@@ -66,7 +64,7 @@ describe('lib/notion/upcoming-week', () => {
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
       expect(res.text).to.include('Following week successfully added!')
 
-      await Promise.all(snapshots)
+      await snapshot
     })
 
     it('gracefully handles absence of variables block', async (ctx) => {
@@ -84,7 +82,6 @@ describe('lib/notion/upcoming-week', () => {
       const snapshot = snapshotAppendChildren({
         after: 'last-upcoming-id',
         id: 'upcoming-id',
-        fixture: 'upcoming-week/append-1-result',
       })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
@@ -149,6 +146,52 @@ describe('lib/notion/upcoming-week', () => {
       expect(res.status).to.equal(200)
 
       await Promise.all(snapshots)
+    })
+
+    it('handles multi-week template with gaps', async (ctx) => {
+      nockGetBlockChildren('upcoming-id', { reply: { results: [
+        block.p({ text: 'Sat, 12/25' }),
+        block.bullet({ id: 'last-upcoming-id', text: 'Last existing task' }),
+        block.divider(),
+        block.divider(),
+        block.divider(),
+        block({ id: 'week-template-id', type: 'child_page', content: { title: 'Week Template' } }),
+      ] } })
+      nockGetBlockChildren('week-template-id', { reply: { results: [
+        block.p({ text: 'Mon, ' }),
+        block.bullet({ text: 'Mon 1 task' }),
+        block.p({ text: 'Tue, ' }),
+        block.bullet({ text: 'Tue 1 task' }),
+        block.p({ text: 'Wed, ' }),
+        block.bullet({ text: 'Wed 1 task' }),
+        block.p({ text: 'Thu, ' }),
+        block.bullet({ text: 'Thu 1 task' }),
+        block.p({ text: 'Fri, ' }),
+        block.bullet({ text: 'Fri 1 task' }),
+        block.p({ text: 'Mon, ' }),
+        block.bullet({ text: 'Mon 2 task' }),
+        block.p({ text: 'Tue, ' }),
+        block.bullet({ text: 'Tue 2 task' }),
+        block.p({ text: 'Wed, ' }),
+        block.bullet({ text: 'Wed 2 task' }),
+        block.p({ text: 'Thu, ' }),
+        block.bullet({ text: 'Thu 2 task' }),
+        block.p({ text: 'Fri, ' }),
+        block.bullet({ text: 'Fri 2 task' }),
+      ] } })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'upcoming-id',
+        after: 'last-upcoming-id',
+      })
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.include('Following week successfully added!')
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.status).to.equal(200)
+
+      await snapshot
     })
 
     it('sends 500 with error if no upcomingId specified', async (ctx) => {

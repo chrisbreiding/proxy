@@ -60,3 +60,27 @@ exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWe
 "- Nested 3
 "
 `;
+
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > handles multi-week template with gaps 1`] = `
+"Mon, 12/27
+- Mon 1 task
+Tue, 12/28
+- Tue 1 task
+Wed, 12/29
+- Wed 1 task
+Thu, 12/30
+- Thu 1 task
+Fri, 12/31
+- Fri 1 task
+Mon, 1/3
+- Mon 2 task
+Tue, 1/4
+- Tue 2 task
+Wed, 1/5
+- Wed 2 task
+Thu, 1/6
+- Thu 2 task
+Fri, 1/7
+- Fri 2 task
+"
+`;

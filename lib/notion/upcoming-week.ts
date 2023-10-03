@@ -7,7 +7,6 @@ import type { NotionBlock, OwnBlock } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
-const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const
 const daysOfWeekRegex = /(Sun|Mon|Tue|Wed|Thu|Fri|Sat),/
 const monthPattern = `(?:${getMonths({ short: true }).join('|')})`
 const monthsConditionRegex = new RegExp(`( ?if (${monthPattern}(?:(?:, )${monthPattern})*))`)
@@ -41,26 +40,22 @@ async function getVariables ({ blocks, notionToken }: GetVariablesOptions) {
   }, {} as { [key: string]: string })
 }
 
-type DayOfWeek = typeof daysOfWeek[number]
-type DatesObject = Record<DayOfWeek, dayjs.Dayjs>
-
 function makeDateString (date: dayjs.Dayjs) {
   return date.format('YYYY-MM-DD')
 }
 
-function getDates (startDate: dayjs.Dayjs) {
-  return daysOfWeek.reduce((memo, day) => {
-    memo.dates[day] = memo.nextDate
-    memo.nextDate = memo.nextDate.add(1, 'day')
+function findMatchingDay (dayString: string, minimumDate: dayjs.Dayjs): dayjs.Dayjs {
+  if (dayString.includes(minimumDate.format('ddd'))) {
+    return minimumDate
+  }
 
-    return memo
-  }, { nextDate: startDate, dates: {} as DatesObject }).dates
+  return findMatchingDay(dayString, minimumDate.add(1, 'day'))
 }
 
 interface GetTextOptions {
   block: NotionBlock
-  dates: DatesObject
   currentDate?: dayjs.Dayjs
+  minimumDate: dayjs.Dayjs
 }
 
 interface TextDate {
@@ -68,7 +63,7 @@ interface TextDate {
   date?: dayjs.Dayjs
 }
 
-function getText ({ block, dates, currentDate }: GetTextOptions): TextDate {
+function getText ({ block, currentDate, minimumDate }: GetTextOptions): TextDate {
   const text = getBlockPlainText(block)
 
   if (!text) return {}
@@ -76,7 +71,7 @@ function getText ({ block, dates, currentDate }: GetTextOptions): TextDate {
   const [, day] = text.match(daysOfWeekRegex) || []
 
   if (day) {
-    const date = dates[day as DayOfWeek]
+    const date = findMatchingDay(day, minimumDate)
     const text = `${day}, ${date.month() + 1}/${date.date()}`
 
     return { date, text }
@@ -209,7 +204,11 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
   const { extras, lastQuestId, startDate, weekTemplateId } = getRelevantPieces(upcomingBlocks)
   const weekTemplateBlocks = await getBlockChildrenDeep({ notionToken, pageId: weekTemplateId })
   const variables = await getVariables({ blocks: weekTemplateBlocks, notionToken })
-  const dates = getDates(startDate)
+  const startingMemo = {
+    blocks: [],
+    idsOfExtrasUsed: [],
+    finished: false,
+  } as BlocksMemo
 
   const { blocks, idsOfExtrasUsed } = weekTemplateBlocks.reduce((memo, block) => {
     if (memo.finished) return memo
@@ -220,7 +219,11 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
       return memo
     }
 
-    const textResult = getText({ block, dates, currentDate: memo.currentDate })
+    const textResult = getText({
+      block,
+      currentDate: memo.currentDate,
+      minimumDate: memo.currentDate || startDate,
+    })
     const date = textResult.date
     let text = textResult.text
 
@@ -262,7 +265,7 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
     }
 
     return memo
-  }, { blocks: [], idsOfExtrasUsed: [], finished: false } as BlocksMemo)
+  }, startingMemo)
 
   return {
     blocks,
