@@ -1,9 +1,9 @@
 import type dayjs from 'dayjs'
 import type express from 'express'
 
-import { getBlockPlainText, isChildPageWithTitle, makeBlock, sendHtml, sendHtmlError } from './util/general'
+import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'
 import { getDateFromText, getMonths } from '../util/dates'
-import type { NotionBlock, OwnBlock } from './types'
+import type { NotionBlock, OwnBlock, SendError, SendSuccess } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
@@ -298,40 +298,25 @@ async function addFollowingWeek ({ notionToken, upcomingId }: Details) {
   await deleteExtrasUsed({ idsOfExtrasUsed, notionToken })
 }
 
-export async function addUpcomingWeek (req: express.Request, res: express.Response) {
-  const { query } = req
-
+export async function addUpcomingWeek (
+  req: express.Request,
+  sendSuccess: SendSuccess,
+  sendError: SendError,
+) {
   try {
-    [
-      'notionToken',
-      'upcomingId',
-    ].forEach((name) => {
-      const value = req.query[name]
+    const { notionToken, upcomingId } = req.query
 
-      if (!value || typeof value !== 'string') {
-        throw new Error(`A value for '${name}' must be provided in the query string`)
-      }
-    })
+    if (!notionToken || typeof notionToken !== 'string') {
+      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
+    }
+    if (!upcomingId || typeof upcomingId !== 'string') {
+      return sendError(null, 'A value for <em>upcomingId</em> must be provided in the query string', 400)
+    }
 
-    await addFollowingWeek({
-      notionToken: query.notionToken as string,
-      upcomingId: query.upcomingId as string,
-    })
+    await addFollowingWeek({ notionToken, upcomingId })
 
-    sendHtml(res, 200,
-      `<!DOCTYPE html>
-      <html>
-        <body>
-          <h2 style="margin: 20px;">Following week successfully added!<h2>
-        </body>
-      </html>`,
-    )
+    sendSuccess('Following week successfully added!')
   } catch (error: any) {
-    sendHtmlError({
-      error,
-      message: 'Adding upcoming week failed with the following error:',
-      res,
-      statusCode: 500,
-    })
+    sendError(error, 'Adding upcoming week failed with the following error:')
   }
 }

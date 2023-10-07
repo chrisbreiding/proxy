@@ -1,8 +1,8 @@
 import type express from 'express'
 import type { ToDoBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 
-import type { Block, NotionBlock } from './types'
-import { getBlockPlainText, makeBlock, sendHtml, sendHtmlError } from './util/general'
+import type { Block, NotionBlock, SendError, SendSuccess } from './types'
+import { getBlockPlainText, makeBlock } from './util/general'
 import { getBlockChildren, getColumnBlocks } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
@@ -159,27 +159,26 @@ async function clearPage ({ notionToken, pageId }: ClearPageOptions) {
   return
 }
 
-export async function clearCompleted (req: express.Request, res: express.Response) {
+export async function clearCompleted (
+  req: express.Request,
+  sendSuccess: SendSuccess,
+  sendError: SendError,
+) {
   try {
     const { notionToken, pageId } = req.query
 
     if (!notionToken || typeof notionToken !== 'string') {
-      return sendHtml(res, 400, '<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
     }
     if (!pageId || typeof pageId !== 'string') {
-      return sendHtml(res, 400, '<p>A value for <em>pageId</em> must be provided in the query string</p>')
+      return sendError(null, 'A value for <em>pageId</em> must be provided in the query string', 400)
     }
 
     await clearPage({ notionToken, pageId })
 
-    sendHtml(res, 200, '<h3>Successfully cleared completed items</h3>')
+    sendSuccess('Successfully cleared completed items!')
   } catch (error: any) {
-    sendHtmlError({
-      error,
-      message: 'Clearing completed failed with the following error:',
-      res,
-      statusCode: 500,
-    })
+    sendError(error, 'Clearing completed failed with the following error:')
   }
 }
 
@@ -222,26 +221,25 @@ async function deleteCleared ({ notionToken, recentlyClearedId }: DeleteClearedO
   }
 }
 
-export async function deleteRecentlyCleared (req: express.Request, res: express.Response) {
+export async function deleteRecentlyCleared (
+  req: express.Request,
+  sendSuccess: SendSuccess,
+  sendError: SendError,
+) {
   try {
     const { notionToken, recentlyClearedId } = req.query
 
     if (!notionToken || typeof notionToken !== 'string') {
-      return sendHtml(res, 400, '<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
     }
     if (!recentlyClearedId || typeof recentlyClearedId !== 'string') {
-      return sendHtml(res, 400, '<p>A value for <em>recentlyClearedId</em> must be provided in the query string</p>')
+      return sendError(null, 'A value for <em>recentlyClearedId</em> must be provided in the query string', 400)
     }
 
     await deleteCleared({ notionToken, recentlyClearedId })
 
-    sendHtml(res, 200, '<h3>Successfully deleted recently cleared items</h3>')
+    sendSuccess('Successfully deleted recently cleared items!')
   } catch (error: any) {
-    sendHtmlError({
-      error,
-      message: 'Deleting recently cleared failed with the following error:',
-      res,
-      statusCode: 500,
-    })
+    sendError(error, 'Deleting recently cleared failed with the following error:')
   }
 }

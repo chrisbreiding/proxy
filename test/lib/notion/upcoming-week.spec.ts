@@ -194,18 +194,18 @@ describe('lib/notion/upcoming-week', () => {
       await snapshot
     })
 
-    it('sends 500 with error if no upcomingId specified', async (ctx) => {
+    it('sends 400 with error if no upcomingId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ upcomingId: null })}`)
 
-      expect(res.text).to.include('A value for \'upcomingId\' must be provided in the query string')
-      expect(res.status).to.equal(500)
+      expect(res.text).to.include('A value for <em>upcomingId</em> must be provided in the query string')
+      expect(res.status).to.equal(400)
     })
 
-    it('sends 500 with error if no notionToken specified', async (ctx) => {
+    it('sends 400 with error if no notionToken specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
 
-      expect(res.text).to.include('A value for \'notionToken\' must be provided in the query string')
-      expect(res.status).to.equal(500)
+      expect(res.text).to.include('A value for <em>notionToken</em> must be provided in the query string')
+      expect(res.status).to.equal(400)
     })
 
     it('sends 500 with error if last date cannot be found', async (ctx) => {

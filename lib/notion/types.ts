@@ -83,3 +83,6 @@ export type OutgoingBlock = UpdateBlockBodyParameters & {
   object: string
   type: BlockObjectResponse['type']
 }
+
+export type SendSuccess = (message: string) => void
+export type SendError = (error: any, message: string, statusCode?: number) => void

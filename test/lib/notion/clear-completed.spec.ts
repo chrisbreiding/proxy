@@ -51,7 +51,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
     })
 
@@ -69,7 +69,7 @@ describe('lib/notion/clear-completed', () => {
       })
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
 
       await snapshot
@@ -89,7 +89,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
 
       await Promise.all(snapshots)
@@ -113,7 +113,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
 
       await snapshot
@@ -127,7 +127,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
     })
 
@@ -136,7 +136,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
     })
 
@@ -148,21 +148,21 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully cleared completed items</h3>')
+      expect(res.text).to.include('Successfully cleared completed items!')
       expect(res.status).to.equal(200)
     })
 
     it('sends 400 with error if no pageId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ pageId: null })}`)
 
-      expect(res.text).to.equal('<p>A value for <em>pageId</em> must be provided in the query string</p>')
+      expect(res.text).to.include('A value for <em>pageId</em> must be provided in the query string')
       expect(res.status).to.equal(400)
     })
 
     it('sends 400 with error if no notionToken specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
 
-      expect(res.text).to.equal('<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+      expect(res.text).to.include('A value for <em>notionToken</em> must be provided in the query string')
       expect(res.status).to.equal(400)
     })
 
@@ -204,7 +204,7 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully deleted recently cleared items</h3>')
+      expect(res.text).to.include('Successfully deleted recently cleared items!')
       expect(res.status).to.equal(200)
     })
 
@@ -215,21 +215,21 @@ describe('lib/notion/clear-completed', () => {
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
-      expect(res.text).to.equal('<h3>Successfully deleted recently cleared items</h3>')
+      expect(res.text).to.include('Successfully deleted recently cleared items!')
       expect(res.status).to.equal(200)
     })
 
     it('sends 400 with error if no recentlyClearedId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ recentlyClearedId: null })}`)
 
-      expect(res.text).to.equal('<p>A value for <em>recentlyClearedId</em> must be provided in the query string</p>')
+      expect(res.text).to.include('A value for <em>recentlyClearedId</em> must be provided in the query string')
       expect(res.status).to.equal(400)
     })
 
     it('sends 400 with error if no notionToken specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
 
-      expect(res.text).to.equal('<p>A value for <em>notionToken</em> must be provided in the query string</p>')
+      expect(res.text).to.include('A value for <em>notionToken</em> must be provided in the query string')
       expect(res.status).to.equal(400)
     })
 

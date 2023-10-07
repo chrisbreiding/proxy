@@ -1,7 +1,7 @@
 import type express from 'express'
 
-import { getBlockPlainText, sendHtml, sendHtmlError } from './util/general'
-import type { NotionBlock } from './types'
+import { getBlockPlainText } from './util/general'
+import type { NotionBlock, SendError, SendSuccess } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
@@ -83,42 +83,28 @@ async function moveNextDayUp ({ notionToken, questsId, upcomingId }: Details) {
   }
 }
 
-export async function promoteDay (req: express.Request, res: express.Response) {
-  const { query } = req
-
+export async function promoteDay (
+  req: express.Request,
+  sendSuccess: SendSuccess,
+  sendError: SendError,
+) {
   try {
-    [
-      'notionToken',
-      'upcomingId',
-      'questsId',
-    ].forEach((name) => {
-      const value = req.query[name]
+    const { notionToken, upcomingId, questsId } = req.query
 
-      if (!value || typeof value !== 'string') {
-        throw new Error(`A value for '${name}' must be provided in the query string`)
-      }
-    })
+    if (!notionToken || typeof notionToken !== 'string') {
+      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
+    }
+    if (!upcomingId || typeof upcomingId !== 'string') {
+      return sendError(null, 'A value for <em>upcomingId</em> must be provided in the query string', 400)
+    }
+    if (!questsId || typeof questsId !== 'string') {
+      return sendError(null, 'A value for <em>questsId</em> must be provided in the query string', 400)
+    }
 
-    await moveNextDayUp({
-      notionToken: query.notionToken as string,
-      questsId: query.questsId as string,
-      upcomingId: query.upcomingId as string,
-    })
+    await moveNextDayUp({ notionToken, questsId, upcomingId })
 
-    sendHtml(res, 200,
-      `<!DOCTYPE html>
-      <html>
-        <body>
-          <h2 style="margin: 20px;">Day successfully promoted!<h2>
-        </body>
-      </html>`,
-    )
+    sendSuccess('Day successfully promoted!')
   } catch (error: any) {
-    sendHtmlError({
-      error,
-      message: 'Promoting day failed with the following error:',
-      res,
-      statusCode: 500,
-    })
+    sendError(error, 'Promoting day failed with the following error:')
   }
 }
