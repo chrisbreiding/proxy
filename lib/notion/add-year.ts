@@ -1,11 +1,9 @@
 import dayjs from 'dayjs'
-import minimist from 'minimist'
+import type express from 'express'
 
 import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'
 import { compact } from '../util/collections'
-import { debug, debugVerbose } from '../util/debug'
-import { getEnv } from '../util/env'
-import type { NotionBlock, OwnBlock } from './types'
+import type { NotionBlock, OwnBlock, SendError, SendSuccess } from './types'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { getMonthNameFromIndex, getMonths } from '../util/dates'
 import { appendBlockChildren } from './util/updates'
@@ -285,17 +283,13 @@ async function getPageIds (year: number | string, notionToken: string, futurePag
     return isChildPageWithTitle(block, `${year}`)
   })
 
-  const dropZoneId = findId(blocks, (block) => {
-    return block.type === 'synced_block'
-  }, 'Could not find drop zone')!
-
   const yearTemplateId = findId(blocks, (block) => {
     return isChildPageWithTitle(block, 'Year Template')
   }, 'Could not find year template')!
 
   return {
     extrasId,
-    dropZoneId,
+    afterId: blocks[0].id,
     yearTemplateId,
   }
 }
@@ -307,45 +301,38 @@ interface AddYearOptions {
 }
 
 export async function addYear ({ notionToken, futurePageId, year }: AddYearOptions) {
-  const { yearTemplateId, dropZoneId, extrasId } = await getPageIds(year, notionToken, futurePageId)
+  const { afterId, extrasId, yearTemplateId } = await getPageIds(year, notionToken, futurePageId)
 
   const yearTemplateBlocks = await getYearTemplate(yearTemplateId, notionToken)
   const extras = extrasId ? await getExtras(extrasId, notionToken) : {}
   const monthsData = getMonthsData(yearTemplateBlocks, extras)
   const blocks = makeBlocks(monthsData, year)
 
-  await appendBlockChildren({ notionToken, blocks, pageId: dropZoneId })
+  await appendBlockChildren({ afterId, blocks, notionToken, pageId: futurePageId })
 }
 
-export default async function main () {
-  const notionToken = getEnv('NOTION_TOKEN')!
-  const futurePageId = getEnv('NOTION_FUTURE_ID')!
-  const { year } = minimist(process.argv.slice(2))
-
-  debugVerbose('addYear: %o', {
-    notionToken,
-    futurePageId,
-    year,
-  })
+export async function addNextYear (
+  req: express.Request,
+  sendSuccess: SendSuccess,
+  sendError: SendError,
+) {
+  let year
 
   try {
-    if (!year) {
-      throw new Error('Must specify --year')
+    const { futurePageId, notionToken } = req.query
+    year = req.query.year ? Number(req.query.year) : (dayjs().year() + 1)
+
+    if (!notionToken || typeof notionToken !== 'string') {
+      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
+    }
+    if (!futurePageId || typeof futurePageId !== 'string') {
+      return sendError(null, 'A value for <em>futurePageId</em> must be provided in the query string', 400)
     }
 
-    await addYear({
-      notionToken,
-      futurePageId,
-      year,
-    })
+    await addYear({ notionToken, futurePageId, year })
 
-    debug('Successfully added year')
-
-    process.exit(0)
+    sendSuccess(`Year ${year} successfully added!`)
   } catch (error: any) {
-    debug('Adding year failed:')
-    debug(error?.stack || error)
-
-    process.exit(1)
+    sendError(error, `Adding year ${year} failed with the following error:`)
   }
 }

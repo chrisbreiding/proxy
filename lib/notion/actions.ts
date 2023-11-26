@@ -1,8 +1,9 @@
 import type express from 'express'
-import { addUpcomingWeek } from './upcoming-week'
+import { addNextYear } from './add-year'
 import { clearCompleted, deleteRecentlyCleared } from './clear-completed'
-import { sendHtml, sendHtmlError } from './util/general'
 import { promoteDay } from './promote-day'
+import { addUpcomingWeek } from './upcoming-week'
+import { sendHtml, sendHtmlError } from './util/general'
 
 function sendSuccess (res: express.Response, message: string) {
   sendHtml(res, 200,
@@ -42,6 +43,8 @@ export function action (req: express.Request, res: express.Response) {
   switch (action) {
     case 'addUpcomingWeek':
       return addUpcomingWeek(req, onSuccess, onError)
+    case 'addNextYear':
+      return addNextYear(req, onSuccess, onError)
     case 'clearCompleted':
       return clearCompleted(req, onSuccess, onError)
     case 'deleteRecentlyCleared':
@@ -52,4 +55,3 @@ export function action (req: express.Request, res: express.Response) {
       sendHtml(res, 400, `<p>Action not supported: ${action}</p>`)
   }
 }
-
