@@ -8,6 +8,9 @@ function sendSuccess (res: express.Response, message: string) {
   sendHtml(res, 200,
     `<!DOCTYPE html>
     <html>
+      <head>
+        <title>✅ Success!</title>
+      </head>
       <body>
         <h2 style="margin: 20px;">${message}<h2>
       </body>
