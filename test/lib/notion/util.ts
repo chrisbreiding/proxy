@@ -262,7 +262,7 @@ export async function snapshotAppendChildren (options: SnapshotAppendChildrenOpt
   const body = await getBody<AppendShape>(scope)
 
   if (options.after) {
-    expect(body.after).to.equal(options.after)
+    expect(body.after, 'The after ID does not match').to.equal(options.after)
   }
 
   if (body.after && !options.after) {

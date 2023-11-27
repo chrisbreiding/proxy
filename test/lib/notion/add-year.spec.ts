@@ -1,14 +1,19 @@
 import nock from 'nock'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { addYear } from '../../../lib/notion/add-year'
+process.env.API_KEY = 'key'
+
 import { compact } from '../../../lib/util/collections'
 import {
   nockGetBlockChildren,
   notionFixtureContents,
   block,
   snapshotAppendChildren,
+  toQueryString,
+  nockAppendBlockChildren,
 } from './util'
+import { handleServer } from '../../util'
+import { startServer } from '../../..'
 
 function makeBlocks (prefix: string, toggle = false, empty = false) {
   return {
@@ -43,36 +48,72 @@ function nockOthers () {
   nockGetBlockChildren('pattern-every-month-date-id', { reply: makeBlocks('pattern-every-month-date-id') })
 }
 
+function makeQuery (updates: Record<string, string | null> = {}) {
+  return toQueryString({
+    action: 'addNextYear',
+    notionToken: 'notion-token',
+    futurePageId: 'future-page-id',
+    year: '2023',
+    ...updates,
+  })
+}
+
 describe('lib/notion/add-year', () => {
+  handleServer(startServer)
+
   beforeEach(() => {
     nock.cleanAll()
+
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2022, 11, 28))
 
     nockMost()
     nockOthers()
   })
 
-  it('appends blocks in the drop zone based on the year template patterns and year extras', async () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('appends blocks in the drop zone based on the year template patterns and year extras', async (ctx) => {
     nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
     nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
 
     const snapshot = snapshotAppendChildren({
-      id: 'drop-zone-id',
+      id: 'future-page-id',
+      after: 'first-block-id',
     })
 
-    await addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery({ year: null })}`)
+
+    expect(res.status).to.equal(200)
+    expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+    expect(res.text).to.include('Year 2023 successfully added!')
 
     await snapshot
   })
 
-  it('handles deeply nested quests', async () => {
+  it('uses following year if not specified', async (ctx) => {
+    nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
+    nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
+    nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
+
+    nockAppendBlockChildren({
+      id: 'future-page-id',
+    })
+
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.status).to.equal(200)
+    expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+    expect(res.text).to.include('Year 2023 successfully added!')
+  })
+
+  it('handles deeply nested quests', async (ctx) => {
     nockGetBlockChildren('future-page-id', { reply: { results: [
+      block.p({ id: 'first-block-id' }),
       block({ id: 'year-template-id', type: 'child_page', content: { title: 'Year Template' }, hasChildren: true }),
-      block({ id: 'drop-zone-id', type: 'synced_block', content: {} }),
     ] } })
     nockGetBlockChildren('year-template-id', { reply: { results: [
       block.p({ id: 'month-id', text: 'January', hasChildren: true }),
@@ -92,32 +133,37 @@ describe('lib/notion/add-year', () => {
 
     const snapshots = [
       snapshotAppendChildren({
-        id: 'drop-zone-id',
-        reply: { results: [{ id: 'drop-1-id' }] },
+        after: 'first-block-id',
+        id: 'future-page-id',
+        reply: { results: [
+          { id: 'first-block-id' },
+          { id: '' }, { id: '' }, { id: '' },
+          { id: 'appended-1-id' },
+        ] },
       }),
       snapshotAppendChildren({
-        id: 'drop-1-id',
-        reply: { results: [{ id: 'drop-2-id' }] },
+        id: 'appended-1-id',
+        reply: { results: [{ id: 'appended-2-id' }] },
       }),
       snapshotAppendChildren({
-        id: 'drop-2-id',
-        reply: { results: [{ id: 'drop-3-id' }] },
+        id: 'appended-2-id',
+        reply: { results: [{ id: 'appended-3-id' }] },
       }),
       snapshotAppendChildren({
-        id: 'drop-3-id',
+        id: 'appended-3-id',
       }),
     ]
 
-    await addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.status).to.equal(200)
+    expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+    expect(res.text).to.include('Year 2023 successfully added!')
 
     await Promise.all(snapshots)
   })
 
-  it('handles months that have no quests and lack of extras', async () => {
+  it('handles months that have no quests and lack of extras', async (ctx) => {
     nock.cleanAll()
 
     nockMost()
@@ -138,34 +184,34 @@ describe('lib/notion/add-year', () => {
     nockGetBlockChildren('year-template-id', { reply: yearTemplateBlocks })
 
     const snapshot = snapshotAppendChildren({
-      id: 'drop-zone-id',
+      id: 'future-page-id',
+      after: 'first-block-id',
     })
 
-    await addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.status).to.equal(200)
+    expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+    expect(res.text).to.include('Year 2023 successfully added!')
 
     await snapshot
   })
 
-  it('errors if drop zone cannot be found', async () => {
-    const futureBlocks = notionFixtureContents('add-year/future-blocks')
-    // remove drop zone block
-    futureBlocks.results = futureBlocks.results.filter((block: any) => {
-      return block.type !== 'synced_block'
-    })
-    nockGetBlockChildren('future-page-id', { reply: futureBlocks })
+  it('sends 400 with error if futurePageId is not specified', async (ctx) => {
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery({ futurePageId: null })}`)
 
-    await expect(() => addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })).rejects.toThrowError('Could not find drop zone')
+    expect(res.text).to.include('A value for <em>futurePageId</em> must be provided in the query string')
+    expect(res.status).to.equal(400)
   })
 
-  it('errors if year template cannot be found', async () => {
+  it('sends 400 with error if notionToken is not specified', async (ctx) => {
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery({ notionToken: null })}`)
+
+    expect(res.text).to.include('A value for <em>notionToken</em> must be provided in the query string')
+    expect(res.status).to.equal(400)
+  })
+
+  it('send 500 with error if year template cannot be found', async (ctx) => {
     const futureBlocks = notionFixtureContents('add-year/future-blocks')
     // remove year template block
     futureBlocks.results = futureBlocks.results.filter((block: any) => {
@@ -174,14 +220,13 @@ describe('lib/notion/add-year', () => {
 
     nockGetBlockChildren('future-page-id', { reply: futureBlocks })
 
-    await expect(() => addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })).rejects.toThrowError('Could not find year template')
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.text).to.include('Could not find year template')
+    expect(res.status).to.equal(500)
   })
 
-  it('errors if extras date is not under a month', async () => {
+  it('sends 500 with error if extras date is not under a month', async (ctx) => {
     nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
 
@@ -194,14 +239,13 @@ describe('lib/notion/add-year', () => {
 
     nockGetBlockChildren('extras-id', { reply: extrasBlocks })
 
-    await expect(() => addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })).rejects.toThrowError('Tried to add the following date, but could not determine the month: \'1\'')
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.text).to.include('Tried to add the following date, but could not determine the month for: \'1\'')
+    expect(res.status).to.equal(500)
   })
 
-  it('errors if extras quest is not under a month', async () => {
+  it('sends 500 with error if extras quest is not under a month', async (ctx) => {
     nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
 
@@ -214,14 +258,13 @@ describe('lib/notion/add-year', () => {
 
     nockGetBlockChildren('extras-id', { reply: extrasBlocks })
 
-    await expect(() => addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })).rejects.toThrowError('Tried to add the following quest, but could not determine the month: \'Some task\'')
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.text).to.include('Tried to add the following quest, but could not determine the month for: \'Some task\'')
+    expect(res.status).to.equal(500)
   })
 
-  it('errors if extras quest is not under a date', async () => {
+  it('sends 500 with error if extras quest is not under a date', async (ctx) => {
     nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
 
@@ -234,10 +277,9 @@ describe('lib/notion/add-year', () => {
 
     nockGetBlockChildren('extras-id', { reply: extrasBlocks })
 
-    await expect(() => addYear({
-      notionToken: 'notion-token',
-      futurePageId: 'future-page-id',
-      year: 2023,
-    })).rejects.toThrowError('Tried to add the following quest, but could not determine the date: \'Some task\'')
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.text).to.include('Tried to add the following quest, but could not determine the date for: \'Some task\'')
+    expect(res.status).to.equal(500)
   })
 })

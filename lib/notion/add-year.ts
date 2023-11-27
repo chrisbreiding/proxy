@@ -171,7 +171,7 @@ async function getExtras (extrasId: string, notionToken: string) {
 
     if (numberRegex.test(text)) {
       if (!currentMonth) {
-        throw new Error(`Tried to add the following date, but could not determine the month: '${text}'`)
+        throw new Error(`Tried to add the following date, but could not determine the month for: '${text}'`)
       }
 
       months[currentMonth][text] = []
@@ -181,11 +181,11 @@ async function getExtras (extrasId: string, notionToken: string) {
     }
 
     if (!currentMonth) {
-      throw new Error(`Tried to add the following quest, but could not determine the month: '${text}'`)
+      throw new Error(`Tried to add the following quest, but could not determine the month for: '${text}'`)
     }
 
     if (!currentDate) {
-      throw new Error(`Tried to add the following quest, but could not determine the date: '${text}'`)
+      throw new Error(`Tried to add the following quest, but could not determine the date for: '${text}'`)
     }
 
     if (hasText(block)) {
@@ -300,7 +300,7 @@ interface AddYearOptions {
   year: number
 }
 
-export async function addYear ({ notionToken, futurePageId, year }: AddYearOptions) {
+async function addYear ({ notionToken, futurePageId, year }: AddYearOptions) {
   const { afterId, extrasId, yearTemplateId } = await getPageIds(year, notionToken, futurePageId)
 
   const yearTemplateBlocks = await getYearTemplate(yearTemplateId, notionToken)
