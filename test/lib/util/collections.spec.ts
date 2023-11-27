@@ -5,9 +5,30 @@ import {
   vi,
 } from 'vitest'
 
-import { clone, compact, mapPromisesSerially } from '../../../lib/util/collections'
+import { chunk, clone, compact, mapPromisesSerially } from '../../../lib/util/collections'
 
 describe('lib/util/collections', () => {
+  describe('#chunk', () => {
+    it('returns empty array if specified array has no length', () => {
+      expect(chunk([], 2)).to.deep.equal([])
+    })
+
+    it('returns an array of arrays of the specified size', () => {
+      expect(chunk(['a', 'b', 'c', 'd'], 2)).to.deep.equal([
+        ['a', 'b'],
+        ['c', 'd'],
+      ])
+    })
+
+    it('last array can have less than size', () => {
+      expect(chunk(['a', 'b', 'c', 'd', 'e'], 2)).to.deep.equal([
+        ['a', 'b'],
+        ['c', 'd'],
+        ['e'],
+      ])
+    })
+  })
+
   describe('#clone', () => {
     it('clones the object', () => {
       const original = { a: 'value' }

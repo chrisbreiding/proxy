@@ -64,6 +64,7 @@ describe('lib/notion/quests', () => {
       const snapshot = snapshotAppendChildren({
         id: 'quests-id',
         after: 'after-me',
+        reply: { results: [block.bullet()] },
       })
 
       const res = await ctx.request.post('/notion/quests/key')
@@ -88,6 +89,7 @@ describe('lib/notion/quests', () => {
       const snapshot = snapshotAppendChildren({
         id: 'quests-id',
         after: 'after-me',
+        reply: { results: [block.bullet()] },
       })
 
       const res = await ctx.request.post('/notion/quests/key')
@@ -112,6 +114,7 @@ describe('lib/notion/quests', () => {
       const snapshot = snapshotAppendChildren({
         id: 'quests-id',
         after: 'after-me',
+        reply: { results: [block.bullet()] },
       })
 
       const res = await ctx.request.post('/notion/quests/key')
@@ -135,6 +138,7 @@ describe('lib/notion/quests', () => {
       const snapshot = snapshotAppendChildren({
         id: 'quests-id',
         after: 'after-me',
+        reply: { results: [block.bullet()] },
       })
 
       const res = await ctx.request.post('/notion/quests/key')

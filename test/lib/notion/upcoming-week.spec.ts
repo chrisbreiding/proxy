@@ -12,6 +12,7 @@ import {
   toQueryString,
 } from './util'
 import { RequestError, handleServer } from '../../util'
+import { times } from '../../../lib/util/collections'
 
 process.env.API_KEY = 'key'
 
@@ -50,6 +51,7 @@ describe('lib/notion/upcoming-week', () => {
       const snapshot = snapshotAppendChildren({
         id: 'upcoming-id',
         after: 'last-upcoming-id',
+        reply: { results: times(22, block.bullet()) },
       })
 
       nockDeleteBlock('extra-date-1')
@@ -82,6 +84,7 @@ describe('lib/notion/upcoming-week', () => {
       const snapshot = snapshotAppendChildren({
         after: 'last-upcoming-id',
         id: 'upcoming-id',
+        reply: { results: times(6, block.bullet()) },
       })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
@@ -183,6 +186,7 @@ describe('lib/notion/upcoming-week', () => {
       const snapshot = snapshotAppendChildren({
         id: 'upcoming-id',
         after: 'last-upcoming-id',
+        reply: { results: times(20, block.bullet()) },
       })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)

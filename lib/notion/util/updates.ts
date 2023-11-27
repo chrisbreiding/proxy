@@ -8,6 +8,7 @@ import type { Block, NotionBlock, OutgoingBlock, OwnBlock } from '../types'
 import { makeRequest } from './requests'
 import { convertBlockToOutgoingBlock } from './conversions'
 import { areIdsEqual, getBlocksChildrenDepth } from './general'
+import { chunk } from '../../util/collections'
 
 interface MakeAppendRequestOptions {
   afterId?: string
@@ -28,6 +29,33 @@ export function makeAppendRequest ({ afterId, notionToken, pageId, blocks }: Mak
   })
   // don't understand why this fails coverage
   /* c8 ignore next */
+}
+
+async function appendContiguousChildren ({ afterId, blocks, notionToken, pageId }: MakeAppendRequestOptions) {
+  const chunksOfBlocks = chunk(blocks, 100)
+  let allResults = [] as (PartialBlockObjectResponse | BlockObjectResponse)[]
+  let currentAfterId = afterId
+
+  for (const chunkOfBlocks of chunksOfBlocks) {
+    const { results } = await makeAppendRequest({
+      afterId: currentAfterId,
+      blocks: chunkOfBlocks,
+      notionToken,
+      pageId,
+    })
+
+    if (afterId) {
+      currentAfterId = getAfterId({
+        numAdded: chunkOfBlocks.length,
+        previousAfterId: currentAfterId,
+        results,
+      })
+    }
+
+    allResults = allResults.concat(results)
+  }
+
+  return { results: allResults }
 }
 
 interface AppendBlockChildrenOptions {
@@ -52,7 +80,12 @@ async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionT
     })
   }
 
-  return makeAppendRequest({ afterId, notionToken, pageId, blocks: moveChildren(blocks) })
+  return appendContiguousChildren({
+    afterId,
+    blocks: moveChildren(blocks),
+    notionToken,
+    pageId,
+  })
 }
 
 interface GetAfterIdOptions {
@@ -83,7 +116,7 @@ async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, 
 
       toAppend.push(convertedBlock)
 
-      const { results } = await makeAppendRequest({
+      const { results } = await appendContiguousChildren({
         afterId: currentAfterId,
         notionToken,
         pageId,
@@ -112,14 +145,14 @@ async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, 
     }
   }
 
-  if (toAppend.length) {
-    return makeAppendRequest({
-      afterId: currentAfterId,
-      notionToken,
-      pageId,
-      blocks: toAppend,
-    })
-  }
+  if (!toAppend.length) return
+
+  return appendContiguousChildren({
+    afterId: currentAfterId,
+    notionToken,
+    pageId,
+    blocks: toAppend,
+  })
 }
 
 export async function appendBlockChildren (options: AppendBlockChildrenOptions) {

@@ -1,6 +1,6 @@
 // Vitest Snapshot v1
 
-exports[`lib/notion/add-year > appends blocks in the drop zone based on the year template patterns and year extras 1`] = `
+exports[`lib/notion/add-year > adds blocks based on the year template patterns and year extras 1`] = `
 "
 **January**
 Sun, 1/1
@@ -103,7 +103,11 @@ Sun, 9/10
 - pattern-every-month-date-id task
 Wed, 9/20
 - pattern-multiple-months-date-id task
+"
+`;
 
+exports[`lib/notion/add-year > adds blocks based on the year template patterns and year extras 2`] = `
+"
 **October**
 Sun, 10/1
 - pattern-multiple-months-id task

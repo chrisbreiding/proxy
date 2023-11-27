@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 process.env.API_KEY = 'key'
 
-import { compact } from '../../../lib/util/collections'
+import { compact, times } from '../../../lib/util/collections'
 import {
   nockGetBlockChildren,
   notionFixtureContents,
@@ -75,15 +75,29 @@ describe('lib/notion/add-year', () => {
     vi.useRealTimers()
   })
 
-  it('appends blocks in the drop zone based on the year template patterns and year extras', async (ctx) => {
+  it('adds blocks based on the year template patterns and year extras', async (ctx) => {
     nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
     nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
     nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
 
-    const snapshot = snapshotAppendChildren({
-      id: 'future-page-id',
-      after: 'first-block-id',
-    })
+    const snapshots = [
+      snapshotAppendChildren({
+        id: 'future-page-id',
+        after: 'first-block-id',
+        reply: { results: [
+          block.p({ id: 'first-block-id' }),
+          ...times(100).map((_, i) => block.bullet({ id: `block-id-${i + 1}` })),
+        ] },
+      }),
+      snapshotAppendChildren({
+        id: 'future-page-id',
+        after: 'block-id-100',
+        reply: { results: [
+          block.p({ id: 'block-id-100' }),
+          ...times(28, block.bullet()),
+        ] },
+      }),
+    ]
 
     const res = await ctx.request.get(`/notion/action/key?${makeQuery({ year: null })}`)
 
@@ -91,13 +105,17 @@ describe('lib/notion/add-year', () => {
     expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
     expect(res.text).to.include('Year 2023 successfully added!')
 
-    await snapshot
+    await Promise.all(snapshots)
   })
 
   it('uses following year if not specified', async (ctx) => {
-    nockGetBlockChildren('future-page-id', { fixture: 'add-year/future-blocks' })
-    nockGetBlockChildren('year-template-id', { fixture: 'add-year/year-template-blocks' })
-    nockGetBlockChildren('extras-id', { fixture: 'add-year/extras-blocks' })
+    nockGetBlockChildren('future-page-id', { reply: { results: [
+      block.p({ id: 'first-block-id' }),
+      block({ id: 'year-template-id', type: 'child_page', content: { title: 'Year Template' }, hasChildren: true }),
+      block({ id: 'extras-id', type: 'child_page', content: { title: '2023' }, hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('year-template-id', { reply: { results: [] } })
+    nockGetBlockChildren('extras-id', { reply: { results: [] } })
 
     nockAppendBlockChildren({
       id: 'future-page-id',
@@ -151,10 +169,53 @@ describe('lib/notion/add-year', () => {
       }),
       snapshotAppendChildren({
         id: 'appended-3-id',
+        reply: { results: [{}] },
       }),
     ]
 
     const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+    expect(res.status).to.equal(200)
+    expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+    expect(res.text).to.include('Year 2023 successfully added!')
+
+    await Promise.all(snapshots)
+  })
+
+  // TODO: maybe not necesary and can remove?
+  it.skip('handles adding more than 100 blocks', async (ctx) => {
+    nockGetBlockChildren('future-page-id', { reply: { results: [
+      block.p({ id: 'first-block-id' }),
+      block({ id: 'year-template-id', type: 'child_page', content: { title: 'Year Template' }, hasChildren: true }),
+      block({ id: 'extras-id', type: 'child_page', content: { title: '2023' }, hasChildren: true }),
+    ] } })
+    nockGetBlockChildren('year-template-id', { reply: { results: [] } })
+    nockGetBlockChildren('extras-id', { reply: { results: [
+      block.p({ text: 'January' }),
+      block.p({ text: '1' }),
+      ...times(120).map((_, i) => block.bullet({ text: `Block ${i + 1}` })),
+    ] } })
+
+    const snapshots = [
+      snapshotAppendChildren({
+        id: 'future-page-id',
+        after: 'first-block-id',
+        reply: { results: [
+          block.p({ id: 'first-block-id' }),
+          ...times(100).map((_, i) => block.bullet({ id: `block-id-${i + 1}` })),
+        ] },
+      }),
+      snapshotAppendChildren({
+        id: 'future-page-id',
+        after: 'block-id-100',
+        reply: { results: [
+          block.p({ id: 'block-id-100' }),
+          ...times(23, block.bullet()),
+        ] },
+      }),
+    ]
+
+    const res = await ctx.request.get(`/notion/action/key?${makeQuery({ year: null })}`)
 
     expect(res.status).to.equal(200)
     expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
@@ -186,6 +247,7 @@ describe('lib/notion/add-year', () => {
     const snapshot = snapshotAppendChildren({
       id: 'future-page-id',
       after: 'first-block-id',
+      reply: { results: times(23, block.bullet()) },
     })
 
     const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)

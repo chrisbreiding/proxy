@@ -12,6 +12,7 @@ import {
   toQueryString,
 } from './util'
 import { RequestError, handleServer } from '../../util'
+import { times } from '../../../lib/util/collections'
 
 process.env.API_KEY = 'key'
 
@@ -52,6 +53,7 @@ describe('lib/notion/promote-day', () => {
         snapshotAppendChildren({
           id: 'quests-id',
           after: 'last-quest-id',
+          reply: { results: times(4, block.bullet()) },
         }),
       ]
 

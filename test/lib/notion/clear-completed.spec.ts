@@ -16,12 +16,14 @@ import {
   recentlyCleared,
 } from '../../fixtures/notion/clear-completed.fixtures'
 import {
+  block,
   nockDeleteBlock,
   nockGetBlockChildren,
   nockNotion,
   snapshotAppendChildren,
   toQueryString,
 } from './util'
+import { times } from '../../../lib/util/collections'
 
 function nockDeletedBlocks (ids: string[]) {
   ids.forEach((id) => {
@@ -66,6 +68,7 @@ describe('lib/notion/clear-completed', () => {
       const snapshot = snapshotAppendChildren({
         id: 'recently-cleared-id',
         after: 'recently-cleared-divider-id',
+        reply: { results: times(9, block.bullet()) },
       })
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
@@ -83,8 +86,16 @@ describe('lib/notion/clear-completed', () => {
       nockDeletedBlocks(['item-1-1', 'item-2-1', 'item-2-2', 'item-2-3', 'item-4-1', 'item-4-2', 'item-5-1'])
 
       const snapshots = [
-        snapshotAppendChildren({ id: 'column-1-id', after: 'store-2-id' }),
-        snapshotAppendChildren({ id: 'column-2-id', after: 'store-4-id' }),
+        snapshotAppendChildren({
+          id: 'column-1-id',
+          after: 'store-2-id',
+          reply: { results: [block.bullet()] },
+        }),
+        snapshotAppendChildren({
+          id: 'column-2-id',
+          after: 'store-4-id',
+          reply: { results: [block.bullet()] },
+        }),
       ]
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
@@ -109,6 +120,7 @@ describe('lib/notion/clear-completed', () => {
       const snapshot = snapshotAppendChildren({
         id: 'recently-cleared-id',
         after: 'recently-cleared-divider-id',
+        reply: { results: times(9, block.bullet()) },
       })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
