@@ -10,7 +10,7 @@ export function makeConditionParts (weather: DayWeather) {
   return compact([
     makeTextPart(`${getWeatherIcon(weather.icon)} `),
     makePrecipPart(weather.icon === 'rain' && weather.precipProbability >= 0.01, `${Math.round(weather.precipProbability * 100)}%`),
-    makePrecipPart(weather.icon === 'snow' && weather.precipAccumulation >= 0.1, `${(weather.precipAccumulation || 0).toFixed(2)}in`),
+    makePrecipPart(weather.icon === 'snow' && weather.snowAccumulation >= 0.1, `${(weather.snowAccumulation || 0).toFixed(2)}in`),
   ])
 }
 
