@@ -11,6 +11,7 @@ import * as dashboard from './lib/dashboard'
 import * as garage from './lib/garage'
 import * as location from './lib/location'
 import * as notion from './lib/notion'
+import * as dogs from './lib/dogs'
 import { createTvRoutes } from './lib/tv'
 import { debug } from './lib/util/debug'
 import * as weather from './lib/weather'
@@ -73,6 +74,7 @@ export function startServer (port: number) {
   app.get('/location-search', location.search)
   app.get('/location-details', location.details)
   app.get('/weather', weather.get)
+  app.get('/dogs', dogs.get)
 
   app.use('/tv', createTvRoutes())
 

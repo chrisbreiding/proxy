@@ -2,6 +2,7 @@ import { URL } from 'url'
 import axios, { Method } from 'axios'
 import Debug from 'debug'
 import path from 'path'
+import type { ParsedQs } from 'qs'
 
 import { debug, debugVerbose } from './debug'
 import { outputJsonSync, readJSONSync } from 'fs-extra'
@@ -10,8 +11,28 @@ export interface RequestOptions {
   url: string
   body?: object
   headers?: { [key: string]: string }
-  params?: { [key: string]: string }
+  params?: ParsedQs
   method?: Method
+}
+
+function normalizedParams (originalParams?: ParsedQs) {
+  if (!originalParams || typeof originalParams === 'string') {
+    return originalParams
+  }
+
+  const params = new URLSearchParams()
+
+  for (const [key, value] of Object.entries(originalParams)) {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        params.append(key, item as string)
+      }
+    } else {
+      params.append(key, value as string)
+    }
+  }
+
+  return params
 }
 
 export async function request (options: RequestOptions) {
@@ -36,7 +57,7 @@ export async function request (options: RequestOptions) {
       method,
       url,
       headers,
-      params,
+      params: normalizedParams(params),
       data: body,
     })
 
