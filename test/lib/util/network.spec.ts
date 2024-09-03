@@ -53,6 +53,19 @@ describe('lib/util/network', () => {
       })
     })
 
+    it('can include query params that are arrays', async () => {
+      nock('http://api.com')
+      .get('/?query=value1&query=value2')
+      .reply(200)
+
+      await request({
+        url: 'http://api.com',
+        params: {
+          query: ['value1', 'value2'],
+        },
+      })
+    })
+
     it('can include body', async () => {
       nock('http://api.com')
       .post('/', { data: 'value' })
