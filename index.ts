@@ -74,7 +74,8 @@ export function startServer (port: number) {
   app.get('/location-search', location.search)
   app.get('/location-details', location.details)
   app.get('/weather', weather.get)
-  app.get('/dogs', dogs.get)
+  app.get('/dogs/:id', dogs.get)
+  app.get('/dogs', dogs.search)
 
   app.use('/tv', createTvRoutes())
 
