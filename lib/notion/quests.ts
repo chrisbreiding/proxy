@@ -9,6 +9,7 @@ import { appendBlockChildren } from './util/updates'
 
 const notionToken = getEnv('NOTION_TOKEN')!
 const questsId = getEnv('NOTION_QUESTS_ID')!
+const sarahTodoId = getEnv('NOTION_SARAH_TODO_ID')!
 
 async function findUpcomingId (blocks: NotionBlock[]) {
   const block = blocks.find((block) => {
@@ -50,6 +51,27 @@ async function getNewQuestAfterId (blocks: NotionBlock[]) {
   if (index === -1) return
 
   return blocks[index - 1].id
+}
+
+export async function addSarahTodo (req: express.Request, res: express.Response) {
+  const quest = req.body.todo
+  const questBlocks = await getBlockChildren({
+    notionToken,
+    pageId: sarahTodoId,
+  })
+  const afterId = questBlocks[0] ? questBlocks[0].id : undefined
+
+  await appendBlockChildren({
+    afterId,
+    blocks: [makeBlock({
+      text: quest,
+      type: 'bulleted_list_item',
+    })],
+    notionToken,
+    pageId: sarahTodoId,
+  })
+
+  res.sendStatus(200)
 }
 
 export async function addQuest (req: express.Request, res: express.Response) {

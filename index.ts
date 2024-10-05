@@ -68,6 +68,7 @@ export function startServer (port: number) {
   app.post('/garage/notify-on-open/:notifyOnOpen/:key', ensureApiKey, garage.setNotifyOnOpen)
   app.get('/garage/:key', ensureApiKey, garage.view)
   app.post('/notion/quests/:key', ensureApiKey, notion.addQuest)
+  app.post('/notion/sarah/todo/:key', ensureApiKey, notion.addSarahTodo)
   app.get('/notion/action/:key', ensureApiKey, notion.action)
   app.get('/notion/factor-meals/:key', ensureApiKey, notion.getFactorMeals)
   app.post('/notion/factor-meals/:key', ensureApiKey, notion.addFactorMeal)

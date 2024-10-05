@@ -1,6 +1,6 @@
 import { action } from './actions'
 import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/meals'
-import { addQuest } from './quests'
+import { addQuest, addSarahTodo } from './quests'
 import { onSocket } from './shopping'
 import { getBlockChildren } from './util/queries'
 
@@ -17,6 +17,7 @@ export {
   action,
   addFactorMeal,
   addQuest,
+  addSarahTodo,
   getFactorMeals,
   onSocket,
 }
