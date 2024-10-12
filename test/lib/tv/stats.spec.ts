@@ -1,12 +1,15 @@
+import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
 const mixpanelToken = process.env.MIXPANEL_TOKEN = 'mixpanel-token'
 
 import { startServer } from '../../../index'
-import { getDocWhere } from '../../../lib/tv/store/firebase'
+import { getDocWhere, initializeApp } from '../../../lib/util/firebase'
 import { handleServer } from '../../util'
 import { MixpanelMock, mockMixpanel } from './util'
+
+const dbMock = {} as firestore.Firestore
 
 vi.mock('mixpanel', () => {
   return {
@@ -16,9 +19,10 @@ vi.mock('mixpanel', () => {
   }
 })
 
-vi.mock('../../../lib/tv/store/firebase', () => {
+vi.mock('../../../lib/util/firebase', () => {
   return {
     getDocWhere: vi.fn(),
+    initializeApp: vi.fn(),
   }
 })
 
@@ -37,6 +41,7 @@ describe('lib/tv/stats', () => {
       id: 'user-1',
       username: 'user1',
     })
+    ;(initializeApp as Mock).mockReturnValue(dbMock)
   })
 
   describe('POST /tv/stats', () => {

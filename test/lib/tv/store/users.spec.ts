@@ -1,11 +1,14 @@
+import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
 import { startServer } from '../../../../index'
-import { getDoc, getDocWhere, updateDoc } from '../../../../lib/tv/store/firebase'
+import { getDoc, getDocWhere, initializeApp, updateDoc } from '../../../../lib/util/firebase'
 import type { User } from './../../../../lib/tv/store/users'
 import { handleServer } from '../../../util'
 import { mockMixpanel } from '../util'
+
+const dbMock = {} as firestore.Firestore
 
 vi.mock('mixpanel', () => {
   return {
@@ -15,10 +18,11 @@ vi.mock('mixpanel', () => {
   }
 })
 
-vi.mock('../../../../lib/tv/store/firebase', () => {
+vi.mock('../../../../lib/util/firebase', () => {
   return {
     getDoc: vi.fn(),
     getDocWhere: vi.fn(),
+    initializeApp: vi.fn(),
     updateDoc: vi.fn(),
   }
 })
@@ -44,6 +48,7 @@ describe('lib/tv/store/users', () => {
     }
 
     ;(getDocWhere as Mock).mockResolvedValue(user)
+    ;(initializeApp as Mock).mockReturnValue(dbMock)
     ;(Mixpanel.init as Mock).mockReturnValue(mockMixpanel())
   })
 
@@ -106,7 +111,7 @@ describe('lib/tv/store/users', () => {
       .set('api-key', 'api-key')
       .send(update)
 
-      expect(updateDoc).toBeCalledWith('users/user-id', update)
+      expect(updateDoc).toBeCalledWith(dbMock, 'users/user-id', update)
       expect(res.status).to.equal(200)
       expect(res.body).to.deep.equal({
         hideSpecialEpisodes: true,

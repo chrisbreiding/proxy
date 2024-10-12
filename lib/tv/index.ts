@@ -1,15 +1,23 @@
 import axios from 'axios'
 import express from 'express'
+import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { searchShows } from './source/shows'
+import { initializeApp } from '../util/firebase'
 import { getMetaData } from './store/metadata'
 import { addShow, deleteShow, getShowsWithEpisodesForUser, updateShow } from './store/shows'
 import { getUser, getUserByApiKey, updateUser, User } from './store/users'
 
+interface Locals {
+  db: firestore.Firestore
+  user?: User
+}
+
 const userMap = {} as { [key: string]: User }
+let db: firestore.Firestore | undefined
 
 function setupMixpanel (res: express.Response, user?: User) {
   try {
@@ -22,6 +30,22 @@ function setupMixpanel (res: express.Response, user?: User) {
   } catch (error: any) {
     debug('Mixpanel.init error:', error.stack)
   }
+}
+
+function ensureDb (req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!db) {
+    db = initializeApp('tv')
+  }
+
+  if (!res.locals.db) {
+    res.locals.db = db
+  }
+
+  next()
+}
+
+function getDb (res: express.Response) {
+  return (res.locals as Locals).db
 }
 
 async function ensureAndSetUser (req: express.Request, res: express.Response, next: express.NextFunction) {
@@ -43,7 +67,8 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
     })
   }
 
-  const user = userMap[apiKey] || await getUserByApiKey(apiKey as string)
+  const db = getDb(res)
+  const user = userMap[apiKey] || await getUserByApiKey(db, apiKey as string)
 
   if (!user) {
     if (isStats) return proceed()
@@ -74,6 +99,7 @@ function guard (handler: (req: express.Request, res: express.Response) => void) 
 export function createTvRoutes () {
   const router = express.Router()
 
+  router.use(ensureDb)
   router.use(ensureAndSetUser)
 
   router.get('/shows/search', guard(async (req: express.Request, res: express.Response) => {
@@ -84,13 +110,13 @@ export function createTvRoutes () {
   }))
 
   router.get('/shows', guard(async (req: express.Request, res: express.Response) => {
-    const shows = await getShowsWithEpisodesForUser(res.locals.user)
+    const shows = await getShowsWithEpisodesForUser(getDb(res), res.locals.user)
 
     res.json(shows)
   }))
 
   router.post('/shows', guard(async (req: express.Request, res: express.Response) => {
-    const show = await addShow(req.body.show, res.locals.user)
+    const show = await addShow(getDb(res), req.body.show, res.locals.user)
 
     if (!show) {
       return res.sendStatus(204)
@@ -100,7 +126,7 @@ export function createTvRoutes () {
   }))
 
   router.put('/shows/:id', guard(async (req: express.Request, res: express.Response) => {
-    const show = await updateShow(req.params.id, req.body.show, res.locals.user)
+    const show = await updateShow(getDb(res), req.params.id, req.body.show, res.locals.user)
 
     if (!show) {
       return res.sendStatus(204)
@@ -110,7 +136,7 @@ export function createTvRoutes () {
   }))
 
   router.delete('/shows/:id', guard(async (req: express.Request, res: express.Response) => {
-    await deleteShow(req.params.id, res.locals.user)
+    await deleteShow(getDb(res), req.params.id, res.locals.user)
 
     res.sendStatus(204)
   }))
@@ -127,13 +153,13 @@ export function createTvRoutes () {
 
   router.get('/user', guard(async (req: express.Request, res: express.Response) => {
     const id = res.locals.user.id
-    const user = await getUser(id)
+    const user = await getUser(getDb(res), id)
 
     if (!user) {
       return res.status(404).send({ error: `User with id '${id}' not found` })
     }
 
-    const metadata = await getMetaData()
+    const metadata = await getMetaData(getDb(res))
 
     res.json({
       hideSpecialEpisodes: user.hideSpecialEpisodes,
@@ -147,7 +173,7 @@ export function createTvRoutes () {
 
   router.put('/user', guard(async (req: express.Request, res: express.Response) => {
     const id = res.locals.user.id
-    const user = await updateUser(id, {
+    const user = await updateUser(getDb(res), id, {
       hideSpecialEpisodes: req.body.hideSpecialEpisodes,
       hideTBAEpisodes: req.body.hideTBAEpisodes,
       searchLinks: req.body.searchLinks,

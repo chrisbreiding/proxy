@@ -1,23 +1,22 @@
 import dayjs from 'dayjs'
-
+import type { firestore } from 'firebase-admin'
 import { debug } from '../../util/debug'
 import type { ShowProps } from '../models/show'
 import { getEpisodesForShow } from '../source/episodes'
 import { getShowsByIds, SearchResultShow } from '../source/shows'
-import { setDoc, updateDoc } from '../store/firebase'
+import { initializeApp, setDoc, updateDoc } from '../../util/firebase'
 import { getShows } from '../store/shows'
 
-async function getOngoingShows (): Promise<SearchResultShow[]> {
-  const ongoingStoreShows = (await getShows()).filter((show: ShowProps) => {
+async function getOngoingShows (db: firestore.Firestore): Promise<SearchResultShow[]> {
+  const ongoingStoreShows = (await getShows(db)).filter((show: ShowProps) => {
     return show.status !== 'Ended'
   })
 
   return getShowsByIds(ongoingStoreShows.map((show) => show.id))
 }
 
-export async function updateShowsAndEpisodes () {
-  const ongoingShows = await getOngoingShows()
-
+export async function updateShowsAndEpisodes (db: firestore.Firestore) {
+  const ongoingShows = await getOngoingShows(db)
   const currentDateTime = dayjs().toISOString()
 
   for (const show of ongoingShows) {
@@ -27,37 +26,43 @@ export async function updateShowsAndEpisodes () {
     // with newly sourced ones
     const episodes = await getEpisodesForShow(show.id)
 
-    await setDoc(`shows/${show.id}/episodes/all`, { episodes })
+    await setDoc(db, `shows/${show.id}/episodes/all`, { episodes })
 
-    await updateDoc(`shows/${show.id}`, {
+    await updateDoc(db, `shows/${show.id}`, {
       poster: show.poster,
       status: show.status,
       lastUpdated: currentDateTime,
     })
   }
 
-  await updateDoc('meta/data', {
+  await updateDoc(db, 'meta/data', {
     error: null,
     lastUpdated: currentDateTime,
   })
 }
 
 export default async function main () {
+  let db: firestore.Firestore | undefined
+
   try {
     debug('Updating shows and episodes...')
 
-    await updateShowsAndEpisodes()
+    db = initializeApp('tv')
+
+    await updateShowsAndEpisodes(db)
   } catch (error: any) {
     debug('Updating shows and episodes failed:')
     debug(error?.stack || error)
 
-    updateDoc('meta/data', {
-      error: {
-        message: error?.message || error,
-        stack: error?.stack,
-        date: dayjs().toISOString(),
-      },
-    })
+    if (db) {
+      await updateDoc(db, 'meta/data', {
+        error: {
+          message: error?.message || error,
+          stack: error?.stack,
+          date: dayjs().toISOString(),
+        },
+      })
+    }
 
     throw error
   }

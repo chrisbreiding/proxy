@@ -1,4 +1,5 @@
 import { createReadStream, readFileSync } from 'fs-extra'
+import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 import nock from 'nock'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
@@ -14,11 +15,14 @@ import {
   getCollection,
   getDoc,
   getDocWhere,
+  initializeApp,
   updateDoc,
-} from '../../../../lib/tv/store/firebase'
+} from '../../../../lib/util/firebase'
 import { clone } from '../../../../lib/util/collections'
 import { fixture, fixtureContents, handleServer } from '../../../util'
 import { mockMixpanel, nockLogin } from '../util'
+
+const dbMock = {} as firestore.Firestore
 
 function makeSearchResultShow (num: number) {
   return {
@@ -72,13 +76,14 @@ vi.mock('mixpanel', () => {
   }
 })
 
-vi.mock('../../../../lib/tv/store/firebase', () => {
+vi.mock('../../../../lib/util/firebase', () => {
   return {
     addDoc: vi.fn(),
     deleteDoc: vi.fn(),
     getCollection: vi.fn(),
     getDoc: vi.fn(),
     getDocWhere: vi.fn(),
+    initializeApp: vi.fn(),
     updateDoc: vi.fn(),
   }
 })
@@ -89,6 +94,7 @@ describe('lib/tv/store/shows', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     ;(getDocWhere as Mock).mockResolvedValue({ id: 'user-1' })
+    ;(initializeApp as Mock).mockReturnValue(dbMock)
     ;(Mixpanel.init as Mock).mockReturnValue(mockMixpanel())
   })
 
@@ -117,7 +123,7 @@ describe('lib/tv/store/shows', () => {
         makeShow(2, [1, 2]),
         makeShow(3, [2]),
       ])
-      ;(getDoc as Mock).mockImplementation((path: string) => {
+      ;(getDoc as Mock).mockImplementation((_db, path: string) => {
         return {
           'shows/1/episodes/all': { episodes: [
             makeEpisode(1),
@@ -190,7 +196,7 @@ describe('lib/tv/store/shows', () => {
       .set('api-key', 'user-1-api-key')
       .send({ show: searchShow })
 
-      expect(addDoc).toBeCalledWith(`shows/${searchShow.id}`, {
+      expect(addDoc).toBeCalledWith(dbMock, `shows/${searchShow.id}`, {
         id: `${show.id}`,
         name: show.name,
         network: searchShow.network,
@@ -204,7 +210,7 @@ describe('lib/tv/store/shows', () => {
           },
         },
       })
-      expect(addDoc).toBeCalledWith(`shows/${searchShow.id}/episodes/all`, { episodes: expect.arrayContaining([{
+      expect(addDoc).toBeCalledWith(dbMock, `shows/${searchShow.id}/episodes/all`, { episodes: expect.arrayContaining([{
         airdate: '2009-02-17T05:00:00.000Z',
         number: 1,
         season: 0,
@@ -236,7 +242,7 @@ describe('lib/tv/store/shows', () => {
         searchName: searchShow.name,
       }
 
-      expect(updateDoc).toBeCalledWith(`shows/${searchShow.id}`, { users })
+      expect(updateDoc).toBeCalledWith(dbMock, `shows/${searchShow.id}`, { users })
       expect(res.status).to.equal(200)
       expect(res.body).toMatchSnapshot()
     })
@@ -300,7 +306,7 @@ describe('lib/tv/store/shows', () => {
       .set('api-key', 'user-1-api-key')
       .send({ show: showUpdate })
 
-      expect(updateDoc).toBeCalledWith(`shows/${show.id}`, {
+      expect(updateDoc).toBeCalledWith(dbMock, `shows/${show.id}`, {
         users: {
           'user-1': {
             displayName: 'new display name',
@@ -344,8 +350,8 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/show-id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteDoc).toBeCalledWith('shows/show-id/episodes/all')
-      expect(deleteDoc).toBeCalledWith('shows/show-id')
+      expect(deleteDoc).toBeCalledWith(dbMock, 'shows/show-id/episodes/all')
+      expect(deleteDoc).toBeCalledWith(dbMock, 'shows/show-id')
       expect(res.status).to.equal(204)
     })
 
@@ -357,7 +363,7 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/show-id')
       .set('api-key', 'user-1-api-key')
 
-      expect(updateDoc).toBeCalledWith('shows/show-id', {
+      expect(updateDoc).toBeCalledWith(dbMock, 'shows/show-id', {
         'user-2': {
           displayName: 'user-2 display name',
           fileName: 'user-2 file name',

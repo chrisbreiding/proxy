@@ -1,3 +1,4 @@
+import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 import nock from 'nock'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
@@ -7,9 +8,11 @@ const pin = process.env.THETVDB_PIN = 'pin'
 
 import { startServer } from '../../../../index'
 import { baseUrl } from '../../../../lib/tv/source/util'
-import { getDocWhere } from '../../../../lib/tv/store/firebase'
+import { getDocWhere, initializeApp } from '../../../../lib/util/firebase'
 import { fixtureContents, handleServer } from '../../../util'
 import { mockMixpanel, nockLogin } from '../util'
+
+const dbMock = {} as firestore.Firestore
 
 vi.mock('mixpanel', () => {
   return {
@@ -19,9 +22,10 @@ vi.mock('mixpanel', () => {
   }
 })
 
-vi.mock('../../../../lib/tv/store/firebase', () => {
+vi.mock('../../../../lib/util/firebase', () => {
   return {
     getDocWhere: vi.fn(),
+    initializeApp: vi.fn(),
   }
 })
 
@@ -37,6 +41,7 @@ describe('lib/tv/source/shows', () => {
     .post('/v4/login', { apikey, pin })
     .reply(200, { data: {}, status: 'fail' })
     ;(getDocWhere as Mock).mockResolvedValue({ id: 'user-1' })
+    ;(initializeApp as Mock).mockReturnValue(dbMock)
 
     const res = await ctx.request.get('/tv/shows/search?query=Breaking+Bad')
     .set('api-key', 'user-1-api-key')

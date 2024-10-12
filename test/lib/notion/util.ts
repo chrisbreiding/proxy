@@ -21,6 +21,7 @@ interface GetOptions {
   fixture?: string
   reply?: object
   times?: number
+  token?: string
 }
 
 interface NockOptions extends GetOptions {
@@ -28,11 +29,12 @@ interface NockOptions extends GetOptions {
   error?: string | object
   method?: string
   path: string
+  token?: string
 }
 
 export function nockNotion (options: NockOptions) {
   const scope = nock('https://api.notion.com')
-  .matchHeader('authorization', 'Bearer notion-token')
+  .matchHeader('authorization', `Bearer ${options.token || 'notion-token'}`)
   .matchHeader('notion-version', notionVersion)
   .intercept(
     options.path,
@@ -64,14 +66,16 @@ interface AppendOptions {
   id: string
   fixture?: string
   reply?: object
+  token?: string
 }
 
-export function nockAppendBlockChildren ({ id, fixture, reply }: AppendOptions) {
+export function nockAppendBlockChildren ({ id, fixture, reply, token }: AppendOptions) {
   return nockNotion({
     fixture,
     method: 'patch',
     path: `/v1/blocks/${id}/children`,
     reply,
+    token,
   })
 }
 
@@ -248,6 +252,7 @@ interface AppendShape {
 interface SnapshotAppendChildrenOptions extends AppendOptions {
   after?: string
   message?: string
+  token?: string
 }
 
 async function assertSnapshot (content: any, message?: string) {
