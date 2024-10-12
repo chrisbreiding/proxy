@@ -5,6 +5,8 @@ import { afterEach, describe, expect, it } from 'vitest'
 process.env.API_KEY = 'key'
 process.env.NOTION_TOKEN = 'notion-token'
 process.env.NOTION_QUESTS_ID = 'quests-id'
+process.env.NOTION_SARAH_TOKEN = 'sarah-notion-token'
+process.env.NOTION_SARAH_TODO_ID = 'sarah-todo-id'
 
 import {
   block,
@@ -172,6 +174,63 @@ describe('lib/notion/quests', () => {
 
     it('status 403 if key does not match', async (ctx) => {
       const res = await ctx.request.post('/notion/quests/nope')
+
+      expect(res.status).to.equal(403)
+    })
+  })
+
+  describe('POST /notion/sarah/todo/:key', () => {
+    handleServer(startServer)
+
+    it('adds quests after the first block on page', async (ctx) => {
+      nockGetBlockChildren('sarah-todo-id', {
+        reply: {
+          results: [
+            block.p({ id: 'after-me', text: 'To Do' }),
+            block.bullet({ text: 'Do this first' }),
+          ],
+        },
+        token: 'sarah-notion-token',
+      })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'sarah-todo-id',
+        after: 'after-me',
+        reply: { results: [block.bullet()] },
+        token: 'sarah-notion-token',
+      })
+
+      const res = await ctx.request.post('/notion/sarah/todo/key')
+      .send({ todo: 'A new todo' })
+
+      expect(res.status).to.equal(200)
+
+      await snapshot
+    })
+
+    it('adds it at the end if there are no blocks on page', async (ctx) => {
+      nockGetBlockChildren('sarah-todo-id', {
+        reply: {
+          results: [],
+        },
+        token: 'sarah-notion-token',
+      })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'sarah-todo-id',
+        token: 'sarah-notion-token',
+      })
+
+      const res = await ctx.request.post('/notion/sarah/todo/key')
+      .send({ todo: 'A new todo' })
+
+      expect(res.status).to.equal(200)
+
+      await snapshot
+    })
+
+    it('status 403 if key does not match', async (ctx) => {
+      const res = await ctx.request.post('/notion/sarah/todo/nope')
 
       expect(res.status).to.equal(403)
     })

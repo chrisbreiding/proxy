@@ -956,3 +956,13 @@ exports[`lib/notion/quests > POST /notion/quests/:key > adds quests before next 
 "- A new quest
 "
 `;
+
+exports[`lib/notion/quests > POST /notion/sarah/todo/:key > adds it at the end if there are no blocks on page 1`] = `
+"- [ ] A new todo
+"
+`;
+
+exports[`lib/notion/quests > POST /notion/sarah/todo/:key > adds quests after the first block on page 1`] = `
+"- [ ] A new todo
+"
+`;

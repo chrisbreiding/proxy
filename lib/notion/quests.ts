@@ -56,7 +56,7 @@ async function getNewQuestAfterId (blocks: NotionBlock[]) {
 }
 
 export async function addSarahTodo (req: express.Request, res: express.Response) {
-  const quest = req.body.todo
+  const todo = req.body.todo
   const questBlocks = await getBlockChildren({
     notionToken: sarahNotionToken,
     pageId: sarahTodoId,
@@ -66,7 +66,7 @@ export async function addSarahTodo (req: express.Request, res: express.Response)
   await appendBlockChildren({
     afterId,
     blocks: [makeBlock({
-      text: quest,
+      text: todo,
       type: 'to_do',
     })],
     notionToken: sarahNotionToken,
