@@ -10,6 +10,7 @@ import { initializeApp } from '../util/firebase'
 import { getMetaData } from './store/metadata'
 import { addShow, deleteShow, getShowsWithEpisodesForUser, updateShow } from './store/shows'
 import { getUser, getUserByApiKey, updateUser, User } from './store/users'
+import { guard } from '../util/routing'
 
 interface Locals {
   db: firestore.Firestore
@@ -82,18 +83,6 @@ async function ensureAndSetUser (req: express.Request, res: express.Response, ne
   res.locals.user = user
 
   proceed(user)
-}
-
-function guard (handler: (req: express.Request, res: express.Response) => void) {
-  return async (req: express.Request, res: express.Response) => {
-    try {
-      return await handler(req, res)
-    } catch (error: any) {
-      debug('tv route error:', error?.stack)
-
-      res.status(500).json({ error: error.message })
-    }
-  }
 }
 
 export function createTvRoutes () {

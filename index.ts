@@ -12,6 +12,7 @@ import * as garage from './lib/garage'
 import * as location from './lib/location'
 import * as notion from './lib/notion'
 import * as dogs from './lib/dogs'
+import * as sync from './lib/sync'
 import { createTvRoutes } from './lib/tv'
 import { debug } from './lib/util/debug'
 import * as weather from './lib/weather'
@@ -77,6 +78,8 @@ export function startServer (port: number) {
   app.get('/weather', weather.get)
   app.get('/dogs/:id', dogs.get)
   app.get('/dogs', dogs.search)
+  app.get('/sync/:user/:app/:key', ensureApiKey, sync.get)
+  app.post('/sync/:user/:app/:key', ensureApiKey, sync.set)
 
   app.use('/tv', createTvRoutes())
 
