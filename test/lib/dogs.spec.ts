@@ -23,7 +23,7 @@ describe('lib/dogs', () => {
 
     it('returns dog from HAL', async (ctx) => {
       nock('https://prod-hal-api.homeatlastdogrescue.com')
-      .get('/dogs/1234')
+      .get('/dogs/1234/simple')
       .reply(200, { id: 1234 })
 
       const res = await ctx.request.get('/dogs/1234')
@@ -36,7 +36,7 @@ describe('lib/dogs', () => {
       const error = createError()
 
       nock('https://prod-hal-api.homeatlastdogrescue.com')
-      .get('/dogs/1234')
+      .get('/dogs/1234/simple')
       .replyWithError(error)
 
       const res = await ctx.request.get('/dogs/1234')

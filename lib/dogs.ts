@@ -4,7 +4,7 @@ import { request } from './util/network'
 export async function get (req: express.Request, res: express.Response) {
   try {
     const response = await request({
-      url: `https://prod-hal-api.homeatlastdogrescue.com/dogs/${req.params.id}`,
+      url: `https://prod-hal-api.homeatlastdogrescue.com/dogs/${req.params.id}/simple`,
     })
 
     res.json(response)
