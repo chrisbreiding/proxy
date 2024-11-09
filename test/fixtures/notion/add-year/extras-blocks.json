@@ -440,6 +440,92 @@
     },
     {
       "object": "block",
+      "id": "28d22ea4-f9ce-4748-b6ed-dbe80364add7",
+      "parent": {
+        "type": "page_id",
+        "page_id": "f8633039-b0ca-42f8-a15d-9d32ed22fb25"
+      },
+      "created_time": "2022-10-21T14:18:00.000Z",
+      "last_edited_time": "2022-10-21T14:18:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "Mentions a month April",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "Mentions a month April",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
+      "id": "28d22ea4-f9ce-4748-b6ed-dbe80364add8",
+      "parent": {
+        "type": "page_id",
+        "page_id": "f8633039-b0ca-42f8-a15d-9d32ed22fb25"
+      },
+      "created_time": "2022-10-21T14:18:00.000Z",
+      "last_edited_time": "2022-10-21T14:18:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "45d332f7-e2ab-4213-b92a-ce937311866b"
+      },
+      "has_children": false,
+      "archived": false,
+      "type": "bulleted_list_item",
+      "bulleted_list_item": {
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "After the month mention",
+              "link": null
+            },
+            "annotations": {
+              "bold": false,
+              "italic": false,
+              "strikethrough": false,
+              "underline": false,
+              "code": false,
+              "color": "default"
+            },
+            "plain_text": "After the month mention",
+            "href": null
+          }
+        ],
+        "color": "default"
+      }
+    },
+    {
+      "object": "block",
       "id": "b3fa09ac-23ca-4590-a6a6-d6eebc97b487",
       "parent": {
         "type": "page_id",
@@ -488,7 +574,7 @@
           {
             "type": "text",
             "text": {
-              "content": "March",
+              "content": "March ",
               "link": null
             },
             "annotations": {
@@ -499,7 +585,7 @@
               "code": false,
               "color": "default"
             },
-            "plain_text": "March",
+            "plain_text": "March ",
             "href": null
           }
         ],

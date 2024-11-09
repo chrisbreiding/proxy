@@ -71,7 +71,7 @@ const everyMonthRegex = /Every month( on (\d{1,2})\w{2})?/
 const evenMonthsRegex = /Even months( on (\d{1,2})\w{2})?/
 const oddsMonthsRegex = /Odd months( on (\d{1,2})\w{2})?/
 const monthPattern = `(?:${getMonths().join('|')})`
-const monthRegex = new RegExp(monthPattern)
+const monthRegex = new RegExp(`^${monthPattern}$`)
 const monthsRegex = new RegExp(`(${monthPattern}(?:(?:, )${monthPattern})*)`)
 const dateRegex = / on (\d{1,2})\w{2}/
 const numberRegex = /^\d+$/
@@ -162,8 +162,8 @@ async function getExtras (extrasId: string, notionToken: string) {
       continue
     }
 
-    if (monthRegex.test(text)) {
-      months[text] = {}
+    if (monthRegex.test(text.trim())) {
+      months[text.trim()] = {}
       currentMonth = text
 
       continue

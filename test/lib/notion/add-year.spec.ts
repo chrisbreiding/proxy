@@ -94,7 +94,7 @@ describe('lib/notion/add-year', () => {
         after: 'block-id-100',
         reply: { results: [
           block.p({ id: 'block-id-100' }),
-          ...times(28, block.bullet()),
+          ...times(30, block.bullet()),
         ] },
       }),
     ]

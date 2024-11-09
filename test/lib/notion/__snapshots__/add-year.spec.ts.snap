@@ -31,6 +31,8 @@ Fri, 2/10
 - pattern-every-month-date-id task
 Wed, 2/22
 - Another task
+- Mentions a month April
+- After the month mention
 Thu, 2/23
 - pattern-even-months-date-id task
 
@@ -101,13 +103,13 @@ Tue, 9/5
 - pattern-odd-months-date-id task
 Sun, 9/10
 - pattern-every-month-date-id task
-Wed, 9/20
-- pattern-multiple-months-date-id task
 "
 `;
 
 exports[`lib/notion/add-year > adds blocks based on the year template patterns and year extras 2`] = `
-"
+"Wed, 9/20
+- pattern-multiple-months-date-id task
+
 **October**
 Sun, 10/1
 - pattern-multiple-months-id task
