@@ -71,6 +71,7 @@ export function startServer (port: number) {
   app.post('/notion/quests/:key', ensureApiKey, notion.addQuest)
   app.post('/notion/sarah/todo/:key', ensureApiKey, notion.addSarahTodo)
   app.get('/notion/action/:key', ensureApiKey, notion.action)
+  app.post('/notion/action/:key', ensureApiKey, notion.action)
   app.get('/notion/factor-meals/:key', ensureApiKey, notion.getFactorMeals)
   app.post('/notion/factor-meals/:key', ensureApiKey, notion.addFactorMeal)
   app.get('/location-search', location.search)
