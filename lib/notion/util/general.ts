@@ -42,6 +42,13 @@ export function makeBlock (options: MakeBlockOptions) {
   } as OwnBlock
 }
 
+export function makeDivider () {
+  return {
+    type: 'divider',
+    content: {},
+  } as OwnBlock
+}
+
 export function getBlockPlainText (block: Block) {
   const richText = getRichText(block)
 
@@ -74,6 +81,17 @@ export function makeTextPart (content: string, color?: ApiColor) {
   }
 
   return textPart
+}
+
+export function makeRichText (text: string, annotations?: RichTextItem['annotations']) {
+  return {
+    type: 'text',
+    text: {
+      content: text,
+    },
+    annotations,
+    plain_text: text,
+  } as RichTextItemResponse
 }
 
 // compare guids without dashes in case one does not include dashes

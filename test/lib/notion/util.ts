@@ -262,9 +262,13 @@ async function assertSnapshot (content: any, message?: string) {
   expect(md).toMatchSnapshot(message)
 }
 
+export function getAppendBody (scope: nock.Scope) {
+  return getBody<AppendShape>(scope)
+}
+
 export async function snapshotAppendChildren (options: SnapshotAppendChildrenOptions) {
   const scope = nockAppendBlockChildren(options)
-  const body = await getBody<AppendShape>(scope)
+  const body = await getAppendBody(scope)
 
   if (options.after) {
     expect(body.after, 'The after ID does not match').to.equal(options.after)

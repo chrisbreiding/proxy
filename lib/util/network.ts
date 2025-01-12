@@ -35,7 +35,7 @@ function normalizedParams (originalParams?: ParsedQs) {
   return params
 }
 
-export async function request (options: RequestOptions) {
+export async function request<T = any> (options: RequestOptions): Promise<T> {
   const { url, body, headers, params, method = 'get' } = options
 
   debugVerbose('request: %s %s %o', method.toUpperCase(), url, { body, params, headers })
