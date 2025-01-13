@@ -2,14 +2,23 @@ import type express from 'express'
 
 import { debug } from './util/debug'
 import { request } from './util/network'
-import { GarageState, PersistentData } from './util/persistent-data'
+import { PersistentData } from './util/persistent-data'
 
 const defaultData = {
   left: 'unknown',
   right: 'unknown',
 }
 
-const persistentData = new PersistentData('garage-data')
+export type GarageState = 'open' | 'closed' | 'unknown'
+
+export interface PersistentDataStructure {
+  left?: GarageState
+  notifyOnOpen?: boolean
+  right?: GarageState
+  storeNames?: { [key: string]: string[] }
+}
+
+const persistentData = new PersistentData<PersistentDataStructure>('garage-data')
 
 export async function get (req: express.Request, res: express.Response) {
   try {

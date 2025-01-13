@@ -88,9 +88,9 @@ exports[`lib/garage > GET /garage/:key > renders error view if error 1`] = `
 <body>
   <h1>An Error Occurred</h1>
   <h2>Error Message</h2>
-  <p>ENOENT, no such file or directory &#x27;./data/garage-data.json&#x27;</p>
+  <p>ENOENT, no such file or directory &#x27;data/garage-data.json&#x27;</p>
   <h2>Error Stack</h2>
-  <pre>Error: ENOENT, no such file or directory &#x27;./data/garage-data.json&#x27;
+  <pre>Error: ENOENT, no such file or directory &#x27;data/garage-data.json&#x27;
     [stack lines]</pre>
 </body>
 </html>"

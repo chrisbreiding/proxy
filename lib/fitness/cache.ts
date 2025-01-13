@@ -2,8 +2,29 @@ import deepEqual from 'deep-equal'
 
 import type { CacheValue, ChallengeDetails, MMFUserId } from './types'
 import dayjs from 'dayjs'
+import { PersistentData } from '../util/persistent-data'
 
-const cache = new Map<MMFUserId, CacheValue>()
+export interface PersistentDataStructure {
+  cache: {
+    [key: string]: CacheValue
+  }
+}
+
+const persistentData = new PersistentData<PersistentDataStructure>('fitness-data')
+
+async function getCache (userId: MMFUserId) {
+  const data = await persistentData.get()
+
+  return (data?.cache || {})[userId]
+}
+
+async function setCache (userId: MMFUserId, value: CacheValue) {
+  const data = (await persistentData.get()) || { cache: {} }
+
+  data.cache[userId] = value
+
+  await persistentData.set(data)
+}
 
 function isCachedValueValid (latestChallengeDetails: ChallengeDetails, value?: CacheValue) {
   return (
@@ -13,14 +34,14 @@ function isCachedValueValid (latestChallengeDetails: ChallengeDetails, value?: C
   )
 }
 
-export function areChallengeDetailsUnchangedToday (userId: MMFUserId, latestChallengeDetails: ChallengeDetails) {
-  const cachedValue = cache.get(userId)
+export async function areChallengeDetailsUnchangedToday (userId: MMFUserId, latestChallengeDetails: ChallengeDetails) {
+  const cachedValue = await getCache(userId)
 
   return isCachedValueValid(latestChallengeDetails, cachedValue)
 }
 
-export function setCachedValue (userId: MMFUserId, value: ChallengeDetails) {
-  cache.set(userId, {
+export async function setCachedValue (userId: MMFUserId, value: ChallengeDetails) {
+  await setCache(userId, {
     date: dayjs().format('YYYY-MM-DD'),
     details: value,
   })

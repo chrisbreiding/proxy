@@ -1,8 +1,62 @@
+import mockFs from 'mock-fs'
 import nock from 'nock'
-import { afterEach, beforeEach, describe, it, vi } from 'vitest'
+import path from 'path'
+import { afterAll, afterEach, beforeEach, describe, it, vi } from 'vitest'
 import { updateFitness } from '../../lib/fitness/fitness'
 import { fixtureContents } from '../util'
-import { block, getAppendBody, listResults, nockAppendBlockChildren, nockDeleteBlock, nockGetBlockChildren, nockUpdateBlock, snapshotAppendChildren, snapshotUpdateBlocks } from './notion/util'
+import { block, getAppendBody, listResults, nockAppendBlockChildren, nockDeleteBlock, nockGetBlockChildren, snapshotAppendChildren } from './notion/util'
+import type { PersistentDataStructure } from '../../lib/fitness/cache'
+
+function mockPersistentData (data: PersistentDataStructure | null) {
+  mockFs({
+    'data': {
+      'fitness-data.json': JSON.stringify(data),
+    },
+    'test': {
+      'fixtures': {
+        'fitness': {
+          'challenge-details.json': mockFs.load(path.resolve(process.cwd(), 'test/fixtures/fitness/challenge-details.json')),
+        },
+      },
+    },
+  })
+}
+
+function nockFitness (currentScore?: number, transform?: (fitness: any) => any) {
+  let data = fixtureContents('fitness/challenge-details')
+
+  if (currentScore) {
+    data.progress.currentScore = currentScore
+  }
+
+  if (transform) {
+    data = transform(data)
+  }
+
+  nock('https://api.mapmyfitness.com')
+  .get('/challenges/challenge/yvty2025/details')
+  .matchHeader('authorization', 'Bearer mmf-token')
+  .matchHeader('apiKey', 'mmf-api-key')
+  .query({
+    mmfUserId: 'mmf-user-id',
+    timezone: 'America/New_York',
+  })
+  .reply(200, data)
+}
+
+function nockAndSnapshotDashboard () {
+  nockGetBlockChildren('notion-fitness-id', { reply: { results: [] } })
+
+  return snapshotAppendChildren({ id: 'notion-fitness-id' })
+}
+
+function nockDashboard () {
+  nockGetBlockChildren('notion-fitness-id', { reply: { results: [] } })
+
+  const scope = nockAppendBlockChildren({ id: 'notion-fitness-id' })
+
+  return getAppendBody(scope)
+}
 
 describe('lib/fitness', () => {
   const props = {
@@ -13,49 +67,18 @@ describe('lib/fitness', () => {
     notionFitnessId: 'notion-fitness-id',
   }
 
-  function nockFitness (currentScore?: number, transform?: (fitness: any) => any) {
-    let data = fixtureContents('fitness/challenge-details')
-
-    if (currentScore) {
-      data.progress.currentScore = currentScore
-    }
-
-    if (transform) {
-      data = transform(data)
-    }
-
-    nock('https://api.mapmyfitness.com')
-    .get('/challenges/challenge/yvty2025/details')
-    .matchHeader('authorization', 'Bearer mmf-token')
-    .matchHeader('apiKey', 'mmf-api-key')
-    .query({
-      mmfUserId: 'mmf-user-id',
-      timezone: 'America/New_York',
-    })
-    .reply(200, data)
-  }
-
-  function nockAndSnapshotDashboard () {
-    nockGetBlockChildren('notion-fitness-id', { reply: { results: [] } })
-
-    return snapshotAppendChildren({ id: 'notion-fitness-id' })
-  }
-
-  function nockDashboard () {
-    nockGetBlockChildren('notion-fitness-id', { reply: { results: [] } })
-
-    const scope = nockAppendBlockChildren({ id: 'notion-fitness-id' })
-
-    return getAppendBody(scope)
-  }
-
   beforeEach(() => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2022, 0, 11))
+    mockPersistentData(null)
   })
 
   afterEach(() => {
     vi.useRealTimers()
+  })
+
+  afterAll(() => {
+    mockFs.restore()
   })
 
   it('display fitness breakdown and stats', async () => {

@@ -6,8 +6,7 @@ import { afterAll, beforeEach, describe, expect, it, TestContext } from 'vitest'
 
 import { handleServer, replaceStackLines } from '../util'
 import { startServer } from '../../index'
-import { getGarageData } from '../../lib/garage'
-import type { GarageState, PersistentDataStructure } from '../../lib/util/persistent-data'
+import { getGarageData, GarageState, PersistentDataStructure } from '../../lib/garage'
 
 process.env.API_KEY = 'key'
 

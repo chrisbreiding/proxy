@@ -80,7 +80,7 @@ function getStats (stats: ChallengeDetails['stats']) {
 async function getChallengeDetails (token: string, apiKey: string, userId: string) {
   const challengeDetails = await fetchChallengeDetails(token, apiKey, userId)
 
-  if (areChallengeDetailsUnchangedToday(userId, challengeDetails)) {
+  if (await areChallengeDetailsUnchangedToday(userId, challengeDetails)) {
     return {
       changed: false,
       challengeDetails,
@@ -296,6 +296,8 @@ export async function updateFitness (props: UpdateFitnessProps) {
   const { changed, challengeDetails } = await getChallengeDetails(mmfToken, mmfApiKey, mmfUserId)
 
   if (!changed) {
+    debug('Challenge details have not changed, skipping update')
+
     return
   }
 

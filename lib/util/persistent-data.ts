@@ -1,3 +1,4 @@
+import path from 'path'
 import { outputJSON, readJSON } from 'fs-extra'
 
 // In production, this is mounted with dokku's persistent storage
@@ -5,27 +6,18 @@ import { outputJSON, readJSON } from 'fs-extra'
 /* c8 ignore next */
 export const basePath = process.env.NODE_ENV === 'production' ? '/storage' : './data'
 
-export type GarageState = 'open' | 'closed' | 'unknown'
-
-export interface PersistentDataStructure {
-  left?: GarageState
-  notifyOnOpen?: boolean
-  right?: GarageState
-  storeNames?: { [key: string]: string[] }
-}
-
-export class PersistentData {
+export class PersistentData<T> {
   dataPath: string
 
   constructor (name: string) {
-    this.dataPath = `${basePath}/${name}.json`
+    this.dataPath = path.join(basePath, `${name}.json`)
   }
 
-  get (): Promise<PersistentDataStructure | undefined> {
+  get (): Promise<T | undefined> {
     return readJSON(this.dataPath)
   }
 
-  set (newData: Partial<PersistentDataStructure>) {
+  set (newData: Partial<T>) {
     return outputJSON(this.dataPath, newData, { spaces: 2 })
   }
 }
