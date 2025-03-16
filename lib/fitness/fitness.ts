@@ -87,8 +87,6 @@ async function getChallengeDetails (token: string, apiKey: string, userId: strin
     }
   }
 
-  setCachedValue(userId, challengeDetails)
-
   return {
     changed: true,
     challengeDetails,
@@ -306,8 +304,5 @@ export async function updateFitness (props: UpdateFitnessProps) {
   const stats = getStats(challengeDetails.stats)
 
   await updateFitnessDashboard(breakdown, stats, notionToken, notionFitnessId)
+  await setCachedValue(mmfUserId, challengeDetails)
 }
-
-// TODO: Sarah's version env
-// TODO: set env variables on dokku - NO RESTART
-// TODO: deploy
