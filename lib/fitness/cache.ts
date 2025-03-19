@@ -1,7 +1,7 @@
 import deepEqual from 'deep-equal'
 
 import type { CacheValue, ChallengeDetails, MMFUserId } from './types'
-import dayjs from 'dayjs'
+import type { Dayjs } from 'dayjs'
 import { PersistentData } from '../util/persistent-data'
 
 export interface PersistentDataStructure {
@@ -26,23 +26,23 @@ async function setCache (userId: MMFUserId, value: CacheValue) {
   await persistentData.set(data)
 }
 
-function isCachedValueValid (latestChallengeDetails: ChallengeDetails, value?: CacheValue) {
+function isCachedValueValid (latestChallengeDetails: ChallengeDetails, date: Dayjs, value?: CacheValue) {
   return (
     !!value
-    && value.date === dayjs().format('YYYY-MM-DD')
+    && value.date === date.format('YYYY-MM-DD')
     && deepEqual(value.details, latestChallengeDetails)
   )
 }
 
-export async function areChallengeDetailsUnchangedToday (userId: MMFUserId, latestChallengeDetails: ChallengeDetails) {
+export async function areChallengeDetailsUnchangedToday (userId: MMFUserId, latestChallengeDetails: ChallengeDetails, date: Dayjs) {
   const cachedValue = await getCache(userId)
 
-  return isCachedValueValid(latestChallengeDetails, cachedValue)
+  return isCachedValueValid(latestChallengeDetails, date, cachedValue)
 }
 
-export async function setCachedValue (userId: MMFUserId, value: ChallengeDetails) {
+export async function setCachedValue (userId: MMFUserId, value: ChallengeDetails, date: Dayjs) {
   await setCache(userId, {
-    date: dayjs().format('YYYY-MM-DD'),
+    date: date.format('YYYY-MM-DD'),
     details: value,
   })
 }

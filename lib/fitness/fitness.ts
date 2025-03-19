@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 
 import { makeBlock, makeDivider, makeRichText } from '../notion/util/general'
@@ -13,16 +13,17 @@ import { areChallengeDetailsUnchangedToday, setCachedValue } from './cache'
 dayjs.extend(duration)
 
 function getDates () {
-  const now = new Date()
-  const startOfYear = new Date(now.getFullYear(), 0, 1)
-  const daysPassedIncludingToday = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24))
-  const daysLeftThroughWeekendExcludingToday = now.getDay() === 0 ? 0 : 7 - now.getDay() // through Sunday
+  const now = dayjs()
+  const startOfYear = dayjs(`${now.year()}-01-01`)
+  const daysPassedIncludingToday = Math.ceil((now.diff(startOfYear, 'day')))
+  const daysLeftThroughWeekendExcludingToday = now.day() === 0 ? 0 : 7 - now.day() // through Sunday
   const daysPassedAtEndOfWeek = daysPassedIncludingToday + daysLeftThroughWeekendExcludingToday
 
   return {
     daysLeftThroughWeekendExcludingToday,
     daysPassedAtEndOfWeek,
     daysPassedIncludingToday,
+    now,
   }
 }
 
@@ -77,10 +78,10 @@ function getStats (stats: ChallengeDetails['stats']) {
   }
 }
 
-async function getChallengeDetails (token: string, apiKey: string, userId: string) {
+async function getChallengeDetails (token: string, apiKey: string, userId: string, date: Dayjs) {
   const challengeDetails = await fetchChallengeDetails(token, apiKey, userId)
 
-  if (await areChallengeDetailsUnchangedToday(userId, challengeDetails)) {
+  if (await areChallengeDetailsUnchangedToday(userId, challengeDetails, date)) {
     return {
       changed: false,
       challengeDetails,
@@ -106,7 +107,7 @@ function t (text: string, bold = false) {
   return makeRichText(text, { bold })
 }
 
-type Color = 'default' | 'green' | 'orange' | 'red' | 'blue'
+type Color = 'default' | 'green' | 'orange' | 'red' | 'blue' | 'gray'
 
 function b (type: 'paragraph' | 'bulleted_list_item', richTexts: ReturnType<typeof t>[], color: Color = 'default') {
   return makeBlock({
@@ -241,7 +242,7 @@ function getWeekStatus (breakdown: Breakdown) {
   ]
 }
 
-async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token: string, blockId: string) {
+async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token: string, blockId: string, date: Dayjs) {
   const {
     totalProgressMade,
     yearlyGoal,
@@ -270,6 +271,8 @@ async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token
     makeStat(caloriesBurned, ' calories burned'),
     makeStat(totalTime, ' total time'),
     makeStat(totalWorkouts, ' total workouts'),
+    makeDivider(),
+    p([t('Updated '), t(`${date.format('MMM D, h:mma')}`)], 'gray'),
   ])
 
   debug('Adding blocks...')
@@ -291,7 +294,8 @@ interface UpdateFitnessProps {
 
 export async function updateFitness (props: UpdateFitnessProps) {
   const { mmfToken, mmfApiKey, mmfUserId, notionToken, notionFitnessId } = props
-  const { changed, challengeDetails } = await getChallengeDetails(mmfToken, mmfApiKey, mmfUserId)
+  const dates = getDates()
+  const { changed, challengeDetails } = await getChallengeDetails(mmfToken, mmfApiKey, mmfUserId, dates.now)
 
   if (!changed) {
     debug('Challenge details have not changed, skipping update')
@@ -299,10 +303,9 @@ export async function updateFitness (props: UpdateFitnessProps) {
     return
   }
 
-  const dates = getDates()
   const breakdown = getBreakdown(challengeDetails.progress, dates)
   const stats = getStats(challengeDetails.stats)
 
-  await updateFitnessDashboard(breakdown, stats, notionToken, notionFitnessId)
-  await setCachedValue(mmfUserId, challengeDetails)
+  await updateFitnessDashboard(breakdown, stats, notionToken, notionFitnessId, dates.now)
+  await setCachedValue(mmfUserId, challengeDetails, dates.now)
 }
