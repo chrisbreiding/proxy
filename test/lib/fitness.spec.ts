@@ -92,7 +92,7 @@ describe('lib/fitness', () => {
   })
 
   it('shows a different message if on track for today', async () => {
-    nockFitness(29000)
+    nockFitness(32000)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -103,7 +103,7 @@ describe('lib/fitness', () => {
 
   it('shows a different message if on track for the week', async () => {
     vi.setSystemTime(new Date(2022, 0, 6))
-    nockFitness()
+    nockFitness(29000)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -136,7 +136,7 @@ describe('lib/fitness', () => {
 
   it('handles pluralization when ahead for today and for the week', async () => {
     vi.setSystemTime(new Date(2022, 0, 9))
-    nockFitness(24070)
+    nockFitness(26070)
 
     const snapshot = nockAndSnapshotDashboard()
 

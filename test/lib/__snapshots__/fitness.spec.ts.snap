@@ -5,10 +5,10 @@ exports[`lib/fitness > display fitness breakdown and stats 1`] = `
 **14.29** / 637 miles
 ---
 Needed to be on track today
-- **3.16** miles
+- **4.9** miles
 Needed to be on track this week
-- **11.88** miles / 5 days
-- **2.38** miles per day
+- **13.63** miles / 5 days
+- **2.73** miles per day
 ---
 Stats
 - **2138** calories burned
@@ -23,8 +23,8 @@ exports[`lib/fitness > handles Sunday when ahead 1`] = `
 "**2.93%** complete
 **18.64** / 637 miles
 ---
-You're **4.68** miles ahead for today!
-You're **4.68** miles ahead for the week!
+You're **2.94** miles ahead for today!
+You're **2.94** miles ahead for the week!
 ---
 Stats
 - **2138** calories burned
@@ -40,9 +40,9 @@ exports[`lib/fitness > handles Sunday when behind 1`] = `
 **12.43** / 637 miles
 ---
 Needed to be on track today
-- **1.53** miles
+- **3.28** miles
 Needed to be on track this week
-- **1.53** miles today
+- **3.28** miles today
 ---
 Stats
 - **2138** calories burned
@@ -54,11 +54,11 @@ Updated Jan 9, 12:00am
 `;
 
 exports[`lib/fitness > handles pluralization when ahead for today and for the week 1`] = `
-"**2.35%** complete
-**14.96** / 637 miles
+"**2.54%** complete
+**16.2** / 637 miles
 ---
-You're **1** mile ahead for today!
-You're **1** mile ahead for the week!
+You're **0.49** miles ahead for today!
+You're **0.49** miles ahead for the week!
 ---
 Stats
 - **2138** calories burned
@@ -73,10 +73,10 @@ exports[`lib/fitness > handles pluralization when behind for the week 1`] = `
 "**3.95%** complete
 **25.18** / 637 miles
 ---
-You're **7.73** miles ahead for today!
+You're **5.98** miles ahead for today!
 Needed to be on track this week
-- **1** mile / 5 days
-- **0.2** miles per day
+- **2.74** miles / 5 days
+- **0.55** miles per day
 ---
 Stats
 - **2138** calories burned
@@ -91,10 +91,10 @@ exports[`lib/fitness > handles pluralization when behind for the week per day 1`
 "**3.33%** complete
 **21.19** / 637 miles
 ---
-You're **3.74** miles ahead for today!
+You're **1.99** miles ahead for today!
 Needed to be on track this week
-- **4.99** miles / 5 days
-- **1** mile per day
+- **6.73** miles / 5 days
+- **1.35** miles per day
 ---
 Stats
 - **2138** calories burned
@@ -110,10 +110,10 @@ exports[`lib/fitness > handles pluralization when behind for today 1`] = `
 **11.22** / 637 miles
 ---
 Needed to be on track today
-- **1** mile
+- **2.74** miles
 Needed to be on track this week
-- **2.74** miles / 1 day
-- **2.74** miles per day
+- **4.49** miles / 1 day
+- **4.49** miles per day
 ---
 Stats
 - **2138** calories burned
@@ -129,10 +129,10 @@ exports[`lib/fitness > handles stats not being defined 1`] = `
 **12.43** / 637 miles
 ---
 Needed to be on track today
-- **5.02** miles
+- **6.77** miles
 Needed to be on track this week
-- **13.75** miles / 5 days
-- **2.75** miles per day
+- **15.49** miles / 5 days
+- **3.1** miles per day
 ---
 Stats
 - **<unknown>** calories burned
@@ -144,11 +144,11 @@ Updated Jan 11, 12:00am
 `;
 
 exports[`lib/fitness > shows a different message if on track for the week 1`] = `
-"**2.24%** complete
-**14.29** / 637 miles
+"**2.83%** complete
+**18.02** / 637 miles
 ---
-You're **5.57** miles ahead for today!
-You're **0.33** miles ahead for the week!
+You're **7.55** miles ahead for today!
+You're **2.32** miles ahead for the week!
 ---
 Stats
 - **2138** calories burned
@@ -160,13 +160,13 @@ Updated Jan 6, 12:00am
 `;
 
 exports[`lib/fitness > shows a different message if on track for today 1`] = `
-"**2.83%** complete
-**18.02** / 637 miles
+"**3.12%** complete
+**19.88** / 637 miles
 ---
-You're **0.57** miles ahead for today!
+You're **0.69** miles ahead for today!
 Needed to be on track this week
-- **8.15** miles / 5 days
-- **1.63** miles per day
+- **8.04** miles / 5 days
+- **1.61** miles per day
 ---
 Stats
 - **2138** calories burned

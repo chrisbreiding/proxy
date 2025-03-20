@@ -13,17 +13,17 @@ import { areChallengeDetailsUnchangedToday, setCachedValue } from './cache'
 dayjs.extend(duration)
 
 function getDates () {
-  const now = new Date()
-  const startOfYear = new Date(now.getFullYear(), 0, 1)
-  const daysPassedIncludingToday = Math.ceil((now.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24))
-  const daysLeftThroughWeekendExcludingToday = now.getDay() === 0 ? 0 : 7 - now.getDay() // through Sunday
+  const now = dayjs()
+  const startOfYear = dayjs(`${now.year()}-01-01`).startOf('day')
+  const daysPassedIncludingToday = now.startOf('day').diff(startOfYear, 'day') + 1
+  const daysLeftThroughWeekendExcludingToday = now.day() === 0 ? 0 : 7 - now.day() // through Sunday
   const daysPassedAtEndOfWeek = daysPassedIncludingToday + daysLeftThroughWeekendExcludingToday
 
   return {
     daysLeftThroughWeekendExcludingToday,
     daysPassedAtEndOfWeek,
     daysPassedIncludingToday,
-    now: dayjs(now),
+    now,
   }
 }
 
