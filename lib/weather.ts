@@ -31,7 +31,7 @@ export function getWeatherIcon (iconName: WeatherIcon) {
 }
 
 type PrecipitationType = 'clear' | 'precipitation' | 'rain' | 'snow' | 'sleet' | 'hail' | 'mixed'
-export type ConditionCode = 'Blizzard' | 'BlowingSnow' | 'Breezy' | 'Clear' | 'Cloudy' | 'Drizzle' | 'Dust' | 'Flurries' | 'Fog' | 'FreezingDrizzle' | 'FreezingRain' | 'Frigid' | 'Hail' | 'Haze' | 'HeavyRain' | 'HeavySnow' | 'Hot' | 'Hurricane' | 'IsolatedThunderstorms' | 'MixedRainAndSleet' | 'MixedRainAndSnow' | 'MixedRainfall' | 'MixedSnowAndSleet' | 'MostlyClear' | 'MostlyCloudy' | 'PartlyCloudy' | 'Rain' | 'ScatteredShowers' | 'ScatteredSnowShowers' | 'ScatteredThunderstorms' | 'SevereThunderstorm' | 'SevereThunderstorms' | 'Showers' | 'Sleet' | 'Smoke' | 'Snow' | 'SnowShowers' | 'Thunderstorm' | 'Thunderstorms' | 'Tornado' | 'TropicalStorm' | 'Windy'
+export type ConditionCode = 'Blizzard' | 'BlowingSnow' | 'Breezy' | 'Clear' | 'Cloudy' | 'Drizzle' | 'Dust' | 'Flurries' | 'Fog' | 'FreezingDrizzle' | 'FreezingRain' | 'Frigid' | 'Hail' | 'Haze' | 'HeavyRain' | 'HeavySnow' | 'Hot' | 'Hurricane' | 'IsolatedThunderstorms' | 'MixedRainAndSleet' | 'MixedRainAndSnow' | 'MixedRainfall' | 'MixedSnowAndSleet' | 'MostlyClear' | 'MostlyCloudy' | 'PartlyCloudy' | 'Rain' | 'ScatteredShowers' | 'ScatteredSnowShowers' | 'ScatteredThunderstorms' | 'SevereThunderstorm' | 'SevereThunderstorms' | 'Showers' | 'Sleet' | 'Smoke' | 'Snow' | 'SnowShowers' | 'Thunderstorm' | 'Thunderstorms' | 'Tornado' | 'TropicalStorm' | 'Windy' | 'WintryMix'
 type Severity = 'extreme' | 'severe' | 'moderate' | 'minor' | 'unknown'
 
 interface SourceAlertDetails {
@@ -134,6 +134,7 @@ export function toIcon (conditionCode: ConditionCode): WeatherIcon {
     case 'Snow':
     case 'SnowShowers':
     case 'ScatteredSnowShowers':
+    case 'WintryMix':
       return 'snow'
 
     case 'Breezy':
