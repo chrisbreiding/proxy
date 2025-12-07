@@ -1,4 +1,10 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lib/notion/update-upcoming-weather > does not update dates without weather data 1`] = `
+"Wed, 12/28    🌪 23° {💙} / {🩶} 62° {🧡}
+Fri, 12/30    💨 43° {💙} / {🩶} 66° {🧡}
+"
+`;
 
 exports[`lib/notion/update-upcoming-weather > updates upcoming quest dates with temperature and conditions 1`] = `
 "Thu, 12/29    ⛅️ 45° {💙} / {🩶} 66° {🧡}

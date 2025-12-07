@@ -1,7 +1,7 @@
 import type {
   BlockObjectResponse,
+  CreatePageResponse,
   ListBlockChildrenResponse,
-  ListDatabasesResponse,
   PartialBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 import type { Block, NotionBlock, OutgoingBlock, OwnBlock } from '../types'
@@ -28,7 +28,7 @@ export function makeAppendRequest ({ afterId, notionToken, pageId, blocks }: Mak
     },
   })
   // don't understand why this fails coverage
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }
 
 async function appendContiguousChildren ({ afterId, blocks, notionToken, pageId }: MakeAppendRequestOptions) {
@@ -214,22 +214,22 @@ export function updatePage ({ notionToken, pageId, properties }: UpdatePageOptio
   })
 }
 
-interface AddDatabasePageOptions<T> {
-  databaseId: string
+interface AddDataSourcePageOptions<T> {
+  dataSourceId: string
   notionToken: string
   properties: T
 }
 
-export async function addDatabasePage<T> (options: AddDatabasePageOptions<T>): Promise<void> {
-  const { databaseId, notionToken, properties } = options
+export async function addDataSourcePage<T> (options: AddDataSourcePageOptions<T>): Promise<void> {
+  const { dataSourceId, notionToken, properties } = options
 
-  await makeRequest<ListDatabasesResponse>({
+  await makeRequest<CreatePageResponse>({
     notionToken,
     method: 'post',
     path: 'pages',
     body: {
       parent: {
-        database_id: databaseId,
+        data_source_id: dataSourceId,
       },
       properties,
     },

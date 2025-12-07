@@ -105,7 +105,7 @@ async function getRecentlyClearedDivider ({ notionToken, pageId }: ClearPageOpti
       }
     }
   }
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }
 
 async function clearPage ({ notionToken, pageId }: ClearPageOptions) {

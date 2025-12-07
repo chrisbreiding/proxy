@@ -1,15 +1,14 @@
 import type {
   BlockObjectResponse,
-  DatabaseObjectResponse,
   ListBlockChildrenResponse,
-  ListDatabasesResponse,
-  QueryDatabaseBodyParameters,
+  QueryDataSourceBodyParameters,
+  QueryDataSourceResponse,
 } from '@notionhq/client/build/src/api-endpoints'
 
+import { compact } from '../../util/collections'
+import type { DataSource, NotionBlock } from '../types'
 import { convertNotionBlockToOwnBlock } from './conversions'
 import { makeRequest } from './requests'
-import type { NotionBlock } from '../types'
-import { compact } from '../../util/collections'
 
 interface GetBlockChildrenOptions {
   notionToken: string
@@ -60,15 +59,15 @@ export async function getColumnBlocks ({ columnListId, notionToken }: GetColumnB
   return columnsBlocks.flat()
 }
 
-interface QueryDatabasesOptions {
+interface QueryDataSourcesOptions {
   notionToken: string
-  databaseId: string
-  filter?: QueryDatabaseBodyParameters['filter']
-  startCursor?: QueryDatabaseBodyParameters['start_cursor']
+  dataSourceId: string
+  filter?: QueryDataSourceBodyParameters['filter']
+  startCursor?: QueryDataSourceBodyParameters['start_cursor']
 }
 
-export function queryDatabases ({ notionToken, databaseId, filter, startCursor }: QueryDatabasesOptions) {
-  const body: QueryDatabaseBodyParameters = {}
+export function queryDataSources ({ notionToken, dataSourceId, filter, startCursor }: QueryDataSourcesOptions) {
+  const body: QueryDataSourceBodyParameters = {}
 
   if (filter) {
     body.filter = filter
@@ -78,38 +77,40 @@ export function queryDatabases ({ notionToken, databaseId, filter, startCursor }
     body.start_cursor = startCursor
   }
 
-  return makeRequest<ListDatabasesResponse>({
+  return makeRequest<QueryDataSourceResponse>({
     notionToken,
     method: 'post',
-    path: `databases/${databaseId}/query`,
+    path: `data_sources/${dataSourceId}/query`,
     body: (filter || startCursor) ? body : undefined,
   })
 }
 
-interface GetDatabasePagesOptions {
-  databaseId: string
+interface GetDataSourcesOptions {
+  dataSourceId: string
   notionToken: string
-  results?: DatabaseObjectResponse[]
+  results?: DataSource[]
   startCursor?: string
 }
 
-export async function getDatabasePages (options: GetDatabasePagesOptions): Promise<DatabaseObjectResponse[]> {
-  const { databaseId, notionToken, startCursor } = options
+export async function getDataSources (options: GetDataSourcesOptions): Promise<DataSource[]> {
+  const { dataSourceId, notionToken, startCursor } = options
 
-  const { next_cursor, has_more, results } = await queryDatabases({
-    databaseId,
+  const { next_cursor, has_more, results: _results } = await queryDataSources({
+    dataSourceId,
     notionToken,
     startCursor,
   })
 
+  const results = _results as DataSource[]
+
   if (!has_more) {
-    return (options.results || []).concat(results as DatabaseObjectResponse[])
+    return (options.results || []).concat(results)
   }
 
-  return getDatabasePages({
-    databaseId,
+  return getDataSources({
+    dataSourceId,
     notionToken,
-    results: results as DatabaseObjectResponse[],
+    results,
     startCursor: next_cursor!,
   })
 }

@@ -10,7 +10,7 @@ import { richTextToPlainText } from './conversions'
 
 export function getRichText (block: OwnBlock): RichTextItemResponse[] | undefined {
   return 'rich_text' in block.content ? block.content.rich_text : undefined
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }
 
 interface MakeBlockOptions {

@@ -7,7 +7,7 @@ import { createUniqueId, fixture, getBody } from '../../util'
 import { expect } from 'vitest'
 import type { OutgoingBlock } from '../../../lib/notion/types'
 
-const notionVersion = '2022-06-28'
+const notionVersion = '2025-09-03'
 
 export function notionFixture (name: string) {
   return fixture(`notion/${name}`)

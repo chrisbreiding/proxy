@@ -29,7 +29,7 @@ export async function get (req: express.Request, res: express.Response) {
     } else {
       res.json(defaultData)
     }
-  } catch (error) {
+  } catch (_) {
     res.json(defaultData)
   }
 }
@@ -41,7 +41,7 @@ async function notify (message: string) {
   try {
     await request({ url })
   } catch (error: any) {
-    /* c8 ignore next */
+    /* v8 ignore next -- @preserve */
     debug('IFTTT webhook request errored:', error?.stack || error)
   }
 }
@@ -69,7 +69,7 @@ export async function set (req: express.Request, res: express.Response) {
 
     await persistentData.set(Object.assign({}, data, update))
   } catch (error: any) {
-    /* c8 ignore next */
+    /* v8 ignore next -- @preserve */
     debug(`Setting garage state (${door} => ${state}) errored:`, error?.stack || error)
   } finally {
     res.json({})
@@ -84,7 +84,7 @@ export async function setNotifyOnOpen (req: express.Request, res: express.Respon
 
     await persistentData.set(Object.assign(data, { notifyOnOpen }))
   } catch (error: any) {
-    /* c8 ignore next */
+    /* v8 ignore next -- @preserve */
     debug(`Setting notifyOnOpen to ${notifyOnOpen} errored:`, error?.stack || error)
   } finally {
     res.json({})

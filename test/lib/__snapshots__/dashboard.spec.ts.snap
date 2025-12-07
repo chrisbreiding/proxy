@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`lib/dashboard > GET /dashboard/:key > returns garage, quests, and beans data 2`] = `
 {
@@ -20,8 +20,8 @@ exports[`lib/dashboard > GET /dashboard/:key > returns garage, quests, and beans
       "last_edited_time": "2023-02-02T15:46:00.000Z",
       "object": "page",
       "parent": {
-        "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
-        "type": "database_id",
+        "data_source_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
+        "type": "data_source_id",
       },
       "properties": {
         "Active": {
@@ -224,8 +224,8 @@ exports[`lib/dashboard > GET /dashboard/:key > returns garage, quests, and beans
       "last_edited_time": "2023-02-02T21:45:00.000Z",
       "object": "page",
       "parent": {
-        "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
-        "type": "database_id",
+        "data_source_id": "90877700-6150-4875-8fd5-fa60ef8f2912",
+        "type": "data_source_id",
       },
       "properties": {
         "Active": {

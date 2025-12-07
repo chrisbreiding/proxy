@@ -1,12 +1,13 @@
 import nock from 'nock'
 import { afterEach, beforeEach, describe, it, vi } from 'vitest'
 
-const token = process.env.APPLE_WEATHER_TOKEN = 'token'
 delete process.env.TZ
 
 import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
 import { fixtureContents, weatherUrlBasePath } from '../../util'
 import { block, nockGetBlockChildren, snapshotUpdateBlocks } from './util'
+
+const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
@@ -73,6 +74,50 @@ describe('lib/notion/update-upcoming-weather', () => {
       'block-19',
       'block-21',
       'block-23',
+    ])
+
+    await updateWeather({
+      notionToken: 'notion-token',
+      questsId: 'quests-id',
+      location: 'lat,lng',
+    })
+
+    await snapshot
+  })
+
+  it('does not update dates without weather data', async () => {
+    const weather = fixtureContents('weather/weather')
+
+    delete weather.currentWeather
+    delete weather.forecastHourly
+    delete weather.weatherAlerts
+
+    nock('https://weatherkit.apple.com')
+    .matchHeader('authorization', `Bearer ${token}`)
+    .get(`${weatherUrlBasePath}&dataSets=forecastDaily`)
+    .reply(200, weather)
+
+    const questBlocks = [
+      block.p({ text: 'Wed, 12/28' }),
+      block.bullet({ text: 'A task' }),
+      // 1/9 is beyond the weather forecast range (ends 1/6)
+      block.p({ text: 'Mon, 1/9' }),
+      block.bullet({ text: 'A task' }),
+      block.toggle({ text: 'Upcoming', id: 'upcoming-id' }),
+    ]
+
+    const upcomingBlocks = [
+      block.p({ text: 'Fri, 12/30' }),
+      block.bullet({ text: 'A task' }),
+    ]
+
+    nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
+    nockGetBlockChildren('upcoming-id', { reply: { results: upcomingBlocks } })
+
+    // Only 12/28 and 12/30 should be updated (not 1/9)
+    const snapshot = snapshotUpdateBlocks([
+      'block-25',
+      'block-30',
     ])
 
     await updateWeather({

@@ -114,5 +114,5 @@ export class Show implements ShowProps {
     this.users[user.id] = props
   }
   // don't understand why this fails coverage
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }

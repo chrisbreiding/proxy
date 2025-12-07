@@ -14,7 +14,7 @@ import { appendBlockChildren } from './util/updates'
 function findId (
   blocks: NotionBlock[],
   filter: (block: NotionBlock) => boolean,
-  error?: string,
+  error: string,
 ) {
   const block = blocks.find(filter)
 
@@ -22,9 +22,7 @@ function findId (
     return block.id
   }
 
-  if (error) {
-    throw new Error(error)
-  }
+  throw new Error(error)
 }
 
 interface MonthBlock {
@@ -218,6 +216,7 @@ export async function yearInReview ({ donePageId, notionToken, year }: YearInRev
   await appendBlockChildren({ blocks, notionToken, pageId: yearId })
 }
 
+/* v8 ignore next 31 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const donePageId = getEnv('NOTION_DONE_ID')!

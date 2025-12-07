@@ -438,7 +438,7 @@ export async function getAllWeather (location: string): Promise<AllWeather> {
 
   return convertAllData(data)
   // don't understand why this fails coverage
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }
 
 export async function get (req: express.Request, res: express.Response) {

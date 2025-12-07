@@ -1,10 +1,6 @@
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-process.env.API_KEY = 'key'
-process.env.NOTION_TOKEN = 'notion-token'
-process.env.NOTION_FACTOR_MEALS_DATABASE_ID = 'meals-id'
-
 import { startServer } from '../../../../index'
 import { nockNotion } from '../util'
 import { RequestError, handleServer, snapshotBody } from '../../../util'
@@ -16,7 +12,7 @@ describe('lib/notion/factor/meals', () => {
     it('returns factor meals', async (ctx) => {
       nockNotion({
         method: 'post',
-        path: '/v1/databases/meals-id/query',
+        path: '/v1/data_sources/meals-id/query',
         fixture: 'factor/meals-2',
       })
 
@@ -29,13 +25,13 @@ describe('lib/notion/factor/meals', () => {
     it('returns factor meals with multiple pages of meals', async (ctx) => {
       nockNotion({
         method: 'post',
-        path: '/v1/databases/meals-id/query',
+        path: '/v1/data_sources/meals-id/query',
         fixture: 'factor/meals',
       })
 
       nockNotion({
         method: 'post',
-        path: '/v1/databases/meals-id/query',
+        path: '/v1/data_sources/meals-id/query',
         fixture: 'factor/meals-2',
         body: { start_cursor: 'meals-2' },
       })
@@ -57,7 +53,7 @@ describe('lib/notion/factor/meals', () => {
       nockNotion({
         error,
         method: 'post',
-        path: '/v1/databases/meals-id/query',
+        path: '/v1/data_sources/meals-id/query',
       })
 
       const res = await ctx.request.get('/notion/factor-meals/key')
@@ -90,7 +86,7 @@ describe('lib/notion/factor/meals', () => {
       nock.cleanAll()
     })
 
-    it('adds meal to database', async (ctx) => {
+    it('adds meal to data source', async (ctx) => {
       snapshotBody(nockNotion({
         method: 'post',
         path: '/v1/pages',

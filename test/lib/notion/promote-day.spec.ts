@@ -7,14 +7,11 @@ import {
   nockDeleteBlock,
   nockGetBlockChildren,
   nockNotion,
-  notionFixtureContents,
   snapshotAppendChildren,
   toQueryString,
 } from './util'
 import { RequestError, handleServer } from '../../util'
 import { times } from '../../../lib/util/collections'
-
-process.env.API_KEY = 'key'
 
 describe('lib/notion/promote-day', () => {
   handleServer(startServer)

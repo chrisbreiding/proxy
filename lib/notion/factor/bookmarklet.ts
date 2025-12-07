@@ -11,17 +11,19 @@ interface Meal {
   notionMeal?: NotionMeal
 }
 
-enum Color {
-  Brown = '#86552e',
-  DarkRed = '#86552e',
-  Blue = '#4666da',
-  Green = '#6fbd58',
-  Grey = '#575b69',
-}
+const Color = {
+  Brown: '#86552e',
+  DarkRed: '#86552e',
+  Blue: '#4666da',
+  Green: '#6fbd58',
+  Grey: '#575b69',
+} as const
+
+type ColorValue = (typeof Color)[keyof typeof Color]
 
 interface ButtonProps {
   card: HTMLElement
-  color: Color
+  color: ColorValue
   description: string
   name: string
   onClick: () => void

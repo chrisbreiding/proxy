@@ -3,9 +3,6 @@ import Mixpanel from 'mixpanel'
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
-const apikey = process.env.THETVDB_API_KEY = 'api-key'
-const pin = process.env.THETVDB_PIN = 'pin'
-
 import { baseUrl } from '../../../../lib/tv/source/util'
 import {
   getCollection,
@@ -16,6 +13,8 @@ import {
 import { updateShowsAndEpisodes } from '../../../../lib/tv/tasks/update'
 import { mockMixpanel, nockLogin } from '../util'
 
+const apikey = process.env.THETVDB_API_KEY!
+const pin = process.env.THETVDB_PIN!
 const dbMock = {} as firestore.Firestore
 
 function makeShow (num: number, status: string) {

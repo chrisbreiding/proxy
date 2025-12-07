@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`lib/tv/store/shows > GET /tv/shows > handles episodes not existing 1`] = `
 [

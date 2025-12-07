@@ -8,8 +8,6 @@ import { handleServer, replaceStackLines } from '../util'
 import { startServer } from '../../index'
 import { getGarageData, GarageState, PersistentDataStructure } from '../../lib/garage'
 
-process.env.API_KEY = 'key'
-
 const defaultData = {
   left: 'closed' as const,
   right: 'closed' as const,
@@ -105,8 +103,8 @@ describe('lib/garage', () => {
 
       await ctx.request.post(`/garage-states/left/${newState}/key`)
 
-      expect(notifyFailed.isDone(), 'notification was sent').to.be.false
-      expect(notifyOpened.isDone(), 'notification was sent').to.be.false
+      expect(notifyFailed.isDone(), 'notification was sent').to.equal(false)
+      expect(notifyOpened.isDone(), 'notification was sent').to.equal(false)
 
       nock.abortPendingRequests()
     }
@@ -159,7 +157,7 @@ describe('lib/garage', () => {
 
       await ctx.request.post('/garage-states/left/open/key')
 
-      expect(notifyFailed.isDone(), 'notification was not sent').to.be.true
+      expect(notifyFailed.isDone(), 'notification was not sent').to.equal(true)
     })
 
     it('notifies if open and notifyOnOpen: true', async (ctx) => {
@@ -173,7 +171,7 @@ describe('lib/garage', () => {
 
       await ctx.request.post('/garage-states/left/open/key')
 
-      expect(notifyOpened.isDone(), 'notification was not sent').to.be.true
+      expect(notifyOpened.isDone(), 'notification was not sent').to.equal(true)
     })
 
     it('does not notify if new and previous states are closed', async (ctx) => {

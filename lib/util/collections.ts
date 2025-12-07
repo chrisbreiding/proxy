@@ -2,7 +2,7 @@ export function chunk<T = any> (array: T[], size: number) {
   if (!array.length) return []
 
   let index = 0
-  const result = []
+  const result: T[][] = []
 
   while (index < array.length) {
     result.push(array.slice(index, index + size))

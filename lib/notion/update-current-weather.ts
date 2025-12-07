@@ -143,6 +143,7 @@ export async function updateWeather ({ currentWeatherId, location, notionToken }
   })
 }
 
+/* v8 ignore next 25 -- @preserve */
 export default async function main () {
   const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
   const location = getEnv('WEATHER_LOCATION')!

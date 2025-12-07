@@ -3,22 +3,22 @@ import type express from 'express'
 import { getEnv } from '../../util/env'
 import dayjs from 'dayjs'
 import type { Rating } from './types'
-import { getDatabasePages } from '../util/queries'
-import { addDatabasePage } from '../util/updates'
+import { getDataSources } from '../util/queries'
+import { addDataSourcePage } from '../util/updates'
 import { richTextToPlainText } from '../util/conversions'
 
 const notionToken = getEnv('NOTION_TOKEN')!
-const databaseId = getEnv('NOTION_FACTOR_MEALS_DATABASE_ID')!
+const dataSourceId = getEnv('NOTION_FACTOR_MEALS_DATABASE_ID')!
 
 export async function getMeals (req: express.Request, res: express.Response) {
   try {
-    const databasePages = await getDatabasePages({
+    const dataSources = await getDataSources({
       notionToken,
-      databaseId,
+      dataSourceId,
     })
 
-    const meals = databasePages.map((databasePage) => {
-      const { properties } = databasePage
+    const meals = dataSources.map((dataSource) => {
+      const { properties } = dataSource
       // @ts-ignore
       const nameRichText = properties.Name.title
       const name = richTextToPlainText(nameRichText)
@@ -81,9 +81,9 @@ export async function addMeal (req: express.Request, res: express.Response) {
       properties.Date = { date: { start: date.format('YYYY-MM-DD') } }
     }
 
-    await addDatabasePage<MealProperties>({
+    await addDataSourcePage<MealProperties>({
       notionToken,
-      databaseId,
+      dataSourceId,
       properties,
     })
 

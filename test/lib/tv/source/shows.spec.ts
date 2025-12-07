@@ -3,15 +3,14 @@ import Mixpanel from 'mixpanel'
 import nock from 'nock'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
-const apikey = process.env.THETVDB_API_KEY = 'api-key'
-const pin = process.env.THETVDB_PIN = 'pin'
-
 import { startServer } from '../../../../index'
 import { baseUrl } from '../../../../lib/tv/source/util'
 import { getDocWhere, initializeApp } from '../../../../lib/util/firebase'
 import { fixtureContents, handleServer } from '../../../util'
 import { mockMixpanel, nockLogin } from '../util'
 
+const apikey = process.env.THETVDB_API_KEY!
+const pin = process.env.THETVDB_PIN!
 const dbMock = {} as firestore.Firestore
 
 vi.mock('mixpanel', () => {

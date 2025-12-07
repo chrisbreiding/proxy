@@ -17,8 +17,8 @@
           "cover": null,
           "icon": null,
           "parent": {
-              "type": "database_id",
-              "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
+              "type": "data_source_id",
+              "data_source_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
           },
           "archived": false,
           "properties": {
@@ -221,8 +221,8 @@
           "cover": null,
           "icon": null,
           "parent": {
-              "type": "database_id",
-              "database_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
+              "type": "data_source_id",
+              "data_source_id": "90877700-6150-4875-8fd5-fa60ef8f2912"
           },
           "archived": false,
           "properties": {

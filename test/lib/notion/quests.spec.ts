@@ -2,12 +2,6 @@ import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { afterEach, describe, expect, it } from 'vitest'
 
-process.env.API_KEY = 'key'
-process.env.NOTION_TOKEN = 'notion-token'
-process.env.NOTION_QUESTS_ID = 'quests-id'
-process.env.NOTION_SARAH_TOKEN = 'sarah-notion-token'
-process.env.NOTION_SARAH_TODO_ID = 'sarah-todo-id'
-
 import {
   block,
   notionFixture as fixture,

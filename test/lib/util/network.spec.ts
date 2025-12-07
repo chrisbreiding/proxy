@@ -89,5 +89,19 @@ describe('lib/util/network', () => {
         url: 'http://api.com',
       })).rejects.toThrowError('request failed')
     })
+
+    it('adds callStack to error object', async () => {
+      nock('http://api.com')
+      .get('/')
+      .replyWithError('request failed')
+
+      try {
+        await request({ url: 'http://api.com' })
+        expect.fail('should have thrown')
+      } catch (error: any) {
+        expect(error.callStack).to.be.a('string')
+        expect(error.callStack).to.include('request failed')
+      }
+    })
   })
 })

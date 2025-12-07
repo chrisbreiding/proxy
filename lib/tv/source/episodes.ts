@@ -88,45 +88,9 @@ export async function getEpisodesForShow (showId: string): Promise<Episode[]> {
 
     return episodes.map(convertEpisode)
   } catch (error: any) {
-    /* c8 ignore next */
+    /* v8 ignore next -- @preserve */
     debug(`Getting episodes for show id ${showId} failed:`, error?.stack || error)
 
     throw error
   }
-}
-
-interface TheTvDbEpisodeUpdate {
-  entityType: string // "series"
-  extraInfo: string
-  method: 'create' | 'update' | 'delete'
-  methodInt: 1 | 2 | 3 // 1: created, 2: updated, 3: deleted
-  recordId: number // 83498
-  recordType: string
-  seriesId: number
-  timeStamp: number // 1667707258
-  userId: number
-}
-
-export interface EpisodeUpdate {
-  id: string
-  method: TheTvDbEpisodeUpdate['method']
-}
-
-interface ShowAndEpisodeUpdates {
-  [key: string]: EpisodeUpdate[]
-}
-
-function convertUpdates (updates: ShowAndEpisodeUpdates, episodeUpdate: TheTvDbEpisodeUpdate): ShowAndEpisodeUpdates {
-  const showId = `${episodeUpdate.seriesId}`
-  const show = updates[showId] || []
-
-  updates[showId] = [
-    ...show,
-    {
-      id: `${episodeUpdate.recordId}`,
-      method: episodeUpdate.method,
-    },
-  ]
-
-  return updates
 }

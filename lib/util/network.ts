@@ -41,7 +41,7 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
   debugVerbose('request: %s %s %o', method.toUpperCase(), url, { body, params, headers })
 
   try {
-    /* c8 ignore start */
+    /* v8 ignore next 8 -- @preserve */
     if (Debug.enabled('proxy:record:requests')) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
@@ -52,7 +52,6 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
       outputJsonSync(filePath, existing.concat({ url, method, headers, params, body }), { spaces: 2 })
     }
 
-    /* c8 ignore stop */
     const response = await axios({
       method,
       url,
@@ -61,7 +60,7 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
       data: body,
     })
 
-    /* c8 ignore start */
+    /* v8 ignore next 8 -- @preserve */
     if (Debug.enabled('proxy:record:responses')) {
       const parsedUrl = new URL(url)
       const paramsPart = params && Object.keys(params).length && Object.entries(params).map(([key, value]) => `${key}-${value}`).join(')(')
@@ -72,14 +71,16 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
       outputJsonSync(filePath, existing.concat({ request: { url, method, headers, params, body }, response: response.data }), { spaces: 2 })
     }
 
-    /* c8 ignore stop */
     return response.data
   } catch (error: any) {
+    // axios errors can have a deep stack that doesn't reveal where `request`
+    // was called from the server code, so add it to the error
+    /* v8 ignore next -- @preserve */
     if (typeof error === 'object') {
       error.callStack = (new Error(error.message)).stack
     }
 
-    /* c8 ignore start */
+    /* v8 ignore next 17 -- @preserve */
     debug('--- axios error ---')
     debug(options)
     debug('---')
@@ -94,9 +95,11 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
       statusText: error?.response?.statusText,
     })
     debug('---')
-    Debug.enabled('proxy') && console.trace() // eslint-disable-line no-console
+    /* v8 ignore next -- @preserve */
+    if (Debug.enabled('proxy')) {
+      console.trace() // eslint-disable-line no-console
+    }
     debug('-------------------')
-    /* c8 ignore stop */
 
     throw error
   }

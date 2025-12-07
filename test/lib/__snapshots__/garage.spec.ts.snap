@@ -1,13 +1,13 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`lib/garage > GET /garage/:key > handles empty persistent data 1`] = `
 "<!DOCTYPE html>
 <html>
 <head>
-  <meta charset=\\"utf-8\\">
+  <meta charset="utf-8">
   <title>Garage States</title>
-  <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge,chrome=1\\">
-  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html {
       background: #333;
@@ -44,17 +44,17 @@ exports[`lib/garage > GET /garage/:key > handles empty persistent data 1`] = `
   </style>
 </head>
 <body>
-  <div class=\\"state\\">
+  <div class="state">
     <div
-      class=\\"state-icon state-icon-unknown\\"
-      style=\\"mask-image: url(/garage-unknown.png); -webkit-mask-image: url(/garage-unknown.png);\\"
+      class="state-icon state-icon-unknown"
+      style="mask-image: url(/garage-unknown.png); -webkit-mask-image: url(/garage-unknown.png);"
     ></div>
     <p>Left: unknown</p>
   </div>
-  <div class=\\"state\\">
+  <div class="state">
     <div
-      class=\\"state-icon state-icon-unknown\\"
-      style=\\"mask-image: url(/garage-unknown.png); -webkit-mask-image: url(/garage-unknown.png);\\"
+      class="state-icon state-icon-unknown"
+      style="mask-image: url(/garage-unknown.png); -webkit-mask-image: url(/garage-unknown.png);"
     ></div>
     <p>Right: unknown</p>
   </div>
@@ -66,10 +66,10 @@ exports[`lib/garage > GET /garage/:key > renders error view if error 1`] = `
 "<!DOCTYPE html>
 <html>
 <head>
-  <meta charset=\\"utf-8\\">
+  <meta charset="utf-8">
   <title>Server Error</title>
-  <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge,chrome=1\\">
-  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html {
       background: #333;
@@ -100,10 +100,10 @@ exports[`lib/garage > GET /garage/:key > renders garage view 1`] = `
 "<!DOCTYPE html>
 <html>
 <head>
-  <meta charset=\\"utf-8\\">
+  <meta charset="utf-8">
   <title>Garage States</title>
-  <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge,chrome=1\\">
-  <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html {
       background: #333;
@@ -140,17 +140,17 @@ exports[`lib/garage > GET /garage/:key > renders garage view 1`] = `
   </style>
 </head>
 <body>
-  <div class=\\"state\\">
+  <div class="state">
     <div
-      class=\\"state-icon state-icon-closed\\"
-      style=\\"mask-image: url(/garage-closed.png); -webkit-mask-image: url(/garage-closed.png);\\"
+      class="state-icon state-icon-closed"
+      style="mask-image: url(/garage-closed.png); -webkit-mask-image: url(/garage-closed.png);"
     ></div>
     <p>Left: closed</p>
   </div>
-  <div class=\\"state\\">
+  <div class="state">
     <div
-      class=\\"state-icon state-icon-open\\"
-      style=\\"mask-image: url(/garage-open.png); -webkit-mask-image: url(/garage-open.png);\\"
+      class="state-icon state-icon-open"
+      style="mask-image: url(/garage-open.png); -webkit-mask-image: url(/garage-open.png);"
     ></div>
     <p>Right: open</p>
   </div>

@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns factor meals 1`] = `
 [
@@ -18,7 +18,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
     "rating": "★★★★",
   },
   {
-    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
+    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & "Teriyaki" Sauce",
     "name": "Hawaiian-Style Shredded Chicken",
     "rating": "Uninterested",
   },
@@ -73,7 +73,7 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
     "rating": "★★★★",
   },
   {
-    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & \\"Teriyaki\\" Sauce",
+    "description": "with Pineapple-Coconut Rice, Sesame Broccoli & "Teriyaki" Sauce",
     "name": "Hawaiian-Style Shredded Chicken",
     "rating": "Uninterested",
   },
@@ -85,10 +85,10 @@ exports[`lib/notion/factor/meals > GET /notion/factor-meals/:key > returns facto
 ]
 `;
 
-exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to database 1`] = `
+exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to data source 1`] = `
 {
   "parent": {
-    "database_id": "meals-id",
+    "data_source_id": "meals-id",
   },
   "properties": {
     "Date": {
@@ -128,7 +128,7 @@ exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > adds meal to
 exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > date can be omitted 1`] = `
 {
   "parent": {
-    "database_id": "meals-id",
+    "data_source_id": "meals-id",
   },
   "properties": {
     "Description": {
@@ -163,7 +163,7 @@ exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > date can be 
 exports[`lib/notion/factor/meals > POST /notion/factor-meals/:key > uses the right year for "earlier" month 1`] = `
 {
   "parent": {
-    "database_id": "meals-id",
+    "data_source_id": "meals-id",
   },
   "properties": {
     "Date": {

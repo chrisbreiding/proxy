@@ -12,9 +12,9 @@ export function nockLogin ({ apikey, pin, times = 1 }: { apikey: string, pin: st
 
 export interface MixpanelMock {
   people: {
-    set: Mock<any[], any>
+    set: Mock<(...args: any[]) => any>
   }
-  track: Mock<any[], any>
+  track: Mock<(...args: any[]) => any>
 }
 
 export function mockMixpanel () {

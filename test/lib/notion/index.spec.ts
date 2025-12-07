@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
 
-process.env.API_KEY = 'key'
-
 import { startServer } from '../../../index'
 import { handleServer } from '../../util'
 

@@ -188,6 +188,7 @@ async function getExtras (extrasId: string, notionToken: string) {
       throw new Error(`Tried to add the following quest, but could not determine the date for: '${text}'`)
     }
 
+    /* v8 ignore next -- @preserve -- ignores the implicit else */
     if (hasText(block)) {
       months[currentMonth][currentDate].push(block)
     }

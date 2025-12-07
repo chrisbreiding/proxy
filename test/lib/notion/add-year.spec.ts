@@ -1,8 +1,6 @@
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-process.env.API_KEY = 'key'
-
 import { compact, times } from '../../../lib/util/collections'
 import {
   nockGetBlockChildren,

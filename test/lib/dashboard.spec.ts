@@ -2,7 +2,6 @@ import mockFs from 'mock-fs'
 import nock from 'nock'
 import {
   afterAll,
-  afterEach,
   beforeEach,
   describe,
   expect,
@@ -10,24 +9,18 @@ import {
   vi,
 } from 'vitest'
 
-process.env.API_KEY = 'key'
-const token = process.env.APPLE_WEATHER_TOKEN = 'token'
-
 import { startServer } from '../../index'
 import { nockGetBlockChildren, nockNotion } from './notion/util'
 import { fixtureContents, handleServer, weatherUrlBasePath } from '../util'
+
+const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/dashboard', () => {
   describe('GET /dashboard/:key', () => {
     handleServer(startServer)
 
     beforeEach(() => {
-      vi.useFakeTimers()
       vi.setSystemTime(new Date(2022, 11, 28))
-    })
-
-    afterEach(() => {
-      vi.useRealTimers()
     })
 
     afterAll(() => {
@@ -39,12 +32,17 @@ describe('lib/dashboard', () => {
 
       nock('https://weatherkit.apple.com')
       .matchHeader('authorization', `Bearer ${token}`)
-      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+      .get([
+        weatherUrlBasePath,
+        'dataSets=currentWeather,forecastHourly',
+        'hourlyStart=2022-12-28T05:00:00.000Z',
+        'hourlyEnd=2022-12-28T06:00:00.000Z',
+      ].join('&'))
       .reply(200, fixtureContents('weather/weather'))
 
       nockNotion({
         method: 'post',
-        path: '/v1/databases/beans-id/query',
+        path: '/v1/data_sources/beans-id/query',
         fixture: 'coffee/beans',
       })
 
@@ -54,7 +52,12 @@ describe('lib/dashboard', () => {
         },
       })
 
-      const res = await ctx.request.get('/dashboard/key?location=lat,lng&notionToken=notion-token&notionQuestsId=quests-id&notionBeansId=beans-id')
+      const res = await ctx.request.get([
+        '/dashboard/key?location=lat,lng',
+        'notionToken=notion-token',
+        'notionQuestsId=quests-id',
+        'notionBeansId=beans-id',
+      ].join('&'))
 
       expect(res.status).to.equal(200)
       expect(res.body.garage).to.deep.equal({ data: { garage: 'data' } })
@@ -79,7 +82,7 @@ describe('lib/dashboard', () => {
 
       nockNotion({
         method: 'post',
-        path: '/v1/databases/beans-id/query',
+        path: '/v1/data_sources/beans-id/query',
         reply: { results: [] },
       })
 
@@ -107,7 +110,7 @@ describe('lib/dashboard', () => {
         name: 'AxiosError',
         response: { message: 'could not get weather' },
         status: 500,
-        statusText: null,
+        statusText: 'Internal Server Error',
       })
     })
 

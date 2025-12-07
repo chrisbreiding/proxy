@@ -56,7 +56,7 @@ export function getWeatherByDate (weather: DayWeather[]) {
     return memo
   }, {} as WeatherByDate)
   // don't understand why this fails coverage
-  /* c8 ignore next */
+  /* v8 ignore next -- @preserve */
 }
 
 interface UpdateBlockWeatherOptions {
@@ -104,7 +104,6 @@ async function updateBlocks ({ dateObjects, notionToken, weather }: UpdateBlocks
   for (const dateObject of dateObjects) {
     if (weather[dateObject.date]) {
       await updateBlockWeather({ dateObject, notionToken, weather: weather[dateObject.date] })
-    /* c8 ignore next 3 */
     } else {
       debugVerbose('No weather found for %s', dateObject.dateText)
     }
@@ -129,6 +128,7 @@ export async function updateWeather ({ notionToken, questsId, location }: Update
   await updateBlocks({ dateObjects, notionToken, weather })
 }
 
+/* v8 ignore next 23 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const questsId = getEnv('NOTION_QUESTS_ID')!

@@ -14,8 +14,6 @@ import {
 import { RequestError, handleServer } from '../../util'
 import { times } from '../../../lib/util/collections'
 
-process.env.API_KEY = 'key'
-
 describe('lib/notion/upcoming-week', () => {
   handleServer(startServer)
 

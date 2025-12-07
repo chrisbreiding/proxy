@@ -9,11 +9,10 @@ import {
 } from 'vitest'
 
 import { fixtureContents, handleServer, weatherUrlBasePath } from '../util'
-
-const token = process.env.APPLE_WEATHER_TOKEN = 'token'
-
 import { startServer } from '../../index'
 import { ConditionCode, getWeatherIcon, toIcon, WeatherIcon } from '../../lib/weather'
+
+const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/weather', () => {
   describe('GET /weather', () => {

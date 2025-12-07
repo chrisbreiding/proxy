@@ -2,13 +2,12 @@ import type { firestore } from 'firebase-admin'
 import Mixpanel from 'mixpanel'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
-const mixpanelToken = process.env.MIXPANEL_TOKEN = 'mixpanel-token'
-
 import { startServer } from '../../../index'
 import { getDocWhere, initializeApp } from '../../../lib/util/firebase'
 import { handleServer } from '../../util'
 import { MixpanelMock, mockMixpanel } from './util'
 
+const mixpanelToken = process.env.MIXPANEL_TOKEN!
 const dbMock = {} as firestore.Firestore
 
 vi.mock('mixpanel', () => {
@@ -72,7 +71,7 @@ describe('lib/tv/stats', () => {
 
       expect(res.status).to.equal(204)
       expect(Mixpanel.init).toBeCalledWith(mixpanelToken)
-      expect(mixpanelMock.people.set).not.toBeCalled
+      expect(mixpanelMock.people.set).not.toBeCalled()
       expect(mixpanelMock.track).toBeCalledWith(event, { some: 'deets' })
     })
 
@@ -84,7 +83,7 @@ describe('lib/tv/stats', () => {
 
       expect(res.status).to.equal(204)
       expect(Mixpanel.init).toBeCalledWith(mixpanelToken)
-      expect(mixpanelMock.people.set).not.toBeCalled
+      expect(mixpanelMock.people.set).not.toBeCalled()
       expect(mixpanelMock.track).toBeCalledWith(event, { some: 'deets' })
     })
 

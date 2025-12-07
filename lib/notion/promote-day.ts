@@ -53,6 +53,7 @@ async function getBlocksToPromote ({ notionToken, pageId }: PageDetails) {
       memo.foundDate = true
     }
 
+    /* v8 ignore next -- @preserve -- ignores the implicit else */
     if (memo.foundDate) {
       memo.blocks.push(block)
     }

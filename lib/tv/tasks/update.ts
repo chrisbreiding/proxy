@@ -41,6 +41,7 @@ export async function updateShowsAndEpisodes (db: firestore.Firestore) {
   })
 }
 
+/* v8 ignore next 25 -- @preserve */
 export default async function main () {
   let db: firestore.Firestore | undefined
 

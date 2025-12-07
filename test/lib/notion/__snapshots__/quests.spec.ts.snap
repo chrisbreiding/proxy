@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`lib/notion/quests > #getAll > returns all quest blocks 1`] = `
 [

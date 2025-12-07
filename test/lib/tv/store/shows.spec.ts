@@ -4,9 +4,6 @@ import Mixpanel from 'mixpanel'
 import nock from 'nock'
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
-const apikey = process.env.THETVDB_API_KEY = 'api-key'
-const pin = process.env.THETVDB_PIN = 'pin'
-
 import { startServer } from '../../../../index'
 import { baseUrl } from '../../../../lib/tv/source/util'
 import {
@@ -22,6 +19,8 @@ import { clone } from '../../../../lib/util/collections'
 import { fixture, fixtureContents, handleServer } from '../../../util'
 import { mockMixpanel, nockLogin } from '../util'
 
+const apikey = process.env.THETVDB_API_KEY!
+const pin = process.env.THETVDB_PIN!
 const dbMock = {} as firestore.Firestore
 
 function makeSearchResultShow (num: number) {
@@ -379,8 +378,8 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteDoc).not.toBeCalled
-      expect(updateDoc).not.toBeCalled
+      expect(deleteDoc).not.toBeCalled()
+      expect(updateDoc).not.toBeCalled()
       expect(res.status).to.equal(204)
     })
 
@@ -392,8 +391,8 @@ describe('lib/tv/store/shows', () => {
       const res = await ctx.request.delete('/tv/shows/id')
       .set('api-key', 'user-1-api-key')
 
-      expect(deleteDoc).not.toBeCalled
-      expect(updateDoc).not.toBeCalled
+      expect(deleteDoc).not.toBeCalled()
+      expect(updateDoc).not.toBeCalled()
       expect(res.status).to.equal(204)
     })
 

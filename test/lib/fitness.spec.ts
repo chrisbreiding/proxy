@@ -1,7 +1,7 @@
 import mockFs from 'mock-fs'
 import nock from 'nock'
 import path from 'path'
-import { afterAll, afterEach, beforeEach, describe, it, vi } from 'vitest'
+import { afterAll, beforeEach, describe, it, vi } from 'vitest'
 import { updateFitness } from '../../lib/fitness/fitness'
 import { fixtureContents } from '../util'
 import { block, getAppendBody, listResults, nockAppendBlockChildren, nockDeleteBlock, nockGetBlockChildren, snapshotAppendChildren } from './notion/util'
@@ -68,13 +68,8 @@ describe('lib/fitness', () => {
   }
 
   beforeEach(() => {
-    vi.useFakeTimers()
     vi.setSystemTime(new Date(2022, 0, 11))
     mockPersistentData(null)
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
   })
 
   afterAll(() => {

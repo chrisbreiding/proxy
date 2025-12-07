@@ -1,0 +1,58 @@
+diff --git a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+index eb43909..3d77475 100644
+--- a/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
++++ b/node_modules/@notionhq/client/build/src/api-endpoints.d.ts
+@@ -20,7 +20,7 @@ type AnnotationResponse = {
+  * `orange_background`, `yellow_background`, `green_background`, `blue_background`,
+  * `purple_background`, `pink_background`, `red_background`
+  */
+-type ApiColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red" | "default_background" | "gray_background" | "brown_background" | "orange_background" | "yellow_background" | "green_background" | "blue_background" | "purple_background" | "pink_background" | "red_background";
++export type ApiColor = "default" | "gray" | "brown" | "orange" | "yellow" | "green" | "blue" | "purple" | "pink" | "red" | "default_background" | "gray_background" | "brown_background" | "orange_background" | "yellow_background" | "green_background" | "blue_background" | "purple_background" | "pink_background" | "red_background";
+ type ArrayBasedPropertyValueResponse = TitleArrayBasedPropertyValueResponse | RichTextArrayBasedPropertyValueResponse | PeopleArrayBasedPropertyValueResponse | RelationArrayBasedPropertyValueResponse;
+ type ArrayPartialRollupValueResponse = {
+     type: "array";
+@@ -884,7 +884,7 @@ type DatabaseParentResponse = {
+     type: "database_id";
+     database_id: IdResponse;
+ };
+-type DatabasePropertyConfigResponse = DatabasePropertyConfigResponseCommon & (NumberDatabasePropertyConfigResponse | FormulaDatabasePropertyConfigResponse | SelectDatabasePropertyConfigResponse | MultiSelectDatabasePropertyConfigResponse | StatusDatabasePropertyConfigResponse | RelationDatabasePropertyConfigResponse | RollupDatabasePropertyConfigResponse | UniqueIdDatabasePropertyConfigResponse | TitleDatabasePropertyConfigResponse | RichTextDatabasePropertyConfigResponse | UrlDatabasePropertyConfigResponse | PeopleDatabasePropertyConfigResponse | FilesDatabasePropertyConfigResponse | EmailDatabasePropertyConfigResponse | PhoneNumberDatabasePropertyConfigResponse | DateDatabasePropertyConfigResponse | CheckboxDatabasePropertyConfigResponse | CreatedByDatabasePropertyConfigResponse | CreatedTimeDatabasePropertyConfigResponse | LastEditedByDatabasePropertyConfigResponse | LastEditedTimeDatabasePropertyConfigResponse);
++export type DatabasePropertyConfigResponse = DatabasePropertyConfigResponseCommon & (NumberDatabasePropertyConfigResponse | FormulaDatabasePropertyConfigResponse | SelectDatabasePropertyConfigResponse | MultiSelectDatabasePropertyConfigResponse | StatusDatabasePropertyConfigResponse | RelationDatabasePropertyConfigResponse | RollupDatabasePropertyConfigResponse | UniqueIdDatabasePropertyConfigResponse | TitleDatabasePropertyConfigResponse | RichTextDatabasePropertyConfigResponse | UrlDatabasePropertyConfigResponse | PeopleDatabasePropertyConfigResponse | FilesDatabasePropertyConfigResponse | EmailDatabasePropertyConfigResponse | PhoneNumberDatabasePropertyConfigResponse | DateDatabasePropertyConfigResponse | CheckboxDatabasePropertyConfigResponse | CreatedByDatabasePropertyConfigResponse | CreatedTimeDatabasePropertyConfigResponse | LastEditedByDatabasePropertyConfigResponse | LastEditedTimeDatabasePropertyConfigResponse);
+ type DatabasePropertyConfigResponseCommon = {
+     id: string;
+     name: string;
+@@ -895,7 +895,7 @@ type DatabasePropertyRelationConfigResponseCommon = {
+     database_id: IdResponse;
+     data_source_id: IdResponse;
+ };
+-type DateDatabasePropertyConfigResponse = {
++export type DateDatabasePropertyConfigResponse = {
+     type: "date";
+     date: EmptyObject;
+ };
+@@ -2052,7 +2052,7 @@ type RichTextArrayBasedPropertyValueResponse = {
+     type: "rich_text";
+     rich_text: Array<RichTextItemResponse>;
+ };
+-type RichTextDatabasePropertyConfigResponse = {
++export type RichTextDatabasePropertyConfigResponse = {
+     type: "rich_text";
+     rich_text: EmptyObject;
+ };
+@@ -2932,7 +2932,7 @@ export declare const getBlock: {
+ type UpdateBlockPathParameters = {
+     block_id: IdRequest;
+ };
+-type UpdateBlockBodyParameters = {
++export type UpdateBlockBodyParameters = {
+     embed: UpdateMediaContentWithUrlAndCaptionRequest;
+     type?: "embed";
+     archived?: boolean;
+@@ -3356,7 +3356,7 @@ type QueryDataSourcePathParameters = {
+ type QueryDataSourceQueryParameters = {
+     filter_properties?: Array<string>;
+ };
+-type QueryDataSourceBodyParameters = {
++export type QueryDataSourceBodyParameters = {
+     sorts?: Array<{
+         property: string;
+         direction: "ascending" | "descending";

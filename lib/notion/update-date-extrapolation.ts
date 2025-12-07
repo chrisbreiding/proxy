@@ -161,6 +161,7 @@ export async function updateDateExtrapolation ({ notionToken, dateExtrapolationI
   await updateDates({ extrapolatedDates, notionToken })
 }
 
+/* v8 ignore next 21 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_SARAH_TOKEN')!
   const dateExtrapolationId = getEnv('NOTION_DATE_EXTRAPOLATION_ID')!

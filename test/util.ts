@@ -4,17 +4,18 @@ import type http from 'http'
 import type nock from 'nock'
 import path from 'path'
 import supertest from 'supertest'
+import type TestAgent from 'supertest/lib/agent'
 import { afterAll, beforeAll, beforeEach, expect } from 'vitest'
 
 declare module 'vitest' {
   export interface TestContext {
-    request: supertest.SuperTest<supertest.Test>
+    request: TestAgent
   }
 }
 
 export function handleServer (startServer: (port: number) => http.Server) {
   let server: http.Server
-  let request: supertest.SuperTest<supertest.Test>
+  let request: TestAgent
 
   beforeAll(async () => {
     const port = await getPort()

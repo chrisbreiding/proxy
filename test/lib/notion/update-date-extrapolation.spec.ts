@@ -43,7 +43,7 @@ describe('lib/notion/update-date-extrapolation', () => {
     } catch (error: any) {
       expect(error.message).toMatchInlineSnapshot(`
         "The following validation error(s) was/were found:
-        - Page must have a \\"Historical\\" toggle block with dates"
+        - Page must have a \"Historical\" toggle block with dates"
       `)
     }
   })
@@ -70,7 +70,7 @@ describe('lib/notion/update-date-extrapolation', () => {
     } catch (error: any) {
       expect(error.message).toMatchInlineSnapshot(`
         "The following validation error(s) was/were found:
-        - Page must have a \\"Recent\\" toggle block with dates"
+        - Page must have a \"Recent\" toggle block with dates"
       `)
     }
   })
@@ -97,7 +97,7 @@ describe('lib/notion/update-date-extrapolation', () => {
     } catch (error: any) {
       expect(error.message).toMatchInlineSnapshot(`
         "The following validation error(s) was/were found:
-        - Page must have a \\"Extrapolated\\" toggle block with dates"
+        - Page must have a \"Extrapolated\" toggle block with dates"
       `)
     }
   })

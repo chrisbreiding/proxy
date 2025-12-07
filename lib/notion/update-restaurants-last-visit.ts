@@ -1,20 +1,20 @@
-import dayjs from 'dayjs'
 import type {
-  DatabaseObjectResponse,
   DateDatabasePropertyConfigResponse,
 } from '@notionhq/client/build/src/api-endpoints'
+import dayjs from 'dayjs'
 
-import { getBlockPlainText } from './util/general'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import { getBlockChildren, getDatabasePages } from './util/queries'
-import { updatePage } from './util/updates'
+import { DataSource } from './types'
 import { richTextToPlainText } from './util/conversions'
+import { getBlockPlainText } from './util/general'
+import { getBlockChildren, getDataSources } from './util/queries'
+import { updatePage } from './util/updates'
 
 interface UpdateRestaurantsLastVisitOptions {
   notionToken: string
-  restaurantsDatabaseId: string
+  restaurantsDataSourceId: string
 }
 
 interface PageDate {
@@ -75,13 +75,13 @@ async function getMostRecentVisitDate ({ name, notionToken, pageId }: GetMostRec
 }
 
 interface GetMostRecentVisitDatesOptions {
-  databasePages: DatabaseObjectResponse[]
+  dataSources: DataSource[]
   notionToken: string
 }
 
-async function getMostRecentVisitDates ({ databasePages, notionToken }: GetMostRecentVisitDatesOptions) {
-  const pageDates = await Promise.all(databasePages.map(async (databasePage) => {
-    const { id, properties } = databasePage
+async function getMostRecentVisitDates ({ dataSources, notionToken }: GetMostRecentVisitDatesOptions) {
+  const pageDates = await Promise.all(dataSources.map(async (dataSource) => {
+    const { id, properties } = dataSource
     const lastVisit = properties['Last Visit'] as DateDatabasePropertyConfigResponse
     const currentDate = lastVisit?.date?.start as string | undefined
     // @ts-ignore
@@ -95,20 +95,21 @@ async function getMostRecentVisitDates ({ databasePages, notionToken }: GetMostR
   return compact(pageDates)
 }
 
-export async function updateRestaurantsLastVisit ({ notionToken, restaurantsDatabaseId }: UpdateRestaurantsLastVisitOptions) {
-  const databasePages = await getDatabasePages({ databaseId: restaurantsDatabaseId, notionToken })
-  const pageDates = await getMostRecentVisitDates({ databasePages, notionToken })
+export async function updateRestaurantsLastVisit ({ notionToken, restaurantsDataSourceId }: UpdateRestaurantsLastVisitOptions) {
+  const dataSources = await getDataSources({ dataSourceId: restaurantsDataSourceId, notionToken })
+  const pageDates = await getMostRecentVisitDates({ dataSources, notionToken })
 
   await updatePages({ notionToken, pageDates })
 }
 
+/* v8 ignore next 24 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
-  const restaurantsDatabaseId = getEnv('NOTION_NEARBY_RESTAURANTS_TABLE_ID')!
+  const restaurantsDataSourceId = getEnv('NOTION_NEARBY_RESTAURANTS_TABLE_ID')!
 
   debugVerbose('ENV:', {
     notionToken,
-    restaurantsDatabaseId,
+    restaurantsDataSourceId,
   })
 
   try {
@@ -116,7 +117,7 @@ export default async function main () {
 
     await updateRestaurantsLastVisit({
       notionToken,
-      restaurantsDatabaseId,
+      restaurantsDataSourceId,
     })
 
     debug('Successfully updated restaurants last visit dates')

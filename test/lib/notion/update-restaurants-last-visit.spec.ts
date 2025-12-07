@@ -20,13 +20,13 @@ describe('lib/notion/update-restaurants-last-visit', () => {
   it('updates changed restaurant last visit dates', async () => {
     nockNotion({
       method: 'post',
-      path: '/v1/databases/restaurants-id/query',
+      path: '/v1/data_sources/restaurants-id/query',
       fixture: 'restaurants/restaurant-pages',
     })
 
     nockNotion({
       method: 'post',
-      path: '/v1/databases/restaurants-id/query',
+      path: '/v1/data_sources/restaurants-id/query',
       fixture: 'restaurants/restaurant-pages-2',
       body: { start_cursor: 'restaurant-pages-2' },
     })
@@ -50,7 +50,7 @@ describe('lib/notion/update-restaurants-last-visit', () => {
 
     await updateRestaurantsLastVisit({
       notionToken: 'notion-token',
-      restaurantsDatabaseId: 'restaurants-id',
+      restaurantsDataSourceId: 'restaurants-id',
     })
 
     await Promise.all(snapshotUpdates)

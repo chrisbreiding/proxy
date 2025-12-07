@@ -1,8 +1,6 @@
 import nock from 'nock'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const token = process.env.APPLE_WEATHER_TOKEN = 'token'
-
 import { updateWeather } from '../../../lib/notion/update-current-weather'
 import type { ConditionCode } from '../../../lib/weather'
 import { fixtureContents, weatherUrlBasePath } from '../../util'
@@ -14,6 +12,8 @@ interface WeatherProps {
   precipitationChance?: number
   temperature?: number
 }
+
+const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/notion/update-current-weather', () => {
   function makeTableRows () {

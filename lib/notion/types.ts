@@ -7,6 +7,7 @@ import type {
   ChildPageBlockObjectResponse,
   ColumnBlockObjectResponse,
   ColumnListBlockObjectResponse,
+  DatabasePropertyConfigResponse,
   DividerBlockObjectResponse,
   EmbedBlockObjectResponse,
   EquationBlockObjectResponse,
@@ -86,3 +87,8 @@ export type OutgoingBlock = UpdateBlockBodyParameters & {
 
 export type SendSuccess = (message: string) => void
 export type SendError = (error: any, message: string, statusCode?: number) => void
+
+export interface DataSource {
+  id: string
+  properties: Record<string, DatabasePropertyConfigResponse>
+}

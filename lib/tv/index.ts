@@ -38,6 +38,7 @@ function ensureDb (req: express.Request, res: express.Response, next: express.Ne
     db = initializeApp('tv')
   }
 
+  /* v8 ignore next -- @preserve */
   if (!res.locals.db) {
     res.locals.db = db
   }

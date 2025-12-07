@@ -17,7 +17,7 @@ export function makeRequest<T> (options: MakeRequestOptions): Promise<T> {
     url: `https://api.notion.com/v1/${path}`,
     headers: {
       'Authorization': `Bearer ${notionToken}`,
-      'Notion-Version': '2022-06-28',
+      'Notion-Version': '2025-09-03',
     },
   })
 }

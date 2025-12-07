@@ -27,7 +27,7 @@ export function startServer (port: number) {
   app.engine('.hbs', handlebars({ extname: '.hbs' }))
   app.set('view engine', '.hbs')
 
-  /* c8 ignore next 4 */
+  /* v8 ignore next 4 -- @preserve */
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('tiny'))
   }
@@ -37,7 +37,7 @@ export function startServer (port: number) {
     /^https:\/\/\w+\.crbapps\.com$/,
   ]
 
-  /* c8 ignore next 4 */
+  /* v8 ignore next 4 -- @preserve */
   if (process.env.ALLOW_NGROK === 'TRUE') {
     corsOrigins.push(/^https:\/\/[A-Za-z0-9]+\.ngrok\.io$/)
   }
@@ -97,7 +97,7 @@ export function startServer (port: number) {
   return server
 }
 
-/* c8 ignore start */
+/* v8 ignore next 7 -- @preserve */
 async function startBree () {
   if (process.env.NODE_ENV !== 'production') return
 
@@ -106,8 +106,8 @@ async function startBree () {
   await bree.start()
 }
 
+/* v8 ignore next 4 -- @preserve */
 if (require.main === module) {
   startServer(Number(process.env.PORT) || 3333)
   startBree()
 }
-/* c8 ignore stop */

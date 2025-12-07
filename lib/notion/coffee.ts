@@ -1,5 +1,5 @@
-import type { DatabaseObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-import { queryDatabases } from './util/queries'
+import type { DataSource } from './types'
+import { queryDataSources } from './util/queries'
 
 interface GetGrindSizesOptions {
   notionToken: string
@@ -7,9 +7,9 @@ interface GetGrindSizesOptions {
 }
 
 export async function getActiveBeanDetails ({ notionToken, notionBeansId }: GetGrindSizesOptions) {
-  const { results } = await queryDatabases({
+  const { results } = await queryDataSources({
     notionToken,
-    databaseId: notionBeansId,
+    dataSourceId: notionBeansId,
     filter: {
       'and': [
         {
@@ -20,7 +20,7 @@ export async function getActiveBeanDetails ({ notionToken, notionBeansId }: GetG
         },
       ],
     },
-  }) as { results: DatabaseObjectResponse[] }
+  })
 
-  return results
+  return results as DataSource[]
 }

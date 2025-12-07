@@ -128,7 +128,7 @@ describe('lib/tv/store/users', () => {
     it('sends 404 if user is not found', async (ctx) => {
       (getDoc as Mock).mockResolvedValue(undefined)
 
-      const res = await ctx.request.put('/tv/user').set('api-key', 'api-key')
+      const res = await ctx.request.put('/tv/user').set('api-key', 'api-key').send({})
 
       expect(res.status).to.equal(404)
       expect(res.body).to.deep.equal({ error: 'User with id \'user-id\' not found' })

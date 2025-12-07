@@ -1,8 +1,6 @@
 import nock from 'nock'
 import { describe, expect, it, vi } from 'vitest'
 
-process.env.GOOGLE_API_KEY = 'key'
-
 import { handleServer } from '../util'
 import { startServer } from '../../index'
 

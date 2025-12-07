@@ -1,8 +1,6 @@
 import type { firestore } from 'firebase-admin'
 import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest'
 
-process.env.API_KEY = 'key'
-
 import { startServer } from '../../index'
 import {
   getDoc,

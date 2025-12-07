@@ -81,12 +81,12 @@ describe('lib/util/collections', () => {
     it('runs the function serially', async () => {
       const fn1 = vi.fn().mockReturnValue(() => {
         return Promise.resolve().then(() => {
-          expect(fn2).not.toBeCalled
+          expect(fn2).not.toBeCalled()
         })
       })
       const fn2 = vi.fn().mockReturnValue(() => {
         return Promise.resolve().then(() => {
-          expect(fn3).not.toBeCalled
+          expect(fn3).not.toBeCalled()
         })
       })
       const fn3 = vi.fn().mockReturnValue(() => {
