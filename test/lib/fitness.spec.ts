@@ -60,6 +60,7 @@ function nockDashboard () {
 
 describe('lib/fitness', () => {
   const props = {
+    isDryRun: false,
     mmfToken: 'mmf-token',
     mmfApiKey: 'mmf-api-key',
     mmfUserId: 'mmf-user-id',
@@ -68,7 +69,7 @@ describe('lib/fitness', () => {
   }
 
   beforeEach(() => {
-    vi.setSystemTime(new Date(2022, 0, 11))
+    vi.setSystemTime(new Date(2025, 0, 7))
     mockPersistentData(null)
   })
 
@@ -77,7 +78,7 @@ describe('lib/fitness', () => {
   })
 
   it('display fitness breakdown and stats', async () => {
-    nockFitness()
+    nockFitness(11770)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -86,7 +87,7 @@ describe('lib/fitness', () => {
     await snapshot
   })
 
-  it('shows a different message if on track for today', async () => {
+  it('shows a different message if ahead for today', async () => {
     nockFitness(32000)
 
     const snapshot = nockAndSnapshotDashboard()
@@ -96,9 +97,9 @@ describe('lib/fitness', () => {
     await snapshot
   })
 
-  it('shows a different message if on track for the week', async () => {
-    vi.setSystemTime(new Date(2022, 0, 6))
-    nockFitness(29000)
+  it('shows a different message if ahead for the week', async () => {
+    vi.setSystemTime(new Date(2025, 0, 6))
+    nockFitness(35000)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -108,7 +109,7 @@ describe('lib/fitness', () => {
   })
 
   it('handles Sunday when behind', async () => {
-    vi.setSystemTime(new Date(2022, 0, 9))
+    vi.setSystemTime(new Date(2025, 0, 12))
     nockFitness(20000)
 
     const snapshot = nockAndSnapshotDashboard()
@@ -119,8 +120,8 @@ describe('lib/fitness', () => {
   })
 
   it('handles Sunday when ahead', async () => {
-    vi.setSystemTime(new Date(2022, 0, 9))
-    nockFitness(30000)
+    vi.setSystemTime(new Date(2025, 0, 12))
+    nockFitness(35315)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -130,8 +131,8 @@ describe('lib/fitness', () => {
   })
 
   it('handles pluralization when ahead for today and for the week', async () => {
-    vi.setSystemTime(new Date(2022, 0, 9))
-    nockFitness(26070)
+    vi.setSystemTime(new Date(2025, 0, 12))
+    nockFitness(34000)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -141,7 +142,7 @@ describe('lib/fitness', () => {
   })
 
   it('handles pluralization when behind for today', async () => {
-    vi.setSystemTime(new Date(2022, 0, 8))
+    vi.setSystemTime(new Date(2025, 0, 8))
     nockFitness(18051)
 
     const snapshot = nockAndSnapshotDashboard()
@@ -152,17 +153,7 @@ describe('lib/fitness', () => {
   })
 
   it('handles pluralization when behind for the week', async () => {
-    nockFitness(40520)
-
-    const snapshot = nockAndSnapshotDashboard()
-
-    await updateFitness(props)
-
-    await snapshot
-  })
-
-  it('handles pluralization when behind for the week per day', async () => {
-    nockFitness(34100)
+    nockFitness(33000)
 
     const snapshot = nockAndSnapshotDashboard()
 
@@ -184,14 +175,36 @@ describe('lib/fitness', () => {
     await snapshot
   })
 
+  it('handles the challenge being completed', async () => {
+    vi.setSystemTime(new Date(2025, 11, 28))
+    nockFitness(1808700)
+
+    const snapshot = nockAndSnapshotDashboard()
+
+    await updateFitness(props)
+
+    await snapshot
+  })
+
+  it('handles the year being over', async () => {
+    vi.setSystemTime(new Date(2026, 0, 1))
+    nockFitness(34100)
+
+    const snapshot = nockAndSnapshotDashboard()
+
+    await updateFitness(props)
+
+    await snapshot
+  })
+
   it('does not update notion if the challenge details have not changed and it is the same day', async () => {
-    vi.setSystemTime(new Date(2022, 1, 10))
+    vi.setSystemTime(new Date(2025, 1, 10))
     nockFitness()
     nockDashboard()
 
     await updateFitness(props)
 
-    vi.setSystemTime(new Date(2022, 1, 10))
+    vi.setSystemTime(new Date(2025, 1, 10))
     nockFitness()
 
     // causes nock to throw on any request
@@ -216,14 +229,14 @@ describe('lib/fitness', () => {
   })
 
   it('updates notion if it is a new day', async () => {
-    vi.setSystemTime(new Date(2022, 1, 20))
+    vi.setSystemTime(new Date(2025, 1, 20))
 
     nockFitness()
     nockDashboard()
 
     await updateFitness(props)
 
-    vi.setSystemTime(new Date(2022, 1, 21))
+    vi.setSystemTime(new Date(2025, 1, 21))
     nockFitness()
     const requestMade = nockDashboard()
 
@@ -241,5 +254,11 @@ describe('lib/fitness', () => {
     nockAppendBlockChildren({ id: 'notion-fitness-id' })
 
     await updateFitness(props)
+  })
+
+  it('does not make notion updates if a dry run', async () => {
+    nockFitness(34100)
+
+    await updateFitness({ ...props, isDryRun: true })
   })
 })

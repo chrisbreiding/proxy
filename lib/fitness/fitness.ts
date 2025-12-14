@@ -14,26 +14,55 @@ dayjs.extend(duration)
 
 function getDates () {
   const now = dayjs()
-  const startOfYear = dayjs(`${now.year()}-01-01`).startOf('day')
+  const isOver = now.isAfter(dayjs('2025-12-31'))
+  const startOfYear = dayjs('2025-01-01').startOf('day')
+  const endOfYear = dayjs('2025-12-31').endOf('day')
+  const daysLeftInYear = isOver ? 0 : endOfYear.startOf('day').diff(now, 'day') + 1
   const daysPassedIncludingToday = now.startOf('day').diff(startOfYear, 'day') + 1
-  const daysLeftThroughWeekendExcludingToday = now.day() === 0 ? 0 : 7 - now.day() // through Sunday
+  const daysInWeek = daysLeftInYear < 7 ? daysLeftInYear : 7
+  // through Sunday unless it's the final week of the year
+  const daysLeftThroughWeekendExcludingToday = now.day() === 0 ? 0 : daysInWeek - now.day()
   const daysPassedAtEndOfWeek = daysPassedIncludingToday + daysLeftThroughWeekendExcludingToday
 
   return {
+    daysLeftInYear,
     daysLeftThroughWeekendExcludingToday,
     daysPassedAtEndOfWeek,
     daysPassedIncludingToday,
+    isOver,
     now,
   }
 }
 
-function getBreakdown (progress: ChallengeDetails['progress'], dates: ReturnType<typeof getDates>) {
-  const { daysLeftThroughWeekendExcludingToday, daysPassedAtEndOfWeek, daysPassedIncludingToday } = dates
-
+function getBreakdown (progress: ChallengeDetails['progress'], dates: ReturnType<typeof getDates>): Breakdown {
+  const { daysLeftInYear, daysLeftThroughWeekendExcludingToday, daysPassedAtEndOfWeek, daysPassedIncludingToday, isOver } = dates
   const yearlyGoal = (progress.goal / 1000) * 0.621371 // miles
   const dailyGoal = yearlyGoal / 365
   const totalProgressMade = (progress.currentScore / 1000) * 0.621371 // miles
-  const yearlyPercentComplete = totalProgressMade / yearlyGoal * 100
+  const _yearlyPercentComplete = totalProgressMade / yearlyGoal * 100
+  const yearlyPercentComplete = _yearlyPercentComplete > 100 ? 100 : _yearlyPercentComplete
+  const accomplishedChallenge = yearlyPercentComplete === 100
+  const milesNeededToCompleteChallenge = Math.abs(yearlyGoal - totalProgressMade)
+
+  if (isOver) {
+    return {
+      accomplishedChallenge,
+      aheadOfGoalForToday: false,
+      aheadOfGoalForWeek: false,
+      daysLeftInYear,
+      daysLeftThroughWeekendExcludingToday: 0,
+      isOver,
+      milesNeededToBeOnTrackToday: 0,
+      milesNeededToCompleteChallenge,
+      milesPerDayNeededToBeOnTrackThroughWeekend: 0,
+      milesPerDayNeededToBeOnTrackThroughYear: 0,
+      totalProgressMade,
+      untilEndOfTodayDifference: 0,
+      untilEndOfWeekendDifference: 0,
+      yearlyGoal,
+      yearlyPercentComplete,
+    }
+  }
 
   const untilEndOfTodayGoal = dailyGoal * daysPassedIncludingToday
   const untilEndOfTodayDifference = totalProgressMade - untilEndOfTodayGoal
@@ -44,6 +73,7 @@ function getBreakdown (progress: ChallengeDetails['progress'], dates: ReturnType
   const untilEndOfWeekendDifference = totalProgressMade - untilEndOfWeekendGoal
   const aheadOfGoalForWeek = untilEndOfWeekendDifference >= 0
 
+
   const milesPerDayNeededToBeOnTrackThroughWeekend = (() => {
     if (daysLeftThroughWeekendExcludingToday === 0) return 0
     if (aheadOfGoalForWeek) return 0
@@ -51,12 +81,23 @@ function getBreakdown (progress: ChallengeDetails['progress'], dates: ReturnType
     return Math.abs(untilEndOfWeekendDifference) / daysLeftThroughWeekendExcludingToday
   })()
 
+  const milesPerDayNeededToBeOnTrackThroughYear = (() => {
+    if (yearlyPercentComplete === 100) return 0
+
+    return Math.abs(yearlyGoal - totalProgressMade) / daysLeftInYear
+  })()
+
   return {
+    accomplishedChallenge,
     aheadOfGoalForToday,
     aheadOfGoalForWeek,
+    daysLeftInYear,
     daysLeftThroughWeekendExcludingToday,
+    isOver,
     milesNeededToBeOnTrackToday,
+    milesNeededToCompleteChallenge,
     milesPerDayNeededToBeOnTrackThroughWeekend,
+    milesPerDayNeededToBeOnTrackThroughYear,
     totalProgressMade,
     untilEndOfTodayDifference,
     untilEndOfWeekendDifference: Math.abs(untilEndOfWeekendDifference),
@@ -65,10 +106,18 @@ function getBreakdown (progress: ChallengeDetails['progress'], dates: ReturnType
   }
 }
 
+const getTotalTime = (statTime?: number) => {
+  if (!statTime) return undefined
+
+  const formattedTime = dayjs.duration(statTime, 'seconds').format('HHH:mm:ss')
+
+  // remove extra zeros when under 10/100 hours
+  return formattedTime.replace(/^0+/, '')
+}
+
 function getStats (stats: ChallengeDetails['stats']) {
-  const caloriesBurned = stats.calories_burned
-  const _totalTime = stats.total_time
-  const totalTime = _totalTime ? dayjs.duration(_totalTime, 'seconds').format('H:mm:ss') : undefined
+  const caloriesBurned = stats.calories_burned?.toLocaleString('en-US')
+  const totalTime = getTotalTime(stats.total_time)
   const totalWorkouts = stats.total_workouts
 
   return {
@@ -140,11 +189,16 @@ function pluralize (value: number, label: string) {
 
 function logDashboardToDebug (breakdown: Breakdown, stats: Stats) {
   const {
+    accomplishedChallenge,
     aheadOfGoalForToday,
     aheadOfGoalForWeek,
     daysLeftThroughWeekendExcludingToday,
+    daysLeftInYear,
+    isOver,
     milesNeededToBeOnTrackToday,
+    milesNeededToCompleteChallenge,
     milesPerDayNeededToBeOnTrackThroughWeekend,
+    milesPerDayNeededToBeOnTrackThroughYear,
     totalProgressMade,
     untilEndOfTodayDifference,
     untilEndOfWeekendDifference,
@@ -153,16 +207,38 @@ function logDashboardToDebug (breakdown: Breakdown, stats: Stats) {
   } = breakdown
   const { caloriesBurned, totalTime, totalWorkouts } = stats
 
-  const todayDebugStatus = aheadOfGoalForToday ?
-    `You're ${toTwoDecimals(untilEndOfTodayDifference)} ${pluralize(untilEndOfTodayDifference, 'mile')} ahead!`
-    : `Needed to be on track today
-    - ${toTwoDecimals(milesNeededToBeOnTrackToday)} ${pluralize(milesNeededToBeOnTrackToday, 'mile')}`
+  const todayDebugStatus = (() => {
+    if (isOver) return ''
 
-  const weekDebugStatus = aheadOfGoalForWeek ?
-    `You're ${toTwoDecimals(untilEndOfWeekendDifference)} ${pluralize(untilEndOfWeekendDifference, 'mile')} ahead!`
-    : `Needed to be on track this week
+    if (aheadOfGoalForToday) {
+      return `You're ${toTwoDecimals(untilEndOfTodayDifference)} ${pluralize(untilEndOfTodayDifference, 'mile')} ahead!`
+    }
+
+    return (
+      `Needed to be on track today
+    - ${toTwoDecimals(milesNeededToBeOnTrackToday)} ${pluralize(milesNeededToBeOnTrackToday, 'mile')}`
+    )
+  })()
+
+  const weekDebugStatus = (() => {
+    if (isOver) return ''
+
+    if (aheadOfGoalForWeek) {
+      return `You're ${toTwoDecimals(untilEndOfWeekendDifference)} ${pluralize(untilEndOfWeekendDifference, 'mile')} ahead!`
+    }
+
+    return (
+      `Needed to be on track this week
     - ${toTwoDecimals(untilEndOfWeekendDifference)} ${pluralize(untilEndOfWeekendDifference, 'mile')} / ${daysLeftThroughWeekendExcludingToday} ${pluralize(daysLeftThroughWeekendExcludingToday, 'day')}
     - ${toTwoDecimals(milesPerDayNeededToBeOnTrackThroughWeekend)} ${pluralize(milesPerDayNeededToBeOnTrackThroughWeekend, 'mile')} per day`
+    )
+  })()
+
+  const yearDebugStatus = accomplishedChallenge ?
+    'You completed the challenge!'
+    : `Needed to complete the challenge
+    - ${toTwoDecimals(milesNeededToCompleteChallenge)} ${pluralize(milesNeededToCompleteChallenge, 'mile')} / ${daysLeftInYear} ${pluralize(daysLeftInYear, 'day')}
+    - ${toTwoDecimals(milesPerDayNeededToBeOnTrackThroughYear)} ${pluralize(milesPerDayNeededToBeOnTrackThroughYear, 'mile')} per day`
 
   debug(`
     ${toTwoDecimals(yearlyPercentComplete)}% complete
@@ -170,6 +246,7 @@ function logDashboardToDebug (breakdown: Breakdown, stats: Stats) {
     ---
     ${todayDebugStatus}
     ${weekDebugStatus}
+    ${yearDebugStatus}
     ---
     Stats
     - ${caloriesBurned} calories burned
@@ -179,7 +256,17 @@ function logDashboardToDebug (breakdown: Breakdown, stats: Stats) {
 }
 
 function getTodayStatus (breakdown: Breakdown) {
-  const { aheadOfGoalForToday, milesNeededToBeOnTrackToday, untilEndOfTodayDifference } = breakdown
+  const {
+    accomplishedChallenge,
+    aheadOfGoalForToday,
+    isOver,
+    milesNeededToBeOnTrackToday,
+    untilEndOfTodayDifference,
+  } = breakdown
+
+  if (isOver || accomplishedChallenge) {
+    return []
+  }
 
   if (aheadOfGoalForToday) {
     return [
@@ -202,12 +289,18 @@ function getTodayStatus (breakdown: Breakdown) {
 
 function getWeekStatus (breakdown: Breakdown) {
   const {
+    accomplishedChallenge,
     aheadOfGoalForWeek,
+    isOver,
     milesNeededToBeOnTrackToday,
     untilEndOfWeekendDifference,
     daysLeftThroughWeekendExcludingToday,
     milesPerDayNeededToBeOnTrackThroughWeekend,
   } = breakdown
+
+  if (isOver || accomplishedChallenge) {
+    return []
+  }
 
   if (aheadOfGoalForWeek) {
     return [
@@ -242,7 +335,44 @@ function getWeekStatus (breakdown: Breakdown) {
   ]
 }
 
-async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token: string, blockId: string, date: Dayjs) {
+function getYearStatus (breakdown: Breakdown) {
+  const {
+    accomplishedChallenge,
+    isOver,
+    milesNeededToCompleteChallenge,
+    daysLeftInYear,
+    milesPerDayNeededToBeOnTrackThroughYear,
+  } = breakdown
+
+  if (accomplishedChallenge) {
+    return [
+      p([t('🎉 You completed the challenge! 🎉')], 'green'),
+    ]
+  }
+
+  if (isOver) {
+    return [
+      p([
+        t('😭 You failed the challenge by '),
+        t(`${toTwoDecimals(milesNeededToCompleteChallenge)}`, true),
+        t(` ${pluralize(milesNeededToCompleteChallenge, 'mile')}`),
+      ], 'red'),
+    ]
+  }
+
+  return [
+    p([t('Needed to complete the challenge')]),
+    li([
+      t(`${toTwoDecimals(milesNeededToCompleteChallenge)}`, true),
+      t(` ${pluralize(milesNeededToCompleteChallenge, 'mile')} / ${daysLeftInYear} ${pluralize(daysLeftInYear, 'day')}`),
+    ]),
+    li([
+      t(`${toTwoDecimals(milesPerDayNeededToBeOnTrackThroughYear)}`, true),
+      t(` ${pluralize(milesPerDayNeededToBeOnTrackThroughYear, 'mile')} per day`),
+    ]),
+  ]
+}
+async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token: string, blockId: string, date: Dayjs, isDryRun: boolean) {
   const {
     totalProgressMade,
     yearlyGoal,
@@ -250,9 +380,13 @@ async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token
   } = breakdown
   const { caloriesBurned, totalTime, totalWorkouts } = stats
 
-  await clearExistingBlocks(token, blockId)
-
   logDashboardToDebug(breakdown, stats)
+
+  if (isDryRun) {
+    return
+  }
+
+  await clearExistingBlocks(token, blockId)
 
   const blocks = compact([
     p([
@@ -266,6 +400,7 @@ async function updateFitnessDashboard (breakdown: Breakdown, stats: Stats, token
     makeDivider(),
     ...getTodayStatus(breakdown),
     ...getWeekStatus(breakdown),
+    ...getYearStatus(breakdown),
     makeDivider(),
     p([t('Stats')]),
     makeStat(caloriesBurned, ' calories burned'),
@@ -285,6 +420,7 @@ function toTwoDecimals (value: number) {
 }
 
 interface UpdateFitnessProps {
+  isDryRun: boolean
   mmfToken: string
   mmfApiKey: string
   mmfUserId: string
@@ -293,7 +429,10 @@ interface UpdateFitnessProps {
 }
 
 export async function updateFitness (props: UpdateFitnessProps) {
-  const { mmfToken, mmfApiKey, mmfUserId, notionToken, notionFitnessId } = props
+  const { isDryRun, mmfToken, mmfApiKey, mmfUserId, notionToken, notionFitnessId } = props
+
+  debug(isDryRun ? 'Dry run' : 'Updating fitness')
+
   const dates = getDates()
   const { changed, challengeDetails } = await getChallengeDetails(mmfToken, mmfApiKey, mmfUserId, dates.now)
 
@@ -306,6 +445,9 @@ export async function updateFitness (props: UpdateFitnessProps) {
   const breakdown = getBreakdown(challengeDetails.progress, dates)
   const stats = getStats(challengeDetails.stats)
 
-  await updateFitnessDashboard(breakdown, stats, notionToken, notionFitnessId, dates.now)
-  await setCachedValue(mmfUserId, challengeDetails, dates.now)
+  await updateFitnessDashboard(breakdown, stats, notionToken, notionFitnessId, dates.now, isDryRun)
+
+  if (!isDryRun) {
+    await setCachedValue(mmfUserId, challengeDetails, dates.now)
+  }
 }

@@ -20,15 +20,20 @@ export interface ChallengeDetails {
     goal: number
     currentScore: number
   }
-  stats: Record<MMFChallengeStat['name'], number>
+  stats: Record<MMFChallengeStat['name'], number | undefined>
 }
 
 export interface Breakdown {
+  accomplishedChallenge: boolean
   aheadOfGoalForToday: boolean
   aheadOfGoalForWeek: boolean
   daysLeftThroughWeekendExcludingToday: number
+  daysLeftInYear: number
+  isOver: boolean
   milesNeededToBeOnTrackToday: number
+  milesNeededToCompleteChallenge: number
   milesPerDayNeededToBeOnTrackThroughWeekend: number
+  milesPerDayNeededToBeOnTrackThroughYear: number
   totalProgressMade: number
   untilEndOfTodayDifference: number
   untilEndOfWeekendDifference: number

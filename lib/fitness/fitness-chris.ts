@@ -1,3 +1,5 @@
+import minimist from 'minimist'
+
 import { getEnv } from '../util/env'
 import { debug } from '../util/debug'
 import { updateFitness } from './fitness'
@@ -8,9 +10,10 @@ export default async function main () {
   const mmfUserId = getEnv('MMF_CHRIS_USER_ID')!
   const notionToken = getEnv('NOTION_TOKEN')!
   const notionFitnessId = getEnv('NOTION_CHRIS_FITNESS_ID')!
+  const isDryRun = minimist(process.argv.slice(2)).dryRun
 
   try {
-    await updateFitness({ mmfToken, mmfApiKey, mmfUserId, notionToken, notionFitnessId })
+    await updateFitness({ isDryRun, mmfToken, mmfApiKey, mmfUserId, notionToken, notionFitnessId })
 
     debug('Successfully updated fitness')
   } catch (error: any) {
