@@ -1,9 +1,5 @@
 module.exports = [
   {
-    name: 'every-five-minutes',
-    interval: 'every 5 minutes starting on the 2nd minute',
-  },
-  {
     name: 'quarter-hourly',
     interval: 'every 15 minutes',
   },
