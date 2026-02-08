@@ -3,7 +3,7 @@ import type {
   ApiColor,
   BlockObjectResponse,
   RichTextItemResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+} from '@notionhq/client'
 
 import type { Block, Content, NotionBlock, OwnBlock } from '../types'
 import { richTextToPlainText } from './conversions'

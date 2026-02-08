@@ -1,4 +1,4 @@
-import type { ChildPageBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { ChildPageBlockObjectResponse } from '@notionhq/client'
 import minimist from 'minimist'
 
 import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'

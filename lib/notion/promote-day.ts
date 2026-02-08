@@ -77,6 +77,7 @@ async function moveNextDayUp ({ notionToken, questsId, upcomingId }: Details) {
     blocks,
     notionToken,
     pageId: questsId,
+    ...(afterId && { position: 'afterBlock' as const }),
   })
 
   for (const { id } of blocks) {

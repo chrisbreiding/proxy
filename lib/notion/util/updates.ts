@@ -1,29 +1,30 @@
 import type {
   BlockObjectResponse,
   CreatePageResponse,
+  ContentPositionSchema,
   ListBlockChildrenResponse,
   PartialBlockObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+} from '@notionhq/client'
 import type { Block, NotionBlock, OutgoingBlock, OwnBlock } from '../types'
 import { makeRequest } from './requests'
 import { convertBlockToOutgoingBlock } from './conversions'
-import { areIdsEqual, getBlocksChildrenDepth } from './general'
+import { getBlocksChildrenDepth } from './general'
 import { chunk } from '../../util/collections'
 
 interface MakeAppendRequestOptions {
-  afterId?: string
   blocks: OutgoingBlock[]
   notionToken: string
   pageId: string
+  position?: ContentPositionSchema
 }
 
-export function makeAppendRequest ({ afterId, notionToken, pageId, blocks }: MakeAppendRequestOptions) {
+export function makeAppendRequest ({ blocks, notionToken, pageId, position }: MakeAppendRequestOptions) {
   return makeRequest<ListBlockChildrenResponse>({
     notionToken,
     method: 'patch',
     path: `blocks/${pageId}/children`,
     body: {
-      after: afterId,
+      ...(position && { position }),
       children: blocks,
     },
   })
@@ -31,25 +32,24 @@ export function makeAppendRequest ({ afterId, notionToken, pageId, blocks }: Mak
   /* v8 ignore next -- @preserve */
 }
 
-async function appendContiguousChildren ({ afterId, blocks, notionToken, pageId }: MakeAppendRequestOptions) {
+async function appendContiguousChildren ({ blocks, notionToken, pageId, position }: MakeAppendRequestOptions) {
   const chunksOfBlocks = chunk(blocks, 100)
   let allResults = [] as (PartialBlockObjectResponse | BlockObjectResponse)[]
-  let currentAfterId = afterId
+  let currentPosition = position
 
   for (const chunkOfBlocks of chunksOfBlocks) {
     const { results } = await makeAppendRequest({
-      afterId: currentAfterId,
       blocks: chunkOfBlocks,
       notionToken,
       pageId,
+      position: currentPosition,
     })
 
-    if (afterId) {
-      currentAfterId = getAfterId({
-        numAdded: chunkOfBlocks.length,
-        previousAfterId: currentAfterId,
-        results,
-      })
+    if (position) {
+      currentPosition = {
+        type: 'after_block',
+        after_block: { id: results[results.length - 1].id },
+      }
     }
 
     allResults = allResults.concat(results)
@@ -58,15 +58,34 @@ async function appendContiguousChildren ({ afterId, blocks, notionToken, pageId 
   return { results: allResults }
 }
 
-interface AppendBlockChildrenOptions {
+export type AppendBlockChildrenPosition = 'start' | 'end' | 'afterBlock'
+
+export interface AppendBlockChildrenOptions {
   afterId?: string
   blocks: OwnBlock[]
   notionToken: string
   pageId: string
+  position?: AppendBlockChildrenPosition
+}
+
+interface InternalAppendBlockChildrenOptions {
+  blocks: OwnBlock[]
+  notionToken: string
+  pageId: string
+  position?: ContentPositionSchema
+}
+
+function toBlockChildrenPosition (
+  position: AppendBlockChildrenPosition | undefined,
+  afterId: string | undefined,
+): ContentPositionSchema | undefined {
+  if (position === 'start') return { type: 'start' }
+  if (position === 'afterBlock' && afterId) return { type: 'after_block', after_block: { id: afterId } }
+  return undefined // 'end' or default
 }
 
 // appends block children with a limit of 2 levels of nesting
-async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
+async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ blocks, notionToken, pageId, position }: InternalAppendBlockChildrenOptions) {
   function moveChildren (blocks: NotionBlock[] | OwnBlock[]) {
     return blocks.map((block) => {
       const convertedBlock = convertBlockToOutgoingBlock(block)
@@ -81,31 +100,16 @@ async function appendBlockChildrenWithUpToTwoLevelsOfNesting ({ afterId, notionT
   }
 
   return appendContiguousChildren({
-    afterId,
     blocks: moveChildren(blocks),
     notionToken,
     pageId,
+    position,
   })
 }
 
-interface GetAfterIdOptions {
-  numAdded: number
-  previousAfterId?: string
-  results: (BlockObjectResponse | PartialBlockObjectResponse)[]
-}
-
-function getAfterId ({ numAdded, previousAfterId, results }: GetAfterIdOptions) {
-  if (!previousAfterId) return results[results.length - 1].id
-
-  const previousAfterIndex = results.findIndex((block) => areIdsEqual(block.id, previousAfterId))
-  const nextAfter = results[previousAfterIndex + numAdded]
-
-  return nextAfter.id
-}
-
 // appends blocks children with no limit to the levels of nesting
-async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, pageId, blocks }: AppendBlockChildrenOptions) {
-  let currentAfterId = afterId
+async function appendBlockChildrenWithUnlimitedNesting ({ blocks, notionToken, pageId, position }: InternalAppendBlockChildrenOptions) {
+  let currentPosition = position
   let toAppend: OutgoingBlock[] = []
 
   for (const block of blocks) {
@@ -117,20 +121,15 @@ async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, 
       toAppend.push(convertedBlock)
 
       const { results } = await appendContiguousChildren({
-        afterId: currentAfterId,
+        blocks: toAppend,
         notionToken,
         pageId,
-        blocks: toAppend,
+        position: currentPosition,
       })
 
-      const lastAddedId = getAfterId({
-        numAdded: toAppend.length,
-        previousAfterId: currentAfterId,
-        results,
-      })
-
-      if (afterId) {
-        currentAfterId = lastAddedId
+      const lastAddedId = results[results.length - 1].id
+      if (position) {
+        currentPosition = { type: 'after_block', after_block: { id: lastAddedId } }
       }
 
       toAppend = []
@@ -148,19 +147,24 @@ async function appendBlockChildrenWithUnlimitedNesting ({ afterId, notionToken, 
   if (!toAppend.length) return
 
   return appendContiguousChildren({
-    afterId: currentAfterId,
+    blocks: toAppend,
     notionToken,
     pageId,
-    blocks: toAppend,
+    position: currentPosition,
   })
 }
 
 export async function appendBlockChildren (options: AppendBlockChildrenOptions) {
-  if (getBlocksChildrenDepth(options.blocks) > 2) {
-    return appendBlockChildrenWithUnlimitedNesting(options)
+  const internalOptions: InternalAppendBlockChildrenOptions = {
+    blocks: options.blocks,
+    notionToken: options.notionToken,
+    pageId: options.pageId,
+    position: toBlockChildrenPosition(options.position, options.afterId),
   }
-
-  return appendBlockChildrenWithUpToTwoLevelsOfNesting(options)
+  if (getBlocksChildrenDepth(options.blocks) > 2) {
+    return appendBlockChildrenWithUnlimitedNesting(internalOptions)
+  }
+  return appendBlockChildrenWithUpToTwoLevelsOfNesting(internalOptions)
 }
 
 interface UpdateBlockOptions {

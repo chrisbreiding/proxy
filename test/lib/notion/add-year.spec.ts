@@ -81,7 +81,7 @@ describe('lib/notion/add-year', () => {
     const snapshots = [
       snapshotAppendChildren({
         id: 'future-page-id',
-        after: 'first-block-id',
+        prepend: true,
         reply: { results: [
           block.p({ id: 'first-block-id' }),
           ...times(100).map((_, i) => block.bullet({ id: `block-id-${i + 1}` })),
@@ -149,8 +149,8 @@ describe('lib/notion/add-year', () => {
 
     const snapshots = [
       snapshotAppendChildren({
-        after: 'first-block-id',
         id: 'future-page-id',
+        prepend: true,
         reply: { results: [
           { id: 'first-block-id' },
           { id: '' }, { id: '' }, { id: '' },
@@ -197,7 +197,7 @@ describe('lib/notion/add-year', () => {
     const snapshots = [
       snapshotAppendChildren({
         id: 'future-page-id',
-        after: 'first-block-id',
+        prepend: true,
         reply: { results: [
           block.p({ id: 'first-block-id' }),
           ...times(100).map((_, i) => block.bullet({ id: `block-id-${i + 1}` })),
@@ -244,7 +244,7 @@ describe('lib/notion/add-year', () => {
 
     const snapshot = snapshotAppendChildren({
       id: 'future-page-id',
-      after: 'first-block-id',
+      prepend: true,
       reply: { results: times(23, block.bullet()) },
     })
 

@@ -294,7 +294,12 @@ async function addFollowingWeek ({ notionToken, upcomingId }: Details) {
   const upcomingBlocks = await getBlockChildrenDeep({ notionToken, pageId: upcomingId })
   const { blocks, idsOfExtrasUsed, lastQuestId } = await getDayBlocks({ notionToken, upcomingBlocks })
 
-  await appendBlockChildren({ afterId: lastQuestId, notionToken, blocks, pageId: upcomingId })
+  await appendBlockChildren({
+    ...(lastQuestId && { afterId: lastQuestId, position: 'afterBlock' as const }),
+    blocks,
+    notionToken,
+    pageId: upcomingId,
+  })
   await deleteExtrasUsed({ idsOfExtrasUsed, notionToken })
 }
 

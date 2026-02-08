@@ -1,4 +1,4 @@
-import type { BlockObjectResponse, RichTextItemResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { BlockObjectResponse, RichTextItemResponse } from '@notionhq/client'
 import type { Block, NotionBlock, OutgoingBlock } from '../types'
 import { clone } from '../../util/collections'
 

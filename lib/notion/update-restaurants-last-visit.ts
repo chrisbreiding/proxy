@@ -1,6 +1,4 @@
-import type {
-  DateDatabasePropertyConfigResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+import type { DateDatabasePropertyConfigResponse } from '@notionhq/client'
 import dayjs from 'dayjs'
 
 import { compact } from '../util/collections'

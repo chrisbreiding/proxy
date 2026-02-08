@@ -32,7 +32,7 @@ import type {
   UnsupportedBlockObjectResponse,
   UpdateBlockBodyParameters,
   VideoBlockObjectResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+} from '@notionhq/client'
 
 export type Content = BookmarkBlockObjectResponse['bookmark']
 | BulletedListItemBlockObjectResponse['bulleted_list_item']

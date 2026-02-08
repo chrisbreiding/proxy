@@ -290,7 +290,6 @@ async function getPageIds (year: number | string, notionToken: string, futurePag
 
   return {
     extrasId,
-    afterId: blocks[0].id,
     yearTemplateId,
   }
 }
@@ -302,14 +301,19 @@ interface AddYearOptions {
 }
 
 async function addYear ({ notionToken, futurePageId, year }: AddYearOptions) {
-  const { afterId, extrasId, yearTemplateId } = await getPageIds(year, notionToken, futurePageId)
+  const { extrasId, yearTemplateId } = await getPageIds(year, notionToken, futurePageId)
 
   const yearTemplateBlocks = await getYearTemplate(yearTemplateId, notionToken)
   const extras = extrasId ? await getExtras(extrasId, notionToken) : {}
   const monthsData = getMonthsData(yearTemplateBlocks, extras)
   const blocks = makeBlocks(monthsData, year)
 
-  await appendBlockChildren({ afterId, blocks, notionToken, pageId: futurePageId })
+  await appendBlockChildren({
+    blocks,
+    notionToken,
+    pageId: futurePageId,
+    position: 'start',
+  })
 }
 
 export async function addNextYear (

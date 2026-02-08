@@ -1,4 +1,4 @@
-import type { BlockObjectResponse, ListBlockChildrenResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { BlockObjectResponse, ContentPositionSchema, ListBlockChildrenResponse } from '@notionhq/client'
 import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { NotionToMarkdown } from 'notion-to-md'
@@ -247,12 +247,14 @@ async function convertBlocksToMarkdown (blocks: OutgoingBlock[]) {
 interface AppendShape {
   after?: string
   children: OutgoingBlock[]
+  position?: ContentPositionSchema
 }
 
 interface SnapshotAppendChildrenOptions extends AppendOptions {
   after?: string
   message?: string
   token?: string
+  prepend?: true
 }
 
 async function assertSnapshot (content: any, message?: string) {
@@ -270,12 +272,19 @@ export async function snapshotAppendChildren (options: SnapshotAppendChildrenOpt
   const scope = nockAppendBlockChildren(options)
   const body = await getAppendBody(scope)
 
-  if (options.after) {
-    expect(body.after, 'The after ID does not match').to.equal(options.after)
+  if (options.prepend) {
+    expect(body.position?.type, 'Expected position type start').to.equal('start')
   }
 
-  if (body.after && !options.after) {
-    throw new Error(`snapshotAppendChildren: need to assert the after id: ${body.after}`)
+  if (options.after) {
+    expect(body.position?.type, 'Expected position type after_block').to.equal('after_block')
+    if (body.position?.type === 'after_block') {
+      expect(body.position.after_block.id, 'The after block ID does not match').to.equal(options.after)
+    }
+  }
+
+  if (body.position?.type === 'after_block' && body.position?.after_block?.id && !options.after) {
+    throw new Error(`snapshotAppendChildren: need to assert the after id: ${body.position.after_block.id}`)
   }
 
   await assertSnapshot(body.children, options.message)

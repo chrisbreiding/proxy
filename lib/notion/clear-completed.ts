@@ -1,5 +1,5 @@
 import type express from 'express'
-import type { ToDoBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import type { ToDoBlockObjectResponse } from '@notionhq/client'
 
 import type { Block, NotionBlock, SendError, SendSuccess } from './types'
 import { getBlockPlainText, makeBlock } from './util/general'
@@ -142,6 +142,7 @@ async function clearPage ({ notionToken, pageId }: ClearPageOptions) {
       blocks: [makeBlock({ type: 'to_do' })],
       notionToken,
       pageId: block.parentId,
+      position: 'afterBlock',
     })
   }
 
@@ -150,7 +151,7 @@ async function clearPage ({ notionToken, pageId }: ClearPageOptions) {
   const dividerId = await getRecentlyClearedDivider({ notionToken, pageId: recentlyClearedToggle.id })
 
   await appendBlockChildren({
-    afterId: dividerId,
+    ...(dividerId && { afterId: dividerId, position: 'afterBlock' as const }),
     blocks: blocksToAppend,
     notionToken,
     pageId: recentlyClearedToggle.id,

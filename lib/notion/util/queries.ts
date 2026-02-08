@@ -3,7 +3,7 @@ import type {
   ListBlockChildrenResponse,
   QueryDataSourceBodyParameters,
   QueryDataSourceResponse,
-} from '@notionhq/client/build/src/api-endpoints'
+} from '@notionhq/client'
 
 import { compact } from '../../util/collections'
 import type { DataSource, NotionBlock } from '../types'

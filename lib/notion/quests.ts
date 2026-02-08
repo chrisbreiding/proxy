@@ -71,6 +71,7 @@ export async function addSarahTodo (req: express.Request, res: express.Response)
     })],
     notionToken: sarahNotionToken,
     pageId: sarahTodoId,
+    ...(afterId && { position: 'afterBlock' as const }),
   })
 
   res.sendStatus(200)
@@ -92,6 +93,7 @@ export async function addQuest (req: express.Request, res: express.Response) {
     })],
     notionToken,
     pageId: questsId,
+    ...(afterId && { position: 'afterBlock' as const }),
   })
 
   res.sendStatus(200)
