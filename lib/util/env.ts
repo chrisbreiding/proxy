@@ -3,7 +3,7 @@ import { readJsonSync } from 'fs-extra'
 type EnvFile = { [key: string]: any }
 
 const isDevelopment = process.env.NODE_ENV === 'development'
-const isTest = process.env.NODE_ENV === 'test'
+const isTest = process.env.TEST === 'true'
 /* v8 ignore next -- @preserve */
 const envFile: EnvFile = isDevelopment || isTest ? readJsonSync('./.env') : {}
 
