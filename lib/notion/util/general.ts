@@ -83,16 +83,22 @@ export function makeTextPart (content: string, color?: ApiColor) {
   return textPart
 }
 
-// export function makeRichText (text: string, annotations?: RichTextItem['annotations']) {
-//   return {
-//     type: 'text',
-//     text: {
-//       content: text,
-//     },
-//     annotations,
-//     plain_text: text,
-//   } as RichTextItemResponse
-// }
+interface MakeRichTextOptions {
+  annotations?: RichTextItem['annotations']
+  link?: { url: string }
+}
+
+export function makeRichText (text: string, { annotations, link }: MakeRichTextOptions = {}) {
+  return {
+    type: 'text',
+    text: {
+      content: text,
+      link,
+    },
+    annotations,
+    plain_text: text,
+  } as RichTextItemResponse
+}
 
 // compare guids without dashes in case one does not include dashes
 export function areIdsEqual (id1: string, id2: string) {

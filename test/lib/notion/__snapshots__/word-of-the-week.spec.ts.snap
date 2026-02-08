@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > updates word block with rich text from checked to-do 1`] = `
+"- **Promoted word** {💙}: Definition from feed
+"
+`;
+
+exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > deletes existing to_do blocks and prepends new blocks from wordsOfTheDay 1`] = `
+"- [ ] **Feed Word** {💙}: Definition from feed
+- [ ] **Later Word** {💙}: Later definition
+"
+`;
+
+exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > filters out words with no title or shortDef > empty feed item fallbacks 1`] = `
+"- [ ] **Feed Word** {💙}: Definition from feed
+"
+`;
+
+exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > prepends blocks when heading has no to_do blocks 1`] = `
+"- [ ] **Feed Word** {💙}: Definition from feed
+- [ ] **Later Word** {💙}: Later definition
+"
+`;

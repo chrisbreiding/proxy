@@ -1,4 +1,4 @@
-import type { BlockObjectResponse, ContentPositionSchema, ListBlockChildrenResponse } from '@notionhq/client'
+import type { BlockObjectResponse, ContentPositionSchema, ListBlockChildrenResponse, RichTextItemResponse } from '@notionhq/client'
 import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { NotionToMarkdown } from 'notion-to-md'
@@ -101,7 +101,7 @@ export function nockDeleteBlock (id: string) {
   .reply(200)
 }
 
-export function richText (text?: string) {
+export function richText (text?: string, annotations?: Partial<RichTextItemResponse['annotations']>) {
   if (!text) return []
 
   return [
@@ -111,7 +111,7 @@ export function richText (text?: string) {
         content: text,
         link: null,
       },
-      annotations: {
+      annotations: annotations || {
         bold: false,
         italic: false,
         strikethrough: false,

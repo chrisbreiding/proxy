@@ -15,4 +15,8 @@ module.exports = [
     name: 'nightly2',
     interval: 'at 3:07 am',
   },
+  {
+    name: 'nightly3',
+    interval: 'at 4:07 am',
+  },
 ]

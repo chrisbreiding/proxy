@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { getBlocksChildrenDepth, makeBlock } from '../../../../lib/notion/util/general'
-import type { OwnBlock } from '../../../../lib/notion/types'
+import { areIdsEqual, getBlocksChildrenDepth, makeBlock } from '../../../../lib/notion/util/general'
+import type { Block, OwnBlock } from '../../../../lib/notion/types'
 
 function block (children?: OwnBlock[]) {
   return makeBlock({
@@ -61,6 +61,30 @@ describe('lib/notion/util/general', () => {
       expect(getBlocksChildrenDepth(blocksWithDepth1)).to.equal(1)
       expect(getBlocksChildrenDepth(blocksWithDepth2)).to.equal(2)
       expect(getBlocksChildrenDepth(blocksWithDepth3)).to.equal(3)
+    })
+
+    it('returns 0 for single block with no children', () => {
+      const leafBlock = makeBlock({ text: 'leaf', type: 'paragraph' })
+      expect(getBlocksChildrenDepth([leafBlock])).to.equal(0)
+    })
+
+    it('returns depth when block has no children property', () => {
+      const blockWithNoChildrenKey = { type: 'paragraph', content: {} } as Block
+      expect(getBlocksChildrenDepth([blockWithNoChildrenKey], 0)).to.equal(0)
+    })
+  })
+
+  describe('#areIdsEqual', () => {
+    it('returns true when ids are equal', () => {
+      expect(areIdsEqual('abc-123', 'abc-123')).to.equal(true)
+    })
+
+    it('returns true when ids are equal without dashes', () => {
+      expect(areIdsEqual('abc123', 'abc-123')).to.equal(true)
+    })
+
+    it('returns false when ids differ', () => {
+      expect(areIdsEqual('abc-123', 'xyz-456')).to.equal(false)
     })
   })
 })

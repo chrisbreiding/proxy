@@ -4,6 +4,7 @@ import { clearCompleted, deleteRecentlyCleared } from './clear-completed'
 import { promoteDay } from './promote-day'
 import { addUpcomingWeek } from './upcoming-week'
 import { sendHtml, sendHtmlError } from './util/general'
+import { promoteWordOfTheWeek } from './word-of-the-week'
 
 function sendSuccess (res: express.Response, message: string) {
   sendHtml(res, 200,
@@ -51,6 +52,8 @@ export function action (req: express.Request, res: express.Response) {
       return deleteRecentlyCleared(req, onSuccess, onError)
     case 'promoteDay':
       return promoteDay(req, onSuccess, onError)
+    case 'promoteWordOfTheWeek':
+      return promoteWordOfTheWeek(req, onSuccess, onError)
     default:
       sendHtml(res, 400, `<p>Action not supported: ${action}</p>`)
   }

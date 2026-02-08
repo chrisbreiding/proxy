@@ -21,6 +21,7 @@
     "start": "TZ='America/New_York' NODE_ENV=development DEBUG=proxy nf start --procfile ./Procfile_dev --port 3333",
     "dev": "TZ='America/New_York' DEBUG=proxy,proxy:verbose nodemon ./index.ts",
     "run-script": "NODE_ENV=development DEBUG=proxy node ./scripts/run-script.js",
+    "run-script-test": "NODE_ENV=test DEBUG=proxy node ./scripts/run-script.js",
     "test": "npm run ts-check && TZ='America/New_York' vitest run --coverage",
     "test-single": "NODE_ENV=development TZ='America/New_York' vitest run",
     "test-watch": "TZ='America/New_York' vitest"
@@ -48,6 +49,7 @@
     "minimist": "^1.2.8",
     "mixpanel": "^0.19.1",
     "morgan": "^1.10.1",
+    "rss-parser": "^3.13.0",
     "socket.io": "^4.8.1",
     "uuid": "^13.0.0"
   },
