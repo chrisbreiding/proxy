@@ -1,4 +1,5 @@
 import type { ToDoBlockObjectResponse } from '@notionhq/client'
+import dayjs from 'dayjs'
 import type express from 'express'
 import Parser from 'rss-parser'
 
@@ -22,7 +23,7 @@ interface WordOfTheDayFeedItem {
 interface WordOfTheDay {
   title: string
   link: string
-  pubDate: string
+  pubDate: dayjs.Dayjs
   shortDef: string
 }
 
@@ -30,7 +31,7 @@ function parseItem (item: WordOfTheDayFeedItem): WordOfTheDay {
   return {
     title: item.title || '',
     link: item.link || '',
-    pubDate: item.pubDate || new Date().toISOString(),
+    pubDate: dayjs(item.pubDate),
     shortDef: item['merriam:shortdef'] || '',
   }
 }
@@ -48,9 +49,8 @@ export async function getRecentWordsOfTheDay (): Promise<WordOfTheDay[]> {
 
   return feed.items
   .map(parseItem)
-  .sort(
-    (a, b) => new Date(a.pubDate).getTime() - new Date(b.pubDate).getTime(),
-  )
+  // sort with newest first
+  .sort((a, b) => b.pubDate.diff(a.pubDate))
 }
 
 interface UpdateWordOfTheWeekOptions {
@@ -80,6 +80,9 @@ export async function updateWordOfTheWeek ({ notionToken, wordOfTheWeekHeadingId
             link: word.link ? { url: word.link } : undefined,
           }),
           makeRichText(`: ${word.shortDef}`),
+          makeRichText(` (${word.pubDate.format('MMM D')})`, {
+            annotations: { italic: true },
+          }),
         ],
         checked: false,
       },

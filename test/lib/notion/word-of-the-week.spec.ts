@@ -70,6 +70,7 @@ describe('lib/notion/word-of-the-week', () => {
               rich_text: [
                 ...richText('Promoted word', { bold: true, color: 'blue' }),
                 ...richText(': Definition from feed'),
+                ...richText(' (Jan 1)', { italic: true }),
               ],
               checked: true,
             },
