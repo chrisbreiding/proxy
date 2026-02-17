@@ -1,23 +1,33 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > skips archiving when current word block has no rich text 1`] = `
+"- **Promoted word** {💙}
+"
+`;
+
+exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > updates word block with rich text from checked to-do > archives current word to previous words 1`] = `
+"- Current word
+"
+`;
+
 exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > updates word block with rich text from checked to-do 1`] = `
 "- **Promoted word** {💙}: Definition from feed _(Jan 1)_
 "
 `;
 
-exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > deletes existing to_do blocks and prepends new blocks from wordsOfTheDay 1`] = `
-"- [ ] **Later Word** {💙}: Later definition _(Feb 10)_
+exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > deletes existing to_do blocks and prepends new blocks from wordsOfTheDay 1`] = `
+"- [ ] **Later Word** {💙}: Later definition _(Feb 16)_
 - [ ] **Feed Word** {💙}: Definition from feed _(Jan 1)_
 "
 `;
 
-exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > filters out words with no title or shortDef > empty feed item fallbacks 1`] = `
+exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > filters out words with no title or shortDef > empty feed item fallbacks 1`] = `
 "- [ ] **Feed Word** {💙}: Definition from feed _(Jan 1)_
 "
 `;
 
-exports[`lib/notion/word-of-the-week > updateWordOfTheWeek > prepends blocks when heading has no to_do blocks 1`] = `
-"- [ ] **Later Word** {💙}: Later definition _(Feb 10)_
+exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > prepends blocks when heading has no to_do blocks 1`] = `
+"- [ ] **Later Word** {💙}: Later definition _(Feb 16)_
 - [ ] **Feed Word** {💙}: Definition from feed _(Jan 1)_
 "
 `;

@@ -2,12 +2,13 @@ import nock from 'nock'
 import { describe, expect, it } from 'vitest'
 
 import { startServer } from '../../../index'
-import { updateWordOfTheWeek } from '../../../lib/notion/word-of-the-week'
+import { updateAutoWordsOfTheWeek } from '../../../lib/notion/word-of-the-week'
 import { RequestError, handleServer } from '../../util'
 import {
   block,
   listResults,
   nockDeleteBlock,
+  nockGetBlock,
   nockGetBlockChildren,
   nockNotion,
   richText,
@@ -55,14 +56,16 @@ describe('lib/notion/word-of-the-week', () => {
       return toQueryString({
         action: 'promoteWordOfTheWeek',
         notionToken: 'notion-token',
-        headingId: 'heading-id',
+        autoWordsId: 'auto-words-id',
+        myWordsId: 'my-words-id',
+        previousWordsId: 'previous-words-id',
         wordId: 'word-id',
         ...updates,
       })
     }
 
     it('updates word block with rich text from checked to-do', async (ctx) => {
-      nockGetBlockChildren('heading-id', {
+      nockGetBlockChildren('my-words-id', {
         reply: listResults([
           block.to_do({
             id: 'todo-1',
@@ -77,22 +80,68 @@ describe('lib/notion/word-of-the-week', () => {
           }),
         ]),
       })
+      nockGetBlockChildren('auto-words-id', {
+        reply: listResults([]),
+      })
+      nockGetBlock('word-id', {
+        reply: block.bullet({ id: 'word-id', text: 'Current word' }),
+      })
 
-      const snapshot = snapshotUpdateBlock('word-id')
+      const appendSnapshot = snapshotAppendChildren({
+        id: 'previous-words-id',
+        reply: { results: [block.bullet()] },
+        message: 'archives current word to previous words',
+      })
+
+      const updateSnapshot = snapshotUpdateBlock('word-id')
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
       expect(res.status).to.equal(200)
       expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
       expect(res.text).to.include('Word of the Week successfully promoted!')
 
-      await snapshot
+      await appendSnapshot
+      await updateSnapshot
+    })
+
+    it('skips archiving when current word block has no rich text', async (ctx) => {
+      nockGetBlockChildren('my-words-id', {
+        reply: listResults([
+          block.to_do({
+            id: 'todo-1',
+            content: {
+              rich_text: [
+                ...richText('Promoted word', { bold: true, color: 'blue' }),
+              ],
+              checked: true,
+            },
+          }),
+        ]),
+      })
+      nockGetBlockChildren('auto-words-id', {
+        reply: listResults([]),
+      })
+      nockGetBlock('word-id', {
+        reply: block({ id: 'word-id', type: 'divider', content: {} }),
+      })
+
+      const updateSnapshot = snapshotUpdateBlock('word-id')
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.status).to.equal(200)
+      expect(res.text).to.include('Word of the Week successfully promoted!')
+
+      await updateSnapshot
     })
 
     it('succeeds without updating when no to-do is checked', async (ctx) => {
-      nockGetBlockChildren('heading-id', {
+      nockGetBlockChildren('my-words-id', {
         reply: listResults([
           block.to_do({ id: 'todo-1', text: 'Unchecked word' }),
         ]),
+      })
+      nockGetBlockChildren('auto-words-id', {
+        reply: listResults([]),
       })
 
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
@@ -108,10 +157,24 @@ describe('lib/notion/word-of-the-week', () => {
       expect(res.status).to.equal(400)
     })
 
-    it('sends 400 with error if no headingId specified', async (ctx) => {
-      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ headingId: null })}`)
+    it('sends 400 with error if no autoWordsId specified', async (ctx) => {
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ autoWordsId: null })}`)
 
-      expect(res.text).to.include('A value for <em>headingId</em> must be provided in the query string')
+      expect(res.text).to.include('A value for <em>autoWordsId</em> must be provided in the query string')
+      expect(res.status).to.equal(400)
+    })
+
+    it('sends 400 with error if no myWordsId specified', async (ctx) => {
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ myWordsId: null })}`)
+
+      expect(res.text).to.include('A value for <em>myWordsId</em> must be provided in the query string')
+      expect(res.status).to.equal(400)
+    })
+
+    it('sends 400 with error if no previousWordsId specified', async (ctx) => {
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery({ previousWordsId: null })}`)
+
+      expect(res.text).to.include('A value for <em>previousWordsId</em> must be provided in the query string')
       expect(res.status).to.equal(400)
     })
 
@@ -133,7 +196,10 @@ describe('lib/notion/word-of-the-week', () => {
         },
       })
 
-      nockNotion({ error, path: '/v1/blocks/heading-id/children' })
+      nockNotion({ error, path: '/v1/blocks/my-words-id/children' })
+      nockGetBlockChildren('auto-words-id', {
+        reply: listResults([]),
+      })
 
       const query = makeQuery()
       const res = await ctx.request.get(`/notion/action/key?${query}`)
@@ -143,7 +209,7 @@ describe('lib/notion/word-of-the-week', () => {
     })
   })
 
-  describe('updateWordOfTheWeek', () => {
+  describe('updateAutoWordsOfTheWeek', () => {
     it('deletes existing to_do blocks and prepends new blocks from wordsOfTheDay', async () => {
       nock('https://www.merriam-webster.com')
       .get('/wotd/feed/rss2')
@@ -164,9 +230,9 @@ describe('lib/notion/word-of-the-week', () => {
         reply: { results: [block.to_do(), block.to_do()] },
       })
 
-      await updateWordOfTheWeek({
+      await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
-        wordOfTheWeekHeadingId: 'heading-id',
+        wordOfTheWeekAutoWordsId: 'heading-id',
       })
 
       await snapshot
@@ -187,9 +253,9 @@ describe('lib/notion/word-of-the-week', () => {
         reply: { results: [block.to_do()] },
       })
 
-      await updateWordOfTheWeek({
+      await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
-        wordOfTheWeekHeadingId: 'heading-id',
+        wordOfTheWeekAutoWordsId: 'heading-id',
       })
 
       await snapshot
@@ -213,9 +279,9 @@ describe('lib/notion/word-of-the-week', () => {
       nockNotion({ error, path: '/v1/blocks/heading-id/children' })
 
       await expect(
-        updateWordOfTheWeek({
+        updateAutoWordsOfTheWeek({
           notionToken: 'notion-token',
-          wordOfTheWeekHeadingId: 'heading-id',
+          wordOfTheWeekAutoWordsId: 'heading-id',
         }),
       ).rejects.toThrow()
     })
@@ -236,9 +302,9 @@ describe('lib/notion/word-of-the-week', () => {
         message: 'empty feed item fallbacks',
       })
 
-      await updateWordOfTheWeek({
+      await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
-        wordOfTheWeekHeadingId: 'heading-id',
+        wordOfTheWeekAutoWordsId: 'heading-id',
       })
 
       await snapshot

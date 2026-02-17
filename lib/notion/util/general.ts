@@ -1,11 +1,12 @@
 import type express from 'express'
+import type qs from 'qs'
 import type {
   ApiColor,
   BlockObjectResponse,
   RichTextItemResponse,
 } from '@notionhq/client'
 
-import type { Block, Content, NotionBlock, OwnBlock } from '../types'
+import type { Block, Content, NotionBlock, OwnBlock, SendError } from '../types'
 import { richTextToPlainText } from './conversions'
 
 export function getRichText (block: OwnBlock): RichTextItemResponse[] | undefined {
@@ -98,6 +99,25 @@ export function makeRichText (text: string, { annotations, link }: MakeRichTextO
     annotations,
     plain_text: text,
   } as RichTextItemResponse
+}
+
+export function ensureQueryParams<T extends string> (
+  query: qs.ParsedQs,
+  sendError: SendError,
+  expectedParams: T[],
+): Record<T, string> | undefined {
+  const params = {} as Record<T, string>
+
+  for (const key of expectedParams) {
+    if (typeof query[key] !== 'string') {
+      sendError(null, `A value for <em>${key}</em> must be provided in the query string`, 400)
+      return
+    }
+
+    params[key as T] = query[key] as string
+  }
+
+  return params
 }
 
 // compare guids without dashes in case one does not include dashes

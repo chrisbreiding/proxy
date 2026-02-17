@@ -10,6 +10,20 @@ import type { DataSource, NotionBlock } from '../types'
 import { convertNotionBlockToOwnBlock } from './conversions'
 import { makeRequest } from './requests'
 
+interface GetBlockOptions {
+  notionToken: string
+  blockId: string
+}
+
+export async function getBlock ({ notionToken, blockId }: GetBlockOptions) {
+  const block = await makeRequest<BlockObjectResponse>({
+    notionToken,
+    path: `blocks/${blockId}`,
+  })
+
+  return convertNotionBlockToOwnBlock(block)
+}
+
 interface GetBlockChildrenOptions {
   notionToken: string
   pageId: string

@@ -2,10 +2,11 @@ import type { BlockObjectResponse, ContentPositionSchema, ListBlockChildrenRespo
 import { readJsonSync } from 'fs-extra'
 import nock from 'nock'
 import { NotionToMarkdown } from 'notion-to-md'
-
-import { createUniqueId, fixture, getBody } from '../../util'
 import { expect } from 'vitest'
+
 import type { OutgoingBlock } from '../../../lib/notion/types'
+export { ensureQueryParams } from '../../../lib/notion/util/general'
+import { createUniqueId, fixture, getBody } from '../../util'
 
 const notionVersion = '2025-09-03'
 
@@ -53,6 +54,13 @@ export function nockNotion (options: NockOptions) {
     : options.reply
 
   return scope.reply(200, reply)
+}
+
+export function nockGetBlock (id: string, options: GetOptions = {}) {
+  nockNotion({
+    path: `/v1/blocks/${id}`,
+    ...options,
+  })
 }
 
 export function nockGetBlockChildren (id: string, options: GetOptions) {
@@ -311,3 +319,4 @@ export async function snapshotUpdateBlocks (ids: string[], options: SnapshotUpda
 
   await assertSnapshot(bodies, options.message)
 }
+

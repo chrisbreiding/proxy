@@ -7,8 +7,8 @@ import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import type { SendError, SendSuccess } from './types'
-import { makeBlock, makeRichText } from './util/general'
-import { getBlockChildren } from './util/queries'
+import { ensureQueryParams, getRichText, makeBlock, makeRichText } from './util/general'
+import { getBlock, getBlockChildren } from './util/queries'
 import { appendBlockChildren, deleteBlock, updateBlock } from './util/updates'
 
 const WOTD_FEED_URL = 'https://www.merriam-webster.com/wotd/feed/rss2'
@@ -53,14 +53,14 @@ export async function getRecentWordsOfTheDay (): Promise<WordOfTheDay[]> {
   .sort((a, b) => b.pubDate.diff(a.pubDate))
 }
 
-interface UpdateWordOfTheWeekOptions {
+interface UpdateAutoWordsOfTheWeekOptions {
   notionToken: string
-  wordOfTheWeekHeadingId: string
+  wordOfTheWeekAutoWordsId: string
 }
 
-export async function updateWordOfTheWeek ({ notionToken, wordOfTheWeekHeadingId }: UpdateWordOfTheWeekOptions) {
+export async function updateAutoWordsOfTheWeek ({ notionToken, wordOfTheWeekAutoWordsId }: UpdateAutoWordsOfTheWeekOptions) {
   const wordsOfTheDay = await getRecentWordsOfTheDay()
-  const children = await getBlockChildren({ notionToken, pageId: wordOfTheWeekHeadingId })
+  const children = await getBlockChildren({ notionToken, pageId: wordOfTheWeekAutoWordsId })
   const toDoBlocks = children.filter((block): block is typeof children[0] & { type: 'to_do' } => block.type === 'to_do')
 
   for (const block of toDoBlocks) {
@@ -90,7 +90,7 @@ export async function updateWordOfTheWeek ({ notionToken, wordOfTheWeekHeadingId
   })
 
   await appendBlockChildren({
-    pageId: wordOfTheWeekHeadingId,
+    pageId: wordOfTheWeekAutoWordsId,
     blocks: compact(blocks),
     notionToken,
     position: 'start',
@@ -99,18 +99,41 @@ export async function updateWordOfTheWeek ({ notionToken, wordOfTheWeekHeadingId
 
 interface Details {
   notionToken: string
-  headingId: string
+  autoWordsId: string
+  myWordsId: string
+  previousWordsId: string
   wordId: string
 }
 
-async function moveWord ({ notionToken, headingId, wordId }: Details) {
-  const children = await getBlockChildren({ notionToken, pageId: headingId })
-  const toDoBlocks = children.filter((block): block is typeof children[0] & { type: 'to_do' } => block.type === 'to_do')
+async function promoteWord ({ notionToken, autoWordsId, myWordsId, previousWordsId, wordId }: Details) {
+  const [autoWordsChildren, myWordsChildren] = await Promise.all([
+    getBlockChildren({ notionToken, pageId: myWordsId }),
+    getBlockChildren({ notionToken, pageId: autoWordsId }),
+  ])
+  const allChildren = [...myWordsChildren, ...autoWordsChildren]
+  const toDoBlocks = allChildren.filter((block): block is typeof allChildren[0] & { type: 'to_do' } => block.type === 'to_do')
   const checked = toDoBlocks.find((block) => (block.content as ToDoBlockObjectResponse['to_do']).checked)
 
   if (!checked) return
 
   const richText = (checked.content as ToDoBlockObjectResponse['to_do']).rich_text
+
+  const currentBlock = await getBlock({
+    notionToken,
+    blockId: wordId,
+  })
+  const currentRichText = getRichText(currentBlock)
+
+  if (currentRichText) {
+    await appendBlockChildren({
+      pageId: previousWordsId,
+      blocks: [makeBlock({
+        type: 'bulleted_list_item',
+        content: { rich_text: currentRichText },
+      })],
+      notionToken,
+    })
+  }
 
   await updateBlock({
     notionToken,
@@ -124,19 +147,19 @@ async function moveWord ({ notionToken, headingId, wordId }: Details) {
 
 export async function promoteWordOfTheWeek (req: express.Request, sendSuccess: SendSuccess, sendError: SendError) {
   try {
-    const { notionToken, headingId, wordId } = req.query
+    const params = ensureQueryParams(req.query, sendError, [
+      'notionToken',
+      'autoWordsId',
+      'myWordsId',
+      'previousWordsId',
+      'wordId',
+    ])
 
-    if (!notionToken || typeof notionToken !== 'string') {
-      return sendError(null, 'A value for <em>notionToken</em> must be provided in the query string', 400)
-    }
-    if (!headingId || typeof headingId !== 'string') {
-      return sendError(null, 'A value for <em>headingId</em> must be provided in the query string', 400)
-    }
-    if (!wordId || typeof wordId !== 'string') {
-      return sendError(null, 'A value for <em>wordId</em> must be provided in the query string', 400)
-    }
+    if (!params) return
 
-    await moveWord({ notionToken, headingId, wordId })
+    const { notionToken, autoWordsId, myWordsId, previousWordsId, wordId } = params
+
+    await promoteWord({ notionToken, autoWordsId, myWordsId, previousWordsId, wordId })
 
     sendSuccess('Word of the Week successfully promoted!')
   } catch (error: any) {
@@ -147,19 +170,19 @@ export async function promoteWordOfTheWeek (req: express.Request, sendSuccess: S
 /* v8 ignore next 25 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
-  const wordOfTheWeekHeadingId = getEnv('WORD_OF_THE_WEEK_HEADING_ID')!
+  const wordOfTheWeekAutoWordsId = getEnv('WORD_OF_THE_WEEK_AUTO_WORDS_ID')!
 
   debugVerbose('ENV:', {
     notionToken,
-    wordOfTheWeekHeadingId,
+    wordOfTheWeekAutoWordsId,
   })
 
   try {
     debug('Updating Word of the Week...')
 
-    await updateWordOfTheWeek({
+    await updateAutoWordsOfTheWeek({
       notionToken,
-      wordOfTheWeekHeadingId,
+      wordOfTheWeekAutoWordsId,
     })
 
     debug('Successfully updated Word of the Week')
