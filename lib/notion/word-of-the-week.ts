@@ -131,6 +131,7 @@ async function promoteWord ({ notionToken, autoWordsId, myWordsId, previousWords
         type: 'bulleted_list_item',
         content: { rich_text: currentRichText },
       })],
+      position: 'start',
       notionToken,
     })
   }
