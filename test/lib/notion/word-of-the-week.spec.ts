@@ -1,5 +1,5 @@
 import nock from 'nock'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { startServer } from '../../../index'
 import { updateAutoWordsOfTheWeek } from '../../../lib/notion/word-of-the-week'
@@ -210,6 +210,15 @@ describe('lib/notion/word-of-the-week', () => {
   })
 
   describe('updateAutoWordsOfTheWeek', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date(2024, 1, 16))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
     it('deletes existing to_do blocks and prepends new blocks from wordsOfTheDay', async () => {
       nock('https://www.merriam-webster.com')
       .get('/wotd/feed/rss2')
