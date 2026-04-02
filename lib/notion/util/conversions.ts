@@ -18,11 +18,17 @@ export function convertNotionBlockToOwnBlock (block: BlockObjectResponse): Notio
   }
 }
 
+function stripNullValues (obj: Record<string, any>): Record<string, any> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, value]) => value !== null),
+  )
+}
+
 export function convertBlockToOutgoingBlock (block: Block): OutgoingBlock {
   return {
     object: 'block',
     type: block.type,
-    [block.type]: block.content,
+    [block.type]: stripNullValues(block.content as Record<string, any>),
   }
 }
 
