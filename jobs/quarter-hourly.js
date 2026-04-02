@@ -2,11 +2,10 @@
 const { parentPort } = require('worker_threads')
 const { mapPromisesSerially } = require('../dist/lib/util/collections')
 
-console.log('Running quarter-hourly scripts (current weather, date extrapolation)...')
+console.log('Running quarter-hourly scripts (current weather)...')
 
 const scripts = [
   require('../dist/lib/notion/update-current-weather').default,
-  require('../dist/lib/notion/update-date-extrapolation').default,
 ]
 
 mapPromisesSerially(scripts, (script) => script())

@@ -1,8 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`lib/notion/update-date-extrapolation > updates extrapolated dates based on historical and recent dates 1`] = `
-"- 2022-10-16
-- 2022-11-18
-- 2022-12-21
-"
-`;
