@@ -73,6 +73,11 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
 
     return response.data
   } catch (error: any) {
+    // axios chains network errors (e.g. from nock replyWithError) on `cause`
+    if (!error.response && error.cause?.response) {
+      error.response = error.cause.response
+    }
+
     // axios errors can have a deep stack that doesn't reveal where `request`
     // was called from the server code, so add it to the error
     /* v8 ignore next -- @preserve */

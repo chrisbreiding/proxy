@@ -1,10 +1,9 @@
 const globals = require('globals')
+const { defineConfig } = require('eslint/config')
 const tseslint = require('typescript-eslint')
-const { FlatCompat } = require('@eslint/eslintrc')
+const crb = require('eslint-plugin-crb')
 
-const compat = new FlatCompat()
-
-module.exports = tseslint.config(
+module.exports = defineConfig(
   {
     ignores: [
       '.fixtures/**',
@@ -30,8 +29,8 @@ module.exports = tseslint.config(
         Promise: true,
       },
     },
+    rules: crb.configs.general.rules,
   },
-  ...compat.extends('plugin:crb/general'),
   // TypeScript-specific config
   {
     files: ['**/*.ts'],

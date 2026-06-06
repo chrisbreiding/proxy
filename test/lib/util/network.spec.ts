@@ -103,5 +103,25 @@ describe('lib/util/network', () => {
         expect(error.callStack).to.include('request failed')
       }
     })
+
+    it('promotes response from chained cause errors', async () => {
+      const error = new Error('failed') as Error & { response: { status: number, data: object } }
+
+      error.response = {
+        status: 401,
+        data: { more: 'info' },
+      }
+
+      nock('http://api.com')
+      .get('/')
+      .replyWithError(error)
+
+      try {
+        await request({ url: 'http://api.com' })
+        expect.fail('should have thrown')
+      } catch (caught: any) {
+        expect(caught.response?.data).to.deep.equal({ more: 'info' })
+      }
+    })
   })
 })

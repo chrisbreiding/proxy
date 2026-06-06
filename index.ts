@@ -12,6 +12,7 @@ import * as garage from './lib/garage'
 import * as location from './lib/location'
 import * as notion from './lib/notion'
 import * as dogs from './lib/dogs'
+import * as lennonLog from './lib/lennon-log'
 import * as sync from './lib/sync'
 import { createTvRoutes } from './lib/tv'
 import { debug } from './lib/util/debug'
@@ -68,6 +69,7 @@ export function startServer (port: number) {
   app.post('/garage-states/:door/:state/:key', ensureApiKey, garage.set)
   app.post('/garage/notify-on-open/:notifyOnOpen/:key', ensureApiKey, garage.setNotifyOnOpen)
   app.get('/garage/:key', ensureApiKey, garage.view)
+  app.post('/lennon-log/:key', ensureApiKey, lennonLog.add)
   app.post('/notion/quests/:key', ensureApiKey, notion.addQuest)
   app.post('/notion/sarah/todo/:key', ensureApiKey, notion.addSarahTodo)
   app.get('/notion/action/:key', ensureApiKey, notion.action)

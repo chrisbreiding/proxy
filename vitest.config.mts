@@ -8,6 +8,7 @@ export default defineConfig({
     coverage: {
       exclude: [
         '**/firebase.ts',
+        '**/google-sheets.ts',
         '**/shopping.js',
         '**/patience-diff.js',
         'test/**/*',
