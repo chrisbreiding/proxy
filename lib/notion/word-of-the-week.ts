@@ -6,7 +6,7 @@ import Parser from 'rss-parser'
 import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
-import type { SendError, SendSuccess } from './types'
+import type { NotionBlock, SendError, SendSuccess } from './types'
 import { ensureQueryParams, getRichText, makeBlock, makeRichText } from './util/general'
 import { getBlock, getBlockChildren } from './util/queries'
 import { appendBlockChildren, deleteBlock, updateBlock } from './util/updates'
@@ -56,11 +56,31 @@ export async function getRecentWordsOfTheDay (): Promise<WordOfTheDay[]> {
 interface UpdateAutoWordsOfTheWeekOptions {
   notionToken: string
   wordOfTheWeekAutoWordsId: string
+  wordOfTheWeekMyWordsId: string
 }
 
-export async function updateAutoWordsOfTheWeek ({ notionToken, wordOfTheWeekAutoWordsId }: UpdateAutoWordsOfTheWeekOptions) {
-  const wordsOfTheDay = await getRecentWordsOfTheDay()
-  const children = await getBlockChildren({ notionToken, pageId: wordOfTheWeekAutoWordsId })
+function getMyWordTitles (blocks: NotionBlock[]) {
+  const titles = new Set<string>()
+
+  for (const block of blocks) {
+    const title = getRichText(block)?.[0]?.plain_text.trim()
+
+    if (title) {
+      titles.add(title.toLowerCase())
+    }
+  }
+
+  return titles
+}
+
+export async function updateAutoWordsOfTheWeek ({ notionToken, wordOfTheWeekAutoWordsId, wordOfTheWeekMyWordsId }: UpdateAutoWordsOfTheWeekOptions) {
+  const [wordsOfTheDay, children, myWordsChildren] = await Promise.all([
+    getRecentWordsOfTheDay(),
+    getBlockChildren({ notionToken, pageId: wordOfTheWeekAutoWordsId }),
+    getBlockChildren({ notionToken, pageId: wordOfTheWeekMyWordsId }),
+  ])
+  const myWordTitles = getMyWordTitles(myWordsChildren)
+  const filteredWordsOfTheDay = wordsOfTheDay.filter((word) => !myWordTitles.has(word.title.toLowerCase()))
   const toDoBlocks = children.filter((block): block is typeof children[0] & { type: 'to_do' } => block.type === 'to_do')
 
   for (const block of toDoBlocks) {
@@ -68,7 +88,7 @@ export async function updateAutoWordsOfTheWeek ({ notionToken, wordOfTheWeekAuto
     await deleteBlock({ id: block.id, notionToken })
   }
 
-  const blocks = wordsOfTheDay.map((word) => {
+  const blocks = filteredWordsOfTheDay.map((word) => {
     if (!word.title || !word.shortDef) return undefined
 
     return makeBlock({
@@ -172,10 +192,12 @@ export async function promoteWordOfTheWeek (req: express.Request, sendSuccess: S
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const wordOfTheWeekAutoWordsId = getEnv('WORD_OF_THE_WEEK_AUTO_WORDS_ID')!
+  const wordOfTheWeekMyWordsId = getEnv('WORD_OF_THE_WEEK_MY_WORDS_ID')!
 
   debugVerbose('ENV:', {
     notionToken,
     wordOfTheWeekAutoWordsId,
+    wordOfTheWeekMyWordsId,
   })
 
   try {
@@ -184,6 +206,7 @@ export default async function main () {
     await updateAutoWordsOfTheWeek({
       notionToken,
       wordOfTheWeekAutoWordsId,
+      wordOfTheWeekMyWordsId,
     })
 
     debug('Successfully updated Word of the Week')

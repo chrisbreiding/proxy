@@ -210,6 +210,8 @@ describe('lib/notion/word-of-the-week', () => {
   })
 
   describe('updateAutoWordsOfTheWeek', () => {
+    const myWordsId = 'my-words-id'
+
     beforeEach(() => {
       vi.useFakeTimers()
       vi.setSystemTime(new Date(2024, 1, 16))
@@ -219,11 +221,18 @@ describe('lib/notion/word-of-the-week', () => {
       vi.useRealTimers()
     })
 
+    function nockEmptyMyWords () {
+      nockGetBlockChildren(myWordsId, {
+        reply: listResults([]),
+      })
+    }
+
     it('deletes existing to_do blocks and prepends new blocks from wordsOfTheDay', async () => {
       nock('https://www.merriam-webster.com')
       .get('/wotd/feed/rss2')
       .reply(200, minimalRssFeed, { 'Content-Type': 'application/xml' })
 
+      nockEmptyMyWords()
       nockGetBlockChildren('heading-id', {
         reply: listResults([
           block.to_do({ id: 'todo-1', text: 'Old word' }),
@@ -242,6 +251,7 @@ describe('lib/notion/word-of-the-week', () => {
       await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
         wordOfTheWeekAutoWordsId: 'heading-id',
+        wordOfTheWeekMyWordsId: myWordsId,
       })
 
       await snapshot
@@ -252,6 +262,7 @@ describe('lib/notion/word-of-the-week', () => {
       .get('/wotd/feed/rss2')
       .reply(200, minimalRssFeed, { 'Content-Type': 'application/xml' })
 
+      nockEmptyMyWords()
       nockGetBlockChildren('heading-id', {
         reply: listResults([block.p({ text: 'Word of the Week' })]),
       })
@@ -265,6 +276,7 @@ describe('lib/notion/word-of-the-week', () => {
       await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
         wordOfTheWeekAutoWordsId: 'heading-id',
+        wordOfTheWeekMyWordsId: myWordsId,
       })
 
       await snapshot
@@ -274,6 +286,8 @@ describe('lib/notion/word-of-the-week', () => {
       nock('https://www.merriam-webster.com')
       .get('/wotd/feed/rss2')
       .reply(200, minimalRssFeed, { 'Content-Type': 'application/xml' })
+
+      nockEmptyMyWords()
 
       const error = new RequestError('notion error', {
         code: 42,
@@ -291,6 +305,7 @@ describe('lib/notion/word-of-the-week', () => {
         updateAutoWordsOfTheWeek({
           notionToken: 'notion-token',
           wordOfTheWeekAutoWordsId: 'heading-id',
+          wordOfTheWeekMyWordsId: myWordsId,
         }),
       ).rejects.toThrow()
     })
@@ -300,6 +315,7 @@ describe('lib/notion/word-of-the-week', () => {
       .get('/wotd/feed/rss2')
       .reply(200, rssFeedWithEmptyItem, { 'Content-Type': 'application/xml' })
 
+      nockEmptyMyWords()
       nockGetBlockChildren('heading-id', {
         reply: listResults([block.p({ text: 'Word of the Week' })]),
       })
@@ -314,6 +330,92 @@ describe('lib/notion/word-of-the-week', () => {
       await updateAutoWordsOfTheWeek({
         notionToken: 'notion-token',
         wordOfTheWeekAutoWordsId: 'heading-id',
+        wordOfTheWeekMyWordsId: myWordsId,
+      })
+
+      await snapshot
+    })
+
+    it('filters out words that are already in my words list', async () => {
+      nock('https://www.merriam-webster.com')
+      .get('/wotd/feed/rss2')
+      .reply(200, minimalRssFeed, { 'Content-Type': 'application/xml' })
+
+      nockGetBlockChildren(myWordsId, {
+        reply: listResults([
+          block.to_do({
+            id: 'my-word-1',
+            content: {
+              rich_text: [
+                ...richText('Feed Word', { bold: true, color: 'blue' }),
+                ...richText(': Definition from feed'),
+                ...richText(' (Jan 1)', { italic: true }),
+              ],
+              checked: false,
+            },
+          }),
+        ]),
+      })
+      nockGetBlockChildren('heading-id', {
+        reply: listResults([block.p({ text: 'Word of the Week' })]),
+      })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'heading-id',
+        prepend: true,
+        reply: { results: [block.to_do()] },
+        message: 'skips words already in myWords',
+      })
+
+      await updateAutoWordsOfTheWeek({
+        notionToken: 'notion-token',
+        wordOfTheWeekAutoWordsId: 'heading-id',
+        wordOfTheWeekMyWordsId: myWordsId,
+      })
+
+      await snapshot
+    })
+
+    it('ignores myWords blocks with empty or whitespace-only titles', async () => {
+      nock('https://www.merriam-webster.com')
+      .get('/wotd/feed/rss2')
+      .reply(200, minimalRssFeed, { 'Content-Type': 'application/xml' })
+
+      nockGetBlockChildren(myWordsId, {
+        reply: listResults([
+          block.to_do({
+            id: 'empty-title',
+            content: {
+              rich_text: [],
+              checked: false,
+            },
+          }),
+          block.to_do({
+            id: 'whitespace-title',
+            content: {
+              rich_text: [
+                ...richText('   '),
+              ],
+              checked: false,
+            },
+          }),
+        ]),
+      })
+      nockGetBlockChildren('heading-id', {
+        reply: listResults([block.p({ text: 'Word of the Week' })]),
+      })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'heading-id',
+        prepend: true,
+        reply: { results: [block.to_do(), block.to_do()] },
+        message: 'ignores myWords blocks without titles',
+      })
+
+      await updateAutoWordsOfTheWeek({
+        notionToken: 'notion-token',
+        wordOfTheWeekAutoWordsId: 'heading-id',
+        wordOfTheWeekMyWordsId: myWordsId,
       })
 
       await snapshot

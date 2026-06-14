@@ -21,8 +21,19 @@ exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > deletes existi
 "
 `;
 
+exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > filters out words that are already in my words list > skips words already in myWords 1`] = `
+"- [ ] **Later Word** {💙}: Later definition _(Feb 16)_
+"
+`;
+
 exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > filters out words with no title or shortDef > empty feed item fallbacks 1`] = `
 "- [ ] **Feed Word** {💙}: Definition from feed _(Jan 1)_
+"
+`;
+
+exports[`lib/notion/word-of-the-week > updateAutoWordsOfTheWeek > ignores myWords blocks with empty or whitespace-only titles > ignores myWords blocks without titles 1`] = `
+"- [ ] **Later Word** {💙}: Later definition _(Feb 16)_
+- [ ] **Feed Word** {💙}: Definition from feed _(Jan 1)_
 "
 `;
 
