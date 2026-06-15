@@ -126,7 +126,7 @@ interface Details {
 }
 
 async function promoteWord ({ notionToken, autoWordsId, myWordsId, previousWordsId, wordId }: Details) {
-  const [autoWordsChildren, myWordsChildren] = await Promise.all([
+  const [myWordsChildren, autoWordsChildren] = await Promise.all([
     getBlockChildren({ notionToken, pageId: myWordsId }),
     getBlockChildren({ notionToken, pageId: autoWordsId }),
   ])
@@ -137,6 +137,7 @@ async function promoteWord ({ notionToken, autoWordsId, myWordsId, previousWords
   if (!checked) return
 
   const richText = (checked.content as ToDoBlockObjectResponse['to_do']).rich_text
+  const isFromMyWords = myWordsChildren.some((block) => block.id === checked.id)
 
   const currentBlock = await getBlock({
     notionToken,
@@ -164,6 +165,11 @@ async function promoteWord ({ notionToken, autoWordsId, myWordsId, previousWords
       content: { rich_text: richText },
     },
   })
+
+  if (isFromMyWords) {
+    debugVerbose('Deleting promoted word from my words list: %s', checked.id)
+    await deleteBlock({ id: checked.id, notionToken })
+  }
 }
 
 export async function promoteWordOfTheWeek (req: express.Request, sendSuccess: SendSuccess, sendError: SendError) {

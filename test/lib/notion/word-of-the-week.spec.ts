@@ -87,6 +87,8 @@ describe('lib/notion/word-of-the-week', () => {
         reply: block.bullet({ id: 'word-id', text: 'Current word' }),
       })
 
+      nockDeleteBlock('todo-1')
+
       const appendSnapshot = snapshotAppendChildren({
         id: 'previous-words-id',
         reply: { results: [block.bullet()] },
@@ -125,12 +127,51 @@ describe('lib/notion/word-of-the-week', () => {
         reply: block({ id: 'word-id', type: 'divider', content: {} }),
       })
 
+      nockDeleteBlock('todo-1')
+
       const updateSnapshot = snapshotUpdateBlock('word-id')
       const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
 
       expect(res.status).to.equal(200)
       expect(res.text).to.include('Word of the Week successfully promoted!')
 
+      await updateSnapshot
+    })
+
+    it('does not delete the checked to-do when it comes from autoWords', async (ctx) => {
+      nockGetBlockChildren('my-words-id', {
+        reply: listResults([]),
+      })
+      nockGetBlockChildren('auto-words-id', {
+        reply: listResults([
+          block.to_do({
+            id: 'auto-todo-1',
+            content: {
+              rich_text: [
+                ...richText('Auto word', { bold: true, color: 'blue' }),
+                ...richText(': Definition from feed'),
+              ],
+              checked: true,
+            },
+          }),
+        ]),
+      })
+      nockGetBlock('word-id', {
+        reply: block.bullet({ id: 'word-id', text: 'Current word' }),
+      })
+
+      const appendSnapshot = snapshotAppendChildren({
+        id: 'previous-words-id',
+        reply: { results: [block.bullet()] },
+      })
+
+      const updateSnapshot = snapshotUpdateBlock('word-id')
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.status).to.equal(200)
+      expect(res.text).to.include('Word of the Week successfully promoted!')
+
+      await appendSnapshot
       await updateSnapshot
     })
 

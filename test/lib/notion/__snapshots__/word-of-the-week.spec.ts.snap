@@ -1,5 +1,15 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > does not delete the checked to-do when it comes from autoWords 1`] = `
+"- Current word
+"
+`;
+
+exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > does not delete the checked to-do when it comes from autoWords 2`] = `
+"- **Auto word** {💙}: Definition from feed
+"
+`;
+
 exports[`lib/notion/word-of-the-week > GET /notion/action/:key?action=promoteWordOfTheWeek > skips archiving when current word block has no rich text 1`] = `
 "- **Promoted word** {💙}
 "
