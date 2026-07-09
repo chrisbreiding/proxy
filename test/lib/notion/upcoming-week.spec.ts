@@ -196,6 +196,52 @@ describe('lib/notion/upcoming-week', () => {
       await snapshot
     })
 
+    it('preserves links and formatting when transferring week template blocks', async (ctx) => {
+      const richTextWithLink = [
+        {
+          type: 'text',
+          text: { content: 'Task with ', link: null },
+          annotations: { bold: false, italic: false, strikethrough: false, underline: false, code: false, color: 'default' },
+          plain_text: 'Task with ',
+          href: null,
+        },
+        {
+          type: 'text',
+          text: { content: 'a link', link: { url: 'https://example.com' } },
+          annotations: { bold: true, italic: false, strikethrough: false, underline: false, code: false, color: 'default' },
+          plain_text: 'a link',
+          href: 'https://example.com',
+        },
+      ]
+
+      nockGetBlockChildren('upcoming-id', { reply: { results: [
+        block.p({ text: 'Sat, 12/25' }),
+        block.bullet({ id: 'last-upcoming-id', text: 'Last existing task' }),
+        block.divider(),
+        block.divider(),
+        block.divider(),
+        block({ id: 'week-template-id', type: 'child_page', content: { title: 'Week Template' } }),
+      ] } })
+      nockGetBlockChildren('week-template-id', { reply: { results: [
+        block.p({ text: 'Mon, ' }),
+        block.bullet({ content: { rich_text: richTextWithLink, color: 'default' } }),
+      ] } })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'upcoming-id',
+        after: 'last-upcoming-id',
+        reply: { results: times(2, block.bullet()) },
+      })
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.include('Following week successfully added!')
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.status).to.equal(200)
+
+      await snapshot
+    })
+
     it('sends 400 with error if no upcomingId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ upcomingId: null })}`)
 

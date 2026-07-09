@@ -1,9 +1,11 @@
 import type dayjs from 'dayjs'
 import type express from 'express'
+import type { RichTextItemResponse } from '@notionhq/client'
 
-import { getBlockPlainText, isChildPageWithTitle, makeBlock } from './util/general'
+import { getBlockPlainText, getRichText, isChildPageWithTitle, makeBlock, makeRichText } from './util/general'
 import { getDateFromText, getMonths } from '../util/dates'
-import type { NotionBlock, OwnBlock, SendError, SendSuccess } from './types'
+import type { Content, NotionBlock, OwnBlock, SendError, SendSuccess } from './types'
+import { richTextToPlainText } from './util/conversions'
 import { getBlockChildren, getBlockChildrenDeep } from './util/queries'
 import { appendBlockChildren, deleteBlock } from './util/updates'
 
@@ -59,12 +61,40 @@ interface GetTextOptions {
 }
 
 interface TextDate {
-  text?: string
+  richText?: RichTextItemResponse[]
   date?: dayjs.Dayjs
 }
 
+// replace the first occurrence of `search` within the rich text, preserving
+// the links, annotations, and other attributes of the surrounding text, and
+// dropping any text piece that becomes empty as a result of the replacement
+function editRichText (richText: RichTextItemResponse[], search: string, replacement: string) {
+  let replaced = false
+
+  return richText
+  .map((piece) => {
+    if (replaced || piece.type !== 'text' || !piece.plain_text.includes(search)) {
+      return piece
+    }
+
+    replaced = true
+    const content = piece.text.content.replace(search, replacement)
+
+    return {
+      ...piece,
+      text: { ...piece.text, content },
+      plain_text: content,
+    }
+  })
+  .filter((piece) => piece.type !== 'text' || piece.plain_text !== '')
+}
+
 function getText ({ block, currentDate, minimumDate }: GetTextOptions): TextDate {
-  const text = getBlockPlainText(block)
+  const richText = getRichText(block)
+
+  if (!richText) return {}
+
+  const text = richTextToPlainText(richText)
 
   if (!text) return {}
 
@@ -72,21 +102,21 @@ function getText ({ block, currentDate, minimumDate }: GetTextOptions): TextDate
 
   if (day) {
     const date = findMatchingDay(day, minimumDate)
-    const text = `${day}, ${date.month() + 1}/${date.date()}`
+    const dateText = `${day}, ${date.month() + 1}/${date.date()}`
 
-    return { date, text }
+    return { date, richText: [makeRichText(dateText)] }
   }
 
   const [, condition, monthsString] = text.match(monthsConditionRegex) || []
 
-  if (!condition || !currentDate) return { text }
+  if (!condition || !currentDate) return { richText }
 
   const months = monthsString.split(', ')
   const currentMonth = currentDate.format('MMM')
 
   if (!months.includes(currentMonth)) return {}
 
-  return { text: text.replace(condition, '') }
+  return { richText: editRichText(richText, condition, '') }
 }
 
 interface ExtrasMemo {
@@ -225,7 +255,7 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
       minimumDate: memo.currentDate || startDate,
     })
     const date = textResult.date
-    let text = textResult.text
+    let richText = textResult.richText
 
     // if there's a date established and we're about to change dates, meaning
     // we're at the end of items for the date, check for extras and add them
@@ -249,16 +279,18 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
 
     if (!memo.currentDate) return memo
 
-    if (text) {
-      const [, variableName] = text.match(variableRegex) || []
+    if (richText && richText.length) {
+      const [, variableName] = richTextToPlainText(richText).match(variableRegex) || []
       const variableValue = variables[variableName]
 
       if (variableName && variableValue) {
-        text = text.replace(`\${${variableName}}`, variableValue)
+        richText = editRichText(richText, `\${${variableName}}`, variableValue)
       }
 
+      // preserve the original block's content (links, annotations, color, etc.),
+      // swapping in the transformed rich text
       memo.blocks.push(makeBlock({
-        text,
+        content: { ...block.content, rich_text: richText } as Content,
         type: block.type,
         children: block.children,
       }))
