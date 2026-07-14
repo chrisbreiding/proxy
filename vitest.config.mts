@@ -9,7 +9,6 @@ export default defineConfig({
       exclude: [
         '**/firebase.ts',
         '**/google-sheets.ts',
-        '**/shopping.js',
         '**/patience-diff.js',
         'test/**/*',
       ],

@@ -1,7 +1,6 @@
 import { action } from './actions'
 import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/meals'
 import { addQuest, addSarahTodo } from './quests'
-import { onSocket } from './shopping'
 import { getBlockChildren } from './util/queries'
 
 interface GetDataOptions {
@@ -19,5 +18,4 @@ export {
   addQuest,
   addSarahTodo,
   getFactorMeals,
-  onSocket,
 }

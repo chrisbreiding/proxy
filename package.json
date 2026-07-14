@@ -50,13 +50,13 @@
     "mixpanel": "^0.22.0",
     "morgan": "^1.11.0",
     "rss-parser": "^3.13.0",
-    "socket.io": "^4.8.3",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@notionhq/client": "5.9.0",
     "@types/body-parser": "^1.19.6",
+    "@types/cors": "^2.8.19",
     "@types/debug": "^4.1.13",
     "@types/deep-equal": "^1.0.4",
     "@types/express": "^5.0.6",

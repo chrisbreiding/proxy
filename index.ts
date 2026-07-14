@@ -5,7 +5,6 @@ import express from 'express'
 import { engine as handlebars } from 'express-handlebars'
 import http from 'http'
 import morgan from 'morgan'
-import { Server } from 'socket.io'
 
 import * as dashboard from './lib/dashboard'
 import * as garage from './lib/garage'
@@ -21,9 +20,6 @@ import * as weather from './lib/weather'
 export function startServer (port: number) {
   const app = express()
   const server = http.createServer(app)
-  const io = new Server(server, {
-    serveClient: false,
-  })
 
   app.engine('.hbs', handlebars({ extname: '.hbs' }))
   app.set('view engine', '.hbs')
@@ -89,8 +85,6 @@ export function startServer (port: number) {
   app.get('/test', (req: express.Request, res: express.Response) => {
     res.json({ ok: true })
   })
-
-  io.on('connection', notion.onSocket)
 
   server.listen(port, () => {
     debug(`Listening on port ${port}...`)
