@@ -1,6 +1,7 @@
 import { action } from './actions'
 import { addMeal as addFactorMeal, getMeals as getFactorMeals } from './factor/meals'
 import { addQuest, addSarahTodo } from './quests'
+import { addShoppingItem } from './shopping'
 import { getBlockChildren } from './util/queries'
 
 interface GetDataOptions {
@@ -17,5 +18,6 @@ export {
   addFactorMeal,
   addQuest,
   addSarahTodo,
+  addShoppingItem,
   getFactorMeals,
 }

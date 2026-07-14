@@ -1,0 +1,91 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds a grocery item at the end of a matching store within a column 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds a misc item using the misc page when type is Misc 1`] = `
+"- [ ] Batteries
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds to the end of the column when the matching store has no following paragraph 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds to the end of the first column for Any when it has no store paragraph 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds to the end of the first column for Any when its store has no following paragraph 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > adds to the end of the page when the column list has no columns 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > appends a new item when the to_do after the store name is not empty 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > defaults to the grocery page when type is undefined 1`] = `
+"- [ ] Eggs
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > does not fetch the misc page when the store is found on the grocery page 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > falls back to the first store in the first column when the store is not found 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > falls back to the grocery page when the store is found on neither page and the type is unspecified 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > fills in an empty to_do after the first store when the store is Any 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > fills in an empty to_do after the store name instead of appending 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > finds a store in a later column 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > searches the misc page for the store when the type is unspecified 1`] = `
+"- [ ] Nails
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > skips empty paragraphs to find the first store when the store is Any 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > treats the page root as a single column when there is no column layout 1`] = `
+"- [ ] Bananas
+"
+`;
+
+exports[`lib/notion/shopping > POST /notion/shopping/:key > uses the first store in the first column when the store is undefined 1`] = `
+"- [ ] Bananas
+"
+`;
