@@ -276,6 +276,26 @@ describe('lib/notion/upcoming-week', () => {
       await snapshot
     })
 
+    it('handles a template that starts with a divider before any date is found', async (ctx) => {
+      nockGetBlockChildren('upcoming-id', { reply: { results: [
+        block.p({ text: 'Sat, 12/25' }),
+        block.bullet({ id: 'last-upcoming-id', text: 'Last existing task' }),
+        block.divider(),
+        block.divider(),
+        block.divider(),
+        block({ id: 'week-template-id', type: 'child_page', content: { title: 'Week Template' } }),
+      ] } })
+      nockGetBlockChildren('week-template-id', { reply: { results: [
+        block.divider(),
+      ] } })
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.include('Following week successfully added!')
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.status).to.equal(200)
+    })
+
     it('sends 400 with error if no upcomingId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ upcomingId: null })}`)
 
