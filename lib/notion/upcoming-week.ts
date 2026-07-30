@@ -240,11 +240,30 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
     finished: false,
   } as BlocksMemo
 
-  const { blocks, idsOfExtrasUsed } = weekTemplateBlocks.reduce((memo, block) => {
+  function flushExtrasFor (memo: BlocksMemo, date: dayjs.Dayjs) {
+    const dateString = makeDateString(date)
+
+    if (extras[dateString]?.length) {
+      extras[dateString].forEach(({ id, block }) => {
+        if (block) {
+          memo.blocks.push(block)
+        }
+        memo.idsOfExtrasUsed.push(id)
+      })
+    }
+  }
+
+  const resultMemo = weekTemplateBlocks.reduce((memo, block) => {
     if (memo.finished) return memo
 
     if (block.type === 'divider') {
       memo.finished = true
+
+      // this is the end of the template, so the last date's items are done
+      // and any extras for it should be added to the end of the list
+      if (memo.currentDate) {
+        flushExtrasFor(memo, memo.currentDate)
+      }
 
       return memo
     }
@@ -261,16 +280,7 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
     // we're at the end of items for the date, check for extras and add them
     // to the end of the list
     if (memo.currentDate && date) {
-      const dateString = makeDateString(memo.currentDate)
-
-      if (date && extras[dateString]?.length) {
-        extras[dateString].forEach(({ id, block }) => {
-          if (block) {
-            memo.blocks.push(block)
-          }
-          memo.idsOfExtrasUsed.push(id)
-        })
-      }
+      flushExtrasFor(memo, memo.currentDate)
     }
 
     if (date) {
@@ -299,9 +309,15 @@ async function getDayBlocks ({ notionToken, upcomingBlocks }: GetDayBlocksOption
     return memo
   }, startingMemo)
 
+  // if the template ended without a trailing divider, the last date's
+  // extras were never flushed above, so flush them now
+  if (!resultMemo.finished && resultMemo.currentDate) {
+    flushExtrasFor(resultMemo, resultMemo.currentDate)
+  }
+
   return {
-    blocks,
-    idsOfExtrasUsed,
+    blocks: resultMemo.blocks,
+    idsOfExtrasUsed: resultMemo.idsOfExtrasUsed,
     lastQuestId,
   }
 }

@@ -90,3 +90,10 @@ exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWe
 - Task with [**a link**](https://example.com)
 "
 `;
+
+exports[`lib/notion/upcoming-week > GET /notion/action/:key?action=addUpcomingWeek > transfers extra blocks for the last day of the template week 1`] = `
+"Sat, 1/1
+- Sat 1 task
+- Extra Saturday task
+"
+`;

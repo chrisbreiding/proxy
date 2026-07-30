@@ -242,6 +242,40 @@ describe('lib/notion/upcoming-week', () => {
       await snapshot
     })
 
+    it('transfers extra blocks for the last day of the template week', async (ctx) => {
+      nockGetBlockChildren('upcoming-id', { reply: { results: [
+        block.p({ text: 'Sat, 12/25' }),
+        block.bullet({ id: 'last-upcoming-id', text: 'Last existing task' }),
+        block.divider(),
+        block.divider(),
+        block.p({ id: 'extra-date-1', text: 'Sat, 1/1' }),
+        block.bullet({ id: 'extra-item-1', text: 'Extra Saturday task' }),
+        block.divider(),
+        block({ id: 'week-template-id', type: 'child_page', content: { title: 'Week Template' } }),
+      ] } })
+      nockGetBlockChildren('week-template-id', { reply: { results: [
+        block.p({ text: 'Sat, ' }),
+        block.bullet({ text: 'Sat 1 task' }),
+      ] } })
+
+      const snapshot = snapshotAppendChildren({
+        id: 'upcoming-id',
+        after: 'last-upcoming-id',
+        reply: { results: times(2, block.bullet()) },
+      })
+
+      nockDeleteBlock('extra-date-1')
+      nockDeleteBlock('extra-item-1')
+
+      const res = await ctx.request.get(`/notion/action/key?${makeQuery()}`)
+
+      expect(res.text).to.include('Following week successfully added!')
+      expect(res.headers['content-type']).to.equal('text/html; charset=utf-8')
+      expect(res.status).to.equal(200)
+
+      await snapshot
+    })
+
     it('sends 400 with error if no upcomingId specified', async (ctx) => {
       const res = await ctx.request.get(`/notion/action/key?${makeQuery({ upcomingId: null })}`)
 
