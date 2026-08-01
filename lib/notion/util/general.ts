@@ -125,6 +125,8 @@ export function areIdsEqual (id1: string, id2: string) {
   return id1.replaceAll('-', '') === id2.replaceAll('-', '')
 }
 
+export const MAX_CHILDREN_PER_REQUEST = 100
+
 function getBlockChildrenDepth (block: Block, depth: number): number {
   if (!block.children) {
     return depth
@@ -137,6 +139,21 @@ export function getBlocksChildrenDepth (blocks: Block[], depth = 0) {
   if (!blocks.length) return depth
 
   return Math.max(...blocks.map((block) => getBlockChildrenDepth(block, depth)))
+}
+
+// notion limits any children array within a request to 100 items. a top-level
+// children array can be split across multiple requests, but a nested one
+// can't, so blocks with too many nested children have to be appended by
+// creating the parent first, then appending its children to it
+export function hasTooManyNestedChildren (blocks: Block[]): boolean {
+  return blocks.some((block) => {
+    if (!block.children) return false
+
+    return (
+      block.children.length > MAX_CHILDREN_PER_REQUEST
+      || hasTooManyNestedChildren(block.children)
+    )
+  })
 }
 
 export function isChildPageWithTitle (block: Block, titleOrComparison: string | ((title: string) => boolean)) {

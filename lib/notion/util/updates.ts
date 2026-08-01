@@ -8,7 +8,7 @@ import type {
 import type { Block, NotionBlock, OutgoingBlock, OwnBlock } from '../types'
 import { makeRequest } from './requests'
 import { convertBlockToOutgoingBlock } from './conversions'
-import { getBlocksChildrenDepth } from './general'
+import { MAX_CHILDREN_PER_REQUEST, getBlocksChildrenDepth, hasTooManyNestedChildren } from './general'
 import { chunk } from '../../util/collections'
 
 interface MakeAppendRequestOptions {
@@ -33,7 +33,7 @@ export function makeAppendRequest ({ blocks, notionToken, pageId, position }: Ma
 }
 
 async function appendContiguousChildren ({ blocks, notionToken, pageId, position }: MakeAppendRequestOptions) {
-  const chunksOfBlocks = chunk(blocks, 100)
+  const chunksOfBlocks = chunk(blocks, MAX_CHILDREN_PER_REQUEST)
   let allResults = [] as (PartialBlockObjectResponse | BlockObjectResponse)[]
   let currentPosition = position
 
@@ -161,7 +161,9 @@ export async function appendBlockChildren (options: AppendBlockChildrenOptions) 
     pageId: options.pageId,
     position: toBlockChildrenPosition(options.position, options.afterId),
   }
-  if (getBlocksChildrenDepth(options.blocks) > 2) {
+  // nesting children within the request is only possible when every nested
+  // children array fits within a single request
+  if (getBlocksChildrenDepth(options.blocks) > 2 || hasTooManyNestedChildren(options.blocks)) {
     return appendBlockChildrenWithUnlimitedNesting(internalOptions)
   }
   return appendBlockChildrenWithUpToTwoLevelsOfNesting(internalOptions)
