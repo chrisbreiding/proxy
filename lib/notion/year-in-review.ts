@@ -216,6 +216,12 @@ export async function yearInReview ({ donePageId, notionToken, year }: YearInRev
   await appendBlockChildren({ blocks, notionToken, pageId: yearId })
 }
 
+/**
+ * To run this:
+ * - Build the project: `npm run build`
+ * - Run the script: `npm run run-script notion/year-in-review -- --year <year>`
+ *
+ */
 /* v8 ignore next 31 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
