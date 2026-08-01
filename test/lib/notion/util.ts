@@ -28,8 +28,10 @@ interface GetOptions {
 interface NockOptions extends GetOptions {
   body?: object
   error?: string | object
+  headers?: Record<string, string>
   method?: string
   path: string
+  statusCode?: number
   token?: string
 }
 
@@ -53,7 +55,7 @@ export function nockNotion (options: NockOptions) {
     ? notionFixtureContents(options.fixture)
     : options.reply
 
-  return scope.reply(200, reply)
+  return scope.reply(options.statusCode || 200, reply, options.headers)
 }
 
 export function nockGetBlock (id: string, options: GetOptions = {}) {
@@ -73,16 +75,22 @@ export function nockGetBlockChildren (id: string, options: GetOptions) {
 interface AppendOptions {
   id: string
   fixture?: string
+  headers?: Record<string, string>
   reply?: object
+  statusCode?: number
+  times?: number
   token?: string
 }
 
-export function nockAppendBlockChildren ({ id, fixture, reply, token }: AppendOptions) {
+export function nockAppendBlockChildren ({ id, fixture, headers, reply, statusCode, times, token }: AppendOptions) {
   return nockNotion({
     fixture,
+    headers,
     method: 'patch',
     path: `/v1/blocks/${id}/children`,
     reply,
+    statusCode,
+    times,
     token,
   })
 }
