@@ -313,6 +313,58 @@ export async function snapshotAppendChildren (options: SnapshotAppendChildrenOpt
   await assertSnapshot(body.children, options.message)
 }
 
+interface AppendedBlock {
+  block: OutgoingBlock
+  id: string
+}
+
+interface NestedAppendOptions {
+  token?: string
+}
+
+/**
+ * Nocks any number of appends to any block, since appending blocks nested more
+ * than two levels deep requires a separate request per level. Returns a
+ * function that re-assembles all of the appended blocks into a single tree.
+ */
+export function nockNestedAppendBlockChildren ({ token }: NestedAppendOptions = {}) {
+  const childrenByParentId = new Map<string, AppendedBlock[]>()
+  const uniqueId = createUniqueId()
+
+  nock('https://api.notion.com')
+  .matchHeader('authorization', `Bearer ${token || 'notion-token'}`)
+  .matchHeader('notion-version', notionVersion)
+  .persist()
+  .patch(/^\/v1\/blocks\/[^/]+\/children$/)
+  .reply(200, (uri, body: any) => {
+    const [, parentId] = uri.match(/^\/v1\/blocks\/([^/]+)\/children$/)!
+    const appended = (body.children as OutgoingBlock[]).map((block) => {
+      return { block, id: `appended-block-${uniqueId()}` }
+    })
+
+    childrenByParentId.set(parentId, (childrenByParentId.get(parentId) || []).concat(appended))
+
+    return { results: appended.map(({ id }) => ({ object: 'block', id })) }
+  })
+
+  return function getAppendedBlocks (parentId: string): OutgoingBlock[] {
+    return (childrenByParentId.get(parentId) || []).map(({ block, id }) => {
+      const children = getAppendedBlocks(id)
+
+      if (children.length) {
+        // @ts-ignore
+        block[block.type].children = children
+      }
+
+      return block
+    })
+  }
+}
+
+export async function snapshotBlocks (blocks: OutgoingBlock[], message?: string) {
+  await assertSnapshot(blocks, message)
+}
+
 interface SnapshotUpdateBlockOptions extends UpdateOptions {
   message?: string
 }

@@ -1,9 +1,9 @@
 import nock from 'nock'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 
 import { yearInReview } from '../../../lib/notion/year-in-review'
 import monthBlocks, { januaryCursor, januaryPage1, januaryPage2 } from '../../fixtures/notion/year-in-review/month-blocks'
-import { getAppendBody, nockAppendBlockChildren, nockGetBlockChildren, snapshotAppendChildren } from './util'
+import { nockAppendBlockChildren, nockGetBlockChildren, nockNestedAppendBlockChildren, snapshotBlocks } from './util'
 
 function nockSourceBlocks ({ paginateJanuary }: { paginateJanuary?: boolean } = {}) {
   nockGetBlockChildren('done-page-id', { fixture: 'year-in-review/done-blocks' })
@@ -29,44 +29,46 @@ function nockSourceBlocks ({ paginateJanuary }: { paginateJanuary?: boolean } = 
   nockGetBlockChildren('december-id', { reply: monthBlocks.december })
 }
 
+function runYearInReview () {
+  return yearInReview({
+    donePageId: 'done-page-id',
+    notionToken: 'notion-token',
+    year: '2021',
+  })
+}
+
 describe('lib/notion/year-in-review', () => {
+  afterEach(() => {
+    nock.cleanAll()
+  })
+
   it('adds year summmary', async () => {
     nockSourceBlocks()
 
-    const snapshot = snapshotAppendChildren({ id: 'year-id' })
+    const getAppendedBlocks = nockNestedAppendBlockChildren()
 
-    await yearInReview({
-      donePageId: 'done-page-id',
-      notionToken: 'notion-token',
-      year: '2021',
-    })
+    await runYearInReview()
 
-    await snapshot
+    await snapshotBlocks(getAppendedBlocks('year-id'))
   })
 
   it('includes blocks from every page when a month is paginated', async () => {
     nockSourceBlocks()
 
-    const unpaginated = getAppendBody(nockAppendBlockChildren({ id: 'year-id' }))
+    const getUnpaginatedBlocks = nockNestedAppendBlockChildren()
 
-    await yearInReview({
-      donePageId: 'done-page-id',
-      notionToken: 'notion-token',
-      year: '2021',
-    })
+    await runYearInReview()
 
+    const unpaginated = getUnpaginatedBlocks('year-id')
+
+    nock.cleanAll()
     nockSourceBlocks({ paginateJanuary: true })
 
-    const paginated = getAppendBody(nockAppendBlockChildren({ id: 'year-id' }))
+    const getPaginatedBlocks = nockNestedAppendBlockChildren()
 
-    await yearInReview({
-      donePageId: 'done-page-id',
-      notionToken: 'notion-token',
-      year: '2021',
-    })
+    await runYearInReview()
 
-    expect((await paginated).children).to.deep.equal((await unpaginated).children)
-    expect(nock.isDone()).to.equal(true)
+    expect(getPaginatedBlocks('year-id')).to.deep.equal(unpaginated)
   })
 
   it('retries appending the blocks when rate limited', async () => {
@@ -79,15 +81,11 @@ describe('lib/notion/year-in-review', () => {
       statusCode: 429,
     })
 
-    const body = getAppendBody(nockAppendBlockChildren({ id: 'year-id' }))
+    const getAppendedBlocks = nockNestedAppendBlockChildren()
 
-    await yearInReview({
-      donePageId: 'done-page-id',
-      notionToken: 'notion-token',
-      year: '2021',
-    })
+    await runYearInReview()
 
-    expect((await body).children.length).to.be.greaterThan(0)
+    expect(getAppendedBlocks('year-id').length).to.be.greaterThan(0)
     expect(nock.isDone()).to.equal(true)
   })
 

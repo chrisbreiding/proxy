@@ -8,7 +8,7 @@ import { getEnv } from '../util/env'
 import { patienceDiffPlus } from '../util/patience-diff'
 import type { NotionBlock } from './types'
 import { getBlockChildren } from './util/queries'
-import { dateRegex } from '../util/dates'
+import { dateRegex, getMonthNameFromIndex } from '../util/dates'
 import { appendBlockChildren } from './util/updates'
 
 function findId (
@@ -187,6 +187,104 @@ async function getData ({ months, notionToken }: GetDataOptions) {
   .sort((a, b) => getDates(b).length - getDates(a).length)
 }
 
+interface MonthGroup {
+  days: number[]
+  month: number
+}
+
+// dates are formatted as M/D, such as 1/2 or 12/31
+function parseDate (date: string) {
+  const [month, day] = date.split('/').map(Number)
+
+  return { day, month }
+}
+
+function groupDatesByMonth (dates: string[]) {
+  const groups: MonthGroup[] = []
+
+  for (const date of dates) {
+    const { day, month } = parseDate(date)
+    const group = groups.find((group) => group.month === month)
+
+    if (group) {
+      group.days.push(day)
+    } else {
+      groups.push({ days: [day], month })
+    }
+  }
+
+  return groups.sort((a, b) => a.month - b.month)
+}
+
+function countDays (days: number[]) {
+  const counts = new Map<number, number>()
+
+  for (const day of days) {
+    counts.set(day, (counts.get(day) || 0) + 1)
+  }
+
+  return counts
+}
+
+/**
+ * Collapses consecutive days into ranges, so 4, 5, 6, 9 becomes 3/4-3/6, 3/9.
+ * A day that occurred more than once is annotated with the number of times and
+ * breaks any range it would otherwise be a part of, so 1, 2, 2, 3 becomes
+ * 1/1, 1/2 (x2), 1/3.
+ */
+function getDateRanges ({ days, month }: MonthGroup) {
+  const counts = countDays(days)
+  const sortedDays = [...counts.keys()].sort((a, b) => a - b)
+  const ranges: string[] = []
+  let start: number | undefined = undefined
+  let end = 0
+
+  const addRange = () => {
+    if (start === undefined) return
+
+    ranges.push(start === end ? `${month}/${start}` : `${month}/${start}-${month}/${end}`)
+
+    start = undefined
+  }
+
+  for (const day of sortedDays) {
+    const count = counts.get(day)!
+
+    if (count > 1) {
+      addRange()
+      ranges.push(`${month}/${day} (x${count})`)
+
+      continue
+    }
+
+    if (start !== undefined && day === end + 1) {
+      end = day
+
+      continue
+    }
+
+    addRange()
+
+    start = day
+    end = day
+  }
+
+  addRange()
+
+  return ranges
+}
+
+function makeMonthBlocks (dates: string[]) {
+  return groupDatesByMonth(dates).map((group) => {
+    const monthName = getMonthNameFromIndex(group.month - 1)
+
+    return makeBlock({
+      text: `${monthName} (${group.days.length}): ${getDateRanges(group).join(', ')}`,
+      type: 'bulleted_list_item',
+    })
+  })
+}
+
 function makeBlocks (data: MonthDataItem[][]) {
   return data.map((quests) => {
     return makeBlock({
@@ -194,8 +292,9 @@ function makeBlocks (data: MonthDataItem[][]) {
       type: 'toggle',
       children: quests.map(({ quest, dates }) => {
         return makeBlock({
-          text: `${quest} (${dates.length}) [${dates.join(', ')}]`,
+          text: `${quest} (${dates.length})`,
           type: 'bulleted_list_item',
+          children: makeMonthBlocks(dates),
         })
       }),
     })

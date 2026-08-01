@@ -62,6 +62,10 @@ export default {
   ]),
   february: results([
     ...d('Mon, 2/1', t.b.c, ''),
+    // consecutive dates, so they're collapsed into a range, but t.b.c happens
+    // twice on 2/2, so it breaks the range for that quest
+    ...d('Tue, 2/2', t.b.c, t.b.c, t.a.a),
+    ...d('Wed, 2/3', t.b.c, t.a.a),
     ...d('Tue, 2/9', t.a.a, t.c.a, t.d.b),
     ...d('Wed, 2/17', t.c.a, t.d.b),
   ]),
