@@ -24,8 +24,12 @@ const t = {
   },
 }
 
-function results (blocks: BlockObjectResponse[]) {
-  return { results: blocks }
+function results (blocks: BlockObjectResponse[], nextCursor?: string) {
+  return {
+    results: blocks,
+    has_more: !!nextCursor,
+    next_cursor: nextCursor || null,
+  }
 }
 
 function d (date: string, ...bullets: string[]): BlockObjectResponse[] {
@@ -35,12 +39,26 @@ function d (date: string, ...bullets: string[]): BlockObjectResponse[] {
   ]
 }
 
+// january split in two, so it can be served as one response or as two
+// paginated responses, which notion does when there are more than 100 blocks
+const januaryPage1Blocks = [
+  ...d('Mon, 1/4', t.a.a, t.b.a),
+  ...d('Tue, 1/12', t.b.b, t.c.a, t.d.b),
+]
+const januaryPage2Blocks = [
+  ...d('Wed, 1/20', t.a.b, t.b.c, t.d.c),
+  ...d('Thu, 1/28', t.c.b, t.d.a),
+]
+
+export const januaryCursor = 'january-cursor'
+
+export const januaryPage1 = results(januaryPage1Blocks, januaryCursor)
+export const januaryPage2 = results(januaryPage2Blocks)
+
 export default {
   january: results([
-    ...d('Mon, 1/4', t.a.a, t.b.a),
-    ...d('Tue, 1/12', t.b.b, t.c.a, t.d.b),
-    ...d('Wed, 1/20', t.a.b, t.b.c, t.d.c),
-    ...d('Thu, 1/28', t.c.b, t.d.a),
+    ...januaryPage1Blocks,
+    ...januaryPage2Blocks,
   ]),
   february: results([
     ...d('Mon, 2/1', t.b.c, ''),

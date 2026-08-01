@@ -27,15 +27,28 @@ export async function getBlock ({ notionToken, blockId }: GetBlockOptions) {
 interface GetBlockChildrenOptions {
   notionToken: string
   pageId: string
+  startCursor?: string
 }
 
-export async function getBlockChildren ({ notionToken, pageId }: GetBlockChildrenOptions) {
-  const { results } = await makeRequest<ListBlockChildrenResponse>({
-    notionToken,
-    path: `blocks/${pageId}/children`,
-  }) as { results: BlockObjectResponse[] }
+// notion only returns up to 100 children per request, so keep requesting
+// until there are no more, otherwise pages with many blocks get truncated
+export async function getBlockChildren ({ notionToken, pageId, startCursor }: GetBlockChildrenOptions): Promise<NotionBlock[]> {
+  const query = startCursor ? `?start_cursor=${startCursor}` : ''
 
-  return results.map(convertNotionBlockToOwnBlock)
+  const { results, has_more, next_cursor } = await makeRequest<ListBlockChildrenResponse>({
+    notionToken,
+    path: `blocks/${pageId}/children${query}`,
+  }) as { results: BlockObjectResponse[], has_more: boolean, next_cursor: string | null }
+
+  const blocks = results.map(convertNotionBlockToOwnBlock)
+
+  if (!has_more) return blocks
+
+  return blocks.concat(await getBlockChildren({
+    notionToken,
+    pageId,
+    startCursor: next_cursor!,
+  }))
 }
 
 interface GetBlockChildrenDeepOptions {

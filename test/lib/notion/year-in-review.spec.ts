@@ -2,13 +2,20 @@ import nock from 'nock'
 import { describe, expect, it } from 'vitest'
 
 import { yearInReview } from '../../../lib/notion/year-in-review'
-import monthBlocks from '../../fixtures/notion/year-in-review/month-blocks'
+import monthBlocks, { januaryCursor, januaryPage1, januaryPage2 } from '../../fixtures/notion/year-in-review/month-blocks'
 import { getAppendBody, nockAppendBlockChildren, nockGetBlockChildren, snapshotAppendChildren } from './util'
 
-function nockSourceBlocks () {
+function nockSourceBlocks ({ paginateJanuary }: { paginateJanuary?: boolean } = {}) {
   nockGetBlockChildren('done-page-id', { fixture: 'year-in-review/done-blocks' })
   nockGetBlockChildren('year-id', { fixture: 'year-in-review/year-blocks' })
-  nockGetBlockChildren('january-id', { reply: monthBlocks.january })
+
+  if (paginateJanuary) {
+    nockGetBlockChildren('january-id', { reply: januaryPage1 })
+    nockGetBlockChildren('january-id', { reply: januaryPage2, startCursor: januaryCursor })
+  } else {
+    nockGetBlockChildren('january-id', { reply: monthBlocks.january })
+  }
+
   nockGetBlockChildren('february-id', { reply: monthBlocks.february })
   nockGetBlockChildren('march-id', { reply: monthBlocks.march })
   nockGetBlockChildren('april-id', { reply: monthBlocks.april })
@@ -35,6 +42,31 @@ describe('lib/notion/year-in-review', () => {
     })
 
     await snapshot
+  })
+
+  it('includes blocks from every page when a month is paginated', async () => {
+    nockSourceBlocks()
+
+    const unpaginated = getAppendBody(nockAppendBlockChildren({ id: 'year-id' }))
+
+    await yearInReview({
+      donePageId: 'done-page-id',
+      notionToken: 'notion-token',
+      year: '2021',
+    })
+
+    nockSourceBlocks({ paginateJanuary: true })
+
+    const paginated = getAppendBody(nockAppendBlockChildren({ id: 'year-id' }))
+
+    await yearInReview({
+      donePageId: 'done-page-id',
+      notionToken: 'notion-token',
+      year: '2021',
+    })
+
+    expect((await paginated).children).to.deep.equal((await unpaginated).children)
+    expect(nock.isDone()).to.equal(true)
   })
 
   it('retries appending the blocks when rate limited', async () => {

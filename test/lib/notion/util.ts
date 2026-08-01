@@ -65,10 +65,17 @@ export function nockGetBlock (id: string, options: GetOptions = {}) {
   })
 }
 
-export function nockGetBlockChildren (id: string, options: GetOptions) {
+interface GetBlockChildrenOptions extends GetOptions {
+  startCursor?: string
+}
+
+export function nockGetBlockChildren (id: string, options: GetBlockChildrenOptions) {
+  const { startCursor, ...rest } = options
+  const query = startCursor ? `?start_cursor=${startCursor}` : ''
+
   nockNotion({
-    path: `/v1/blocks/${id}/children`,
-    ...options,
+    path: `/v1/blocks/${id}/children${query}`,
+    ...rest,
   })
 }
 
