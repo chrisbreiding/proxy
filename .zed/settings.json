@@ -1,0 +1,21 @@
+{
+  "format_on_save": "on",
+  "prettier": {
+    "use": false,
+  },
+  "code_actions_on_format": {
+    "source.fixAll.eslint": true,
+  },
+  "languages": {
+    "JavaScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true,
+      },
+    },
+    "TypeScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true,
+      },
+    },
+  },
+}
