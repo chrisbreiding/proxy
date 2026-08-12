@@ -199,19 +199,13 @@ export function deleteBlock ({ id, notionToken }: DeleteBlockOptions) {
   })
 }
 
-interface UpdatePageOptions {
+interface UpdatePageOptions<T> {
   notionToken: string
   pageId: string
-  properties: {
-    [key: string]: {
-      date: {
-        start: string
-      }
-    }
-  }
+  properties: T
 }
 
-export function updatePage ({ notionToken, pageId, properties }: UpdatePageOptions) {
+export function updatePage<T> ({ notionToken, pageId, properties }: UpdatePageOptions<T>) {
   return makeRequest<void>({
     notionToken,
     body: { properties },

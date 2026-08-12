@@ -9,14 +9,18 @@ module.exports = [
   },
   {
     name: 'nightly1',
-    interval: 'at 2:07 am',
+    interval: 'at 1:07 am',
   },
   {
     name: 'nightly2',
-    interval: 'at 3:07 am',
+    interval: 'at 2:07 am',
   },
   {
     name: 'nightly3',
+    interval: 'at 3:07 am',
+  },
+  {
+    name: 'nightly4',
     interval: 'at 4:07 am',
   },
 ]

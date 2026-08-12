@@ -1,0 +1,243 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lib/notion/softball-leagues > syncs open leagues at allowed locations/days to the notion database > add-222-and-333 1`] = `
+[
+  {
+    "parent": {
+      "data_source_id": "softball-id",
+    },
+    "properties": {
+      "Day": {
+        "multi_select": [
+          {
+            "name": "Sunday",
+          },
+          {
+            "name": "Thursday",
+          },
+        ],
+      },
+      "Gender": {
+        "select": {
+          "name": "Mixed (undefined/undefined)",
+        },
+      },
+      "League Type": {
+        "select": {
+          "name": "Wood Bat",
+        },
+      },
+      "Location": {
+        "select": {
+          "name": "PHL BURBS | Miles Park",
+        },
+      },
+      "Name": {
+        "title": [
+          {
+            "text": {
+              "content": "",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "Neighborhood": {
+        "select": {
+          "name": "BURBS | Whitemarsh Township",
+        },
+      },
+      "Season Length": {
+        "select": {
+          "name": "Full (undefined games)",
+        },
+      },
+      "Sign Up": {
+        "rich_text": [
+          {
+            "plain_text": "Sign Up",
+            "text": {
+              "content": "Sign Up",
+              "link": {
+                "url": "",
+              },
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "Signup Deadline": {
+        "date": {
+          "start": "2026-04-01",
+        },
+      },
+      "Skill Level": {
+        "select": {
+          "name": "Open",
+        },
+      },
+      "Start Date": {
+        "date": {
+          "start": "2026-05-01",
+        },
+      },
+    },
+  },
+  {
+    "parent": {
+      "data_source_id": "softball-id",
+    },
+    "properties": {
+      "Day": {
+        "multi_select": [
+          {
+            "name": "Saturday",
+          },
+        ],
+      },
+      "Gender": {
+        "select": {
+          "name": "Males Only",
+        },
+      },
+      "League Type": {
+        "select": {
+          "name": "Wood Bat",
+        },
+      },
+      "Location": {
+        "select": {
+          "name": "PHL | Kendrick Recreation Center",
+        },
+      },
+      "Name": {
+        "title": [
+          {
+            "text": {
+              "content": "222",
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "Neighborhood": {
+        "select": {
+          "name": "PHL | Manayunk & Bala Cynwyd",
+        },
+      },
+      "Season Length": {
+        "select": {
+          "name": "Express (5 games)",
+        },
+      },
+      "Sign Up": {
+        "rich_text": [
+          {
+            "plain_text": "Sign Up",
+            "text": {
+              "content": "Sign Up",
+              "link": {
+                "url": "https://x.leaguelab.com/league/222/details",
+              },
+            },
+            "type": "text",
+          },
+        ],
+      },
+      "Signup Deadline": {
+        "date": {
+          "start": "2026-04-01",
+        },
+      },
+      "Skill Level": {
+        "select": {
+          "name": "Open",
+        },
+      },
+      "Start Date": {
+        "date": {
+          "start": "2026-05-01",
+        },
+      },
+    },
+  },
+]
+`;
+
+exports[`lib/notion/softball-leagues > syncs open leagues at allowed locations/days to the notion database > update-111 1`] = `
+{
+  "properties": {
+    "Day": {
+      "multi_select": [
+        {
+          "name": "Monday",
+        },
+      ],
+    },
+    "Gender": {
+      "select": {
+        "name": "Mixed (7/3)",
+      },
+    },
+    "League Type": {
+      "select": {
+        "name": "Regular",
+      },
+    },
+    "Location": {
+      "select": {
+        "name": "PHL BURBS | Sutcliffe Park",
+      },
+    },
+    "Name": {
+      "title": [
+        {
+          "text": {
+            "content": "111",
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Neighborhood": {
+      "select": {
+        "name": "BURBS | Conshohocken",
+      },
+    },
+    "Season Length": {
+      "select": {
+        "name": "Full (7 games)",
+      },
+    },
+    "Sign Up": {
+      "rich_text": [
+        {
+          "plain_text": "Sign Up",
+          "text": {
+            "content": "Sign Up",
+            "link": {
+              "url": "https://x.leaguelab.com/league/111/details",
+            },
+          },
+          "type": "text",
+        },
+      ],
+    },
+    "Signup Deadline": {
+      "date": {
+        "start": "2026-04-01",
+      },
+    },
+    "Skill Level": {
+      "select": {
+        "name": "Open",
+      },
+    },
+    "Start Date": {
+      "date": {
+        "start": "2026-05-01",
+      },
+    },
+  },
+}
+`;
