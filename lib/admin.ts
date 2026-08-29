@@ -11,7 +11,7 @@ import {
 import { getLocationName } from './location'
 import { debug } from './util/debug'
 import { getEnv } from './util/env'
-import { isValidInterval } from './util/interval'
+import { getIntervalOccurrences, isValidInterval } from './util/interval'
 import { guard } from './util/routing'
 import { getWeatherLocation, setWeatherLocation, WeatherLocation } from './weather-location'
 
@@ -132,6 +132,19 @@ async function toWeatherLocation (body: any): Promise<WeatherLocation | string> 
   }
 }
 
+// the chart needs to know when each job runs, which only the interval parser
+// can say, so it's worked out here rather than in the browser. disabled jobs
+// are included so the chart can update as they're toggled, before saving
+function getOccurrencesData (jobsData: JobData[]) {
+  const occurrences = {} as { [fileName: string]: number[] }
+
+  for (const job of jobsData) {
+    occurrences[job.fileName] = getIntervalOccurrences(job.interval)
+  }
+
+  return occurrences
+}
+
 async function getWeatherLocationData () {
   return {
     location: (await getWeatherLocation()) || null,
@@ -157,8 +170,11 @@ export function createAdminRoutes () {
       return render(res, 'admin-login')
     }
 
+    const jobsData = await getJobsData()
+
     render(res, 'admin', {
-      jobsJson: toJson(await getJobsData()),
+      jobsJson: toJson(jobsData),
+      occurrencesJson: toJson(getOccurrencesData(jobsData)),
       weatherJson: toJson(await getWeatherLocationData()),
     })
   }))
