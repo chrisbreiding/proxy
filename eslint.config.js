@@ -31,6 +31,18 @@ module.exports = defineConfig(
     },
     rules: crb.configs.general.rules,
   },
+  // Browser scripts served as static assets
+  {
+    files: ['public/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }],
+    },
+  },
   // TypeScript-specific config
   {
     files: ['**/*.ts'],

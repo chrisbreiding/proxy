@@ -1,0 +1,211 @@
+html {
+  background: #333;
+}
+body {
+  color: #f8f8f8;
+  font-family: sans-serif;
+  margin: 0 auto;
+  max-width: 720px;
+  padding: 2em 1em;
+}
+header {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+h1 {
+  font-size: 1.4em;
+  margin: 0 0 1em;
+}
+h2 {
+  font-size: 1.1em;
+  margin: 1.6em 0 0.6em;
+}
+section {
+  border-top: 1px solid #4a4a4a;
+  padding-bottom: 0.6em;
+}
+.link-button {
+  background: none;
+  border: 0;
+  color: #9dbdf2;
+  cursor: pointer;
+  font-size: 0.9em;
+  padding: 0;
+}
+/* the categorical slots, stepped for a dark surface. a job keeps its slot
+   for as long as it's in the list, so its color never shifts. shared by the
+   chart and the dots in the job list, which is why they live on the body */
+body {
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
+  --series-other: #8c8c8c;
+}
+.chart {
+  margin: 0 0 0.4em;
+  position: relative;
+}
+/* the svg is drawn twice as wide as this, so half a day fills the space and
+   the rest is reached by scrolling */
+.chart-scroll {
+  overflow-x: auto;
+  position: relative;
+}
+.chart svg {
+  display: block;
+}
+.chart .axis {
+  fill: #b5b5b5;
+  font-size: 10px;
+}
+.chart .grid {
+  stroke: #4a4a4a;
+  stroke-width: 1;
+}
+.chart-empty {
+  color: #b5b5b5;
+  font-size: 0.9em;
+  padding: 1.4em 0;
+}
+.chart-tooltip {
+  background: #1f1f1f;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  font-size: 0.8em;
+  line-height: 1.5;
+  padding: 0.4em 0.6em;
+  pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1;
+}
+.chart-tooltip[hidden] {
+  display: none;
+}
+.chart-tooltip .chart-tooltip-time {
+  color: #b5b5b5;
+}
+.dot {
+  border-radius: 50%;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 10px;
+  width: 10px;
+}
+.job {
+  align-items: center;
+  border-top: 1px solid #4a4a4a;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  padding: 0.8em 0;
+}
+.job-name {
+  flex: 1 1 180px;
+}
+.job-interval {
+  background: #444;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: #f8f8f8;
+  flex: 1 1 240px;
+  font-size: 0.95em;
+  padding: 0.5em;
+}
+.job-interval.invalid {
+  border-color: #fda4a3;
+}
+.job.disabled .job-name,
+.job.disabled .job-interval {
+  opacity: 0.5;
+}
+.job-error {
+  color: #fda4a3;
+  flex: 1 1 100%;
+  font-size: 0.85em;
+}
+.job-error:empty {
+  display: none;
+}
+.weather-current {
+  font-size: 0.95em;
+  margin: 0 0 0.8em;
+}
+.weather-current .muted {
+  color: #b5b5b5;
+}
+.weather-controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+}
+.weather-controls input {
+  background: #444;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: #f8f8f8;
+  font-size: 0.95em;
+  padding: 0.5em;
+  width: 9em;
+}
+.button {
+  background: #4a7fd4;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.95em;
+  padding: 0.5em 1em;
+}
+.button:disabled {
+  background: #555;
+  color: #999;
+  cursor: default;
+}
+#weather-message {
+  flex: 1 1 100%;
+  font-size: 0.9em;
+}
+#weather-message.error {
+  color: #fda4a3;
+}
+#weather-message.success {
+  color: #e5ffb2;
+}
+footer {
+  border-top: 1px solid #4a4a4a;
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  padding-top: 1.2em;
+}
+#save {
+  background: #4a7fd4;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1em;
+  padding: 0.6em 1.4em;
+}
+#save:disabled {
+  background: #555;
+  color: #999;
+  cursor: default;
+}
+#message {
+  font-size: 0.9em;
+}
+#message.error {
+  color: #fda4a3;
+}
+#message.success {
+  color: #e5ffb2;
+}
