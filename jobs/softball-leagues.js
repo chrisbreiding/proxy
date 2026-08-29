@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 const { parentPort } = require('worker_threads')
 
-console.log('Running nightly script 2 (tv updates)...')
+console.log('Updating softball leagues...')
 
-require('../dist/lib/tv/tasks/update').default()
+require('../dist/lib/notion/softball-leagues').default()
 .then(() => {
-  console.log('Successfully ran nightly script 2')
+  console.log('Successfully updated softball leagues')
 
   if (parentPort) {
     parentPort.postMessage('done')
@@ -14,7 +14,7 @@ require('../dist/lib/tv/tasks/update').default()
   }
 })
 .catch((error) => {
-  console.log('Running nightly script 2 failed:')
+  console.log('Updating softball leagues failed:')
   console.log(error?.stack || error)
 
   process.exit(1)

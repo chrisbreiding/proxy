@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html {
+      background: #333;
+    }
+    body {
+      color: #f8f8f8;
+      font-family: sans-serif;
+      margin: 0 auto;
+      max-width: 720px;
+      padding: 2em 1em;
+    }
+    header {
+      align-items: baseline;
+      display: flex;
+      justify-content: space-between;
+    }
+    h1 {
+      font-size: 1.4em;
+      margin: 0 0 1em;
+    }
+    .link-button {
+      background: none;
+      border: 0;
+      color: #9dbdf2;
+      cursor: pointer;
+      font-size: 0.9em;
+      padding: 0;
+    }
+    .job {
+      align-items: center;
+      border-top: 1px solid #4a4a4a;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6em;
+      padding: 0.8em 0;
+    }
+    .job-name {
+      flex: 1 1 180px;
+    }
+    .job-interval {
+      background: #444;
+      border: 1px solid #666;
+      border-radius: 4px;
+      color: #f8f8f8;
+      flex: 1 1 240px;
+      font-size: 0.95em;
+      padding: 0.5em;
+    }
+    .job-interval.invalid {
+      border-color: #fda4a3;
+    }
+    .job.disabled .job-name,
+    .job.disabled .job-interval {
+      opacity: 0.5;
+    }
+    .job-error {
+      color: #fda4a3;
+      flex: 1 1 100%;
+      font-size: 0.85em;
+    }
+    .job-error:empty {
+      display: none;
+    }
+    footer {
+      border-top: 1px solid #4a4a4a;
+      display: flex;
+      gap: 1em;
+      align-items: center;
+      padding-top: 1.2em;
+    }
+    #save {
+      background: #4a7fd4;
+      border: 0;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1em;
+      padding: 0.6em 1.4em;
+    }
+    #save:disabled {
+      background: #555;
+      color: #999;
+      cursor: default;
+    }
+    #message {
+      font-size: 0.9em;
+    }
+    #message.error {
+      color: #fda4a3;
+    }
+    #message.success {
+      color: #e5ffb2;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jobs</h1>
+    <button type="button" class="link-button" id="logout">Log Out</button>
+  </header>
+  <div id="jobs"></div>
+  <footer>
+    <button type="button" id="save" disabled>Save</button>
+    <span id="message"></span>
+  </footer>
+  <script>
+    const jobs = {{{jobsJson}}}
+    const original = JSON.stringify(jobs)
+    const jobsEl = document.getElementById('jobs')
+    const saveEl = document.getElementById('save')
+    const messageEl = document.getElementById('message')
+
+    function setMessage (text, type) {
+      messageEl.textContent = text
+      messageEl.className = type || ''
+    }
+
+    function updateSaveState () {
+      saveEl.disabled = JSON.stringify(jobs) === original
+    }
+
+    function setError (fileName, message) {
+      const row = jobsEl.querySelector('[data-file-name="' + fileName + '"]')
+
+      row.querySelector('.job-error').textContent = message || ''
+      row.querySelector('.job-interval').classList.toggle('invalid', !!message)
+    }
+
+    function clearErrors () {
+      for (const el of jobsEl.querySelectorAll('.job-error')) {
+        el.textContent = ''
+      }
+
+      for (const el of jobsEl.querySelectorAll('.job-interval')) {
+        el.classList.remove('invalid')
+      }
+    }
+
+    jobs.forEach((job) => {
+      const row = document.createElement('div')
+
+      row.className = 'job' + (job.enabled ? '' : ' disabled')
+      row.dataset.fileName = job.fileName
+
+      const name = document.createElement('span')
+
+      name.className = 'job-name'
+      name.textContent = job.name
+
+      const interval = document.createElement('input')
+
+      interval.className = 'job-interval'
+      interval.type = 'text'
+      interval.value = job.interval
+      interval.setAttribute('aria-label', job.name + ' interval')
+      interval.addEventListener('input', () => {
+        job.interval = interval.value
+        setError(job.fileName, '')
+        setMessage('')
+        updateSaveState()
+      })
+
+      const toggleLabel = document.createElement('label')
+      const toggle = document.createElement('input')
+
+      toggle.type = 'checkbox'
+      toggle.checked = job.enabled
+      toggle.addEventListener('change', () => {
+        job.enabled = toggle.checked
+        row.classList.toggle('disabled', !toggle.checked)
+        setMessage('')
+        updateSaveState()
+      })
+
+      toggleLabel.appendChild(toggle)
+      toggleLabel.appendChild(document.createTextNode(' Enabled'))
+
+      const error = document.createElement('span')
+
+      error.className = 'job-error'
+
+      row.appendChild(name)
+      row.appendChild(interval)
+      row.appendChild(toggleLabel)
+      row.appendChild(error)
+      jobsEl.appendChild(row)
+    })
+
+    saveEl.addEventListener('click', async () => {
+      clearErrors()
+      setMessage('')
+      saveEl.disabled = true
+
+      try {
+        const res = await fetch('/admin/jobs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobs }),
+        })
+        const body = await res.json().catch(() => ({}))
+
+        if (res.ok) {
+          window.location.reload()
+
+          return
+        }
+
+        if (body.errors) {
+          for (const fileName of Object.keys(body.errors)) {
+            setError(fileName, body.errors[fileName])
+          }
+
+          setMessage('Fix the errors above and try again', 'error')
+        } else {
+          setMessage(body.error || 'Saving failed', 'error')
+        }
+      } catch (_) {
+        setMessage('Saving failed', 'error')
+      }
+
+      updateSaveState()
+    })
+
+    document.getElementById('logout').addEventListener('click', async () => {
+      await fetch('/admin/logout', { method: 'POST' })
+      window.location.reload()
+    })
+  </script>
+</body>
+</html>

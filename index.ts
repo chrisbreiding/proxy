@@ -6,11 +6,13 @@ import { engine as handlebars } from 'express-handlebars'
 import http from 'http'
 import morgan from 'morgan'
 
+import { createAdminRoutes } from './lib/admin'
 import * as dashboard from './lib/dashboard'
 import * as garage from './lib/garage'
 import * as location from './lib/location'
 import * as notion from './lib/notion'
 import * as dogs from './lib/dogs'
+import { getEnabledBreeJobs, setBree } from './lib/jobs'
 import * as lennonLog from './lib/lennon-log'
 import * as sync from './lib/sync'
 import { createTvRoutes } from './lib/tv'
@@ -81,6 +83,7 @@ export function startServer (port: number) {
   app.get('/sync/:user/:app/:key', ensureApiKey, sync.get)
   app.post('/sync/:user/:app/:key', ensureApiKey, sync.set)
 
+  app.use('/admin', createAdminRoutes())
   app.use('/tv', createTvRoutes())
 
   app.get('/test', (req: express.Request, res: express.Response) => {
@@ -94,11 +97,13 @@ export function startServer (port: number) {
   return server
 }
 
-/* v8 ignore next 7 -- @preserve */
+/* v8 ignore next 10 -- @preserve */
 async function startBree () {
   if (process.env.NODE_ENV !== 'production') return
 
-  const bree = new Bree({})
+  const bree = new Bree({ jobs: await getEnabledBreeJobs() })
+
+  setBree(bree)
 
   await bree.start()
 }

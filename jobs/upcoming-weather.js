@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 const { parentPort } = require('worker_threads')
 
-console.log('Running hourly scripts (upcoming weather)...')
+console.log('Updating upcoming weather...')
 
 require('../dist/lib/notion/update-upcoming-weather').default()
 .then(() => {
-  console.log('Successfully ran hourly scripts')
+  console.log('Successfully updated upcoming weather')
 
   if (parentPort) {
     parentPort.postMessage('done')
@@ -14,7 +14,7 @@ require('../dist/lib/notion/update-upcoming-weather').default()
   }
 })
 .catch((error) => {
-  console.log('Running hourly scripts failed:')
+  console.log('Updating upcoming weather failed:')
   console.log(error?.stack || error)
 
   process.exit(1)

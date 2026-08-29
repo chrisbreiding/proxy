@@ -2,7 +2,7 @@
 const { parentPort } = require('worker_threads')
 const { mapPromisesSerially } = require('../dist/lib/util/collections')
 
-console.log('Running quarter-hourly scripts (current weather)...')
+console.log('Udating current weather...')
 
 const scripts = [
   require('../dist/lib/notion/update-current-weather').default,
@@ -10,7 +10,7 @@ const scripts = [
 
 mapPromisesSerially(scripts, (script) => script())
 .then(() => {
-  console.log('Successfully ran quarter-hourly scripts')
+  console.log('Successfully updated current weather')
 
   if (parentPort) {
     parentPort.postMessage('done')
@@ -19,7 +19,7 @@ mapPromisesSerially(scripts, (script) => script())
   }
 })
 .catch((error) => {
-  console.log('Running quarter-hourly scripts failed:')
+  console.log('Updating current weather failed:')
   console.log(error?.stack || error)
 
   process.exit(1)
