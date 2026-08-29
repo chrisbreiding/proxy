@@ -1,5 +1,7 @@
+import mockFs from 'mock-fs'
 import nock from 'nock'
-import { afterEach, beforeEach, describe, it, vi } from 'vitest'
+import path from 'path'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 delete process.env.TZ
 
@@ -11,12 +13,19 @@ const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
-    vi.useFakeTimers()
+    // mock-fs defers its async callbacks with timers, so only Date is faked
+    vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date(2022, 11, 28))
+    // isolates these tests from any real data/weather-data.json on disk, so
+    // they always fall back to the WEATHER_LOCATION env var
+    mockFs({
+      'test/fixtures': mockFs.load(path.resolve(process.cwd(), 'test/fixtures')),
+    })
   })
 
   afterEach(() => {
     vi.useRealTimers()
+    mockFs.restore()
   })
 
   it('updates upcoming quest dates with temperature and conditions', async () => {
@@ -79,7 +88,6 @@ describe('lib/notion/update-upcoming-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       questsId: 'quests-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -123,9 +131,48 @@ describe('lib/notion/update-upcoming-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       questsId: 'quests-id',
-      location: 'lat,lng',
     })
 
     await snapshot
+  })
+  it('uses the location set in the admin page instead of the environment variable', async () => {
+    const weather = fixtureContents('weather/weather')
+
+    delete weather.currentWeather
+    delete weather.forecastHourly
+    delete weather.weatherAlerts
+
+    const weatherScope = nock('https://weatherkit.apple.com')
+    .matchHeader('authorization', `Bearer ${token}`)
+    .get(`${weatherUrlBasePath.replace('/en/lat/lng', '/en/40.1/-80.2')}&dataSets=forecastDaily`)
+    .reply(200, weather)
+
+    const questBlocks = [
+      block.p({ text: 'Wed, 12/28' }),
+      block.bullet({ text: 'A task' }),
+      block.toggle({ text: 'Upcoming', id: 'upcoming-id' }),
+    ]
+
+    nockGetBlockChildren('quests-id', { reply: { results: questBlocks } })
+    nockGetBlockChildren('upcoming-id', { reply: { results: [] } })
+
+    nock('https://api.notion.com')
+    .patch(/.*/)
+    .reply(200)
+
+    mockFs({
+      'data': {
+        'weather-data.json': JSON.stringify({
+          location: { coordinates: '40.1,-80.2', name: 'Somewhere, PA' },
+        }),
+      },
+    })
+
+    await updateWeather({
+      notionToken: 'notion-token',
+      questsId: 'quests-id',
+    })
+
+    expect(weatherScope.isDone()).to.equal(true)
   })
 })

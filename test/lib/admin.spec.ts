@@ -1,11 +1,31 @@
 import crypto from 'crypto'
+import { readJsonSync } from 'fs-extra'
 import mockFs from 'mock-fs'
+import nock from 'nock'
 import path from 'path'
 import { afterEach, describe, expect, it, TestContext, vi } from 'vitest'
 
 import { startServer } from '../../index'
 import { getJobsData, jobs, PersistentDataStructure, setBree } from '../../lib/jobs'
+import type { PersistentDataStructure as WeatherPersistentDataStructure } from '../../lib/weather-location'
 import { handleServer } from '../util'
+
+const geocodeResult = {
+  results: [
+    {
+      address_components: [
+        { long_name: 'Pittsburgh', short_name: 'Pittsburgh', types: ['locality', 'political'] },
+        { long_name: 'Pennsylvania', short_name: 'PA', types: ['administrative_area_level_1', 'political'] },
+      ],
+      formatted_address: '123 Main St, Pittsburgh, PA 15201, USA',
+    },
+  ],
+}
+
+const location = {
+  coordinates: '40.1,-80.2',
+  name: 'Pittsburgh, PA',
+}
 
 const password = 'super-secret-password'
 const passwordHash = crypto.createHash('sha256').update(password).digest('hex')
@@ -14,13 +34,24 @@ function getSessionToken (hash: string) {
   return crypto.createHmac('sha256', hash).update('admin_session').digest('hex')
 }
 
-function mockData (data: PersistentDataStructure | null) {
+function mockData (data: PersistentDataStructure | null, weatherData: WeatherPersistentDataStructure = {}) {
   mockFs({
     'data': {
       'jobs-data.json': JSON.stringify(data),
+      'weather-data.json': JSON.stringify(weatherData),
     },
     'views': mockFs.load(path.resolve(process.cwd(), 'views')),
   })
+}
+
+function getWeatherData () {
+  return readJsonSync('./data/weather-data.json')
+}
+
+function nockGeocode (reply: object) {
+  return nock('https://maps.googleapis.com')
+  .get('/maps/api/geocode/json?key=key&latlng=40.1%2C-80.2')
+  .reply(200, reply)
 }
 
 async function login (ctx: TestContext) {
@@ -36,6 +67,7 @@ describe('lib/admin', () => {
     mockFs.restore()
     setBree(undefined)
     delete process.env.ADMIN_PASSWORD_HASH
+    process.env.WEATHER_LOCATION = 'lat,lng'
   })
 
   describe('GET /admin', () => {
@@ -118,6 +150,18 @@ describe('lib/admin', () => {
       expect(res.status).to.equal(200)
       expect(res.text).to.include('id="jobs"')
       expect(res.text).to.include(jobs[0]!.name)
+    })
+
+    it('renders the weather location view with the current location if authenticated', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null, { location })
+
+      const cookie = getSessionToken(passwordHash)
+      const res = await ctx.request.get('/admin').set('Cookie', `admin_session=${cookie}`)
+
+      expect(res.status).to.equal(200)
+      expect(res.text).to.include('id="weather"')
+      expect(res.text).to.include(JSON.stringify({ location, defaultCoordinates: 'lat,lng' }))
     })
 
     it('escapes `<` in the serialized jobs data', async (ctx) => {
@@ -409,6 +453,209 @@ describe('lib/admin', () => {
 
       expect(bree.remove).not.toHaveBeenCalled()
       expect(bree.add).not.toHaveBeenCalled()
+    })
+  })
+  describe('GET /admin/weather-location', () => {
+    it('returns 401 if not authenticated', async (ctx) => {
+      const res = await ctx.request.get('/admin/weather-location')
+
+      expect(res.status).to.equal(401)
+      expect(res.body).to.deep.equal({ error: 'Not authenticated' })
+    })
+
+    it('returns the persisted location', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null, { location })
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.get('/admin/weather-location').set('Cookie', cookie)
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ location, defaultCoordinates: 'lat,lng' })
+    })
+
+    it('returns the environment location when none is persisted', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.get('/admin/weather-location').set('Cookie', cookie)
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ location: null, defaultCoordinates: 'lat,lng' })
+    })
+
+    it('returns null for both when nothing is set', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      delete process.env.WEATHER_LOCATION
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.get('/admin/weather-location').set('Cookie', cookie)
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ location: null, defaultCoordinates: null })
+    })
+  })
+
+  describe('POST /admin/weather-location', () => {
+    it('returns 401 if not authenticated', async (ctx) => {
+      const res = await ctx.request.post('/admin/weather-location').send({ latitude: 40.1, longitude: -80.2 })
+
+      expect(res.status).to.equal(401)
+      expect(res.body).to.deep.equal({ error: 'Not authenticated' })
+    })
+
+    it('persists the location with the name looked up from the coordinates', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+      nockGeocode(geocodeResult)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 40.1,
+        longitude: -80.2,
+      })
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ location, defaultCoordinates: 'lat,lng' })
+      expect(getWeatherData()).to.deep.equal({ location })
+    })
+
+    it('accepts coordinates sent as strings', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+      nockGeocode(geocodeResult)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: '40.1',
+        longitude: '-80.2',
+      })
+
+      expect(res.status).to.equal(200)
+      expect(res.body.location).to.deep.equal(location)
+    })
+
+    it('falls back to the coordinates when no name is found', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+      nockGeocode({ results: [] })
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 40.1,
+        longitude: -80.2,
+      })
+
+      expect(res.status).to.equal(200)
+      expect(res.body.location).to.deep.equal({ coordinates: '40.1,-80.2', name: '40.1,-80.2' })
+    })
+
+    it('falls back to the coordinates when the name lookup errors', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      nock('https://maps.googleapis.com')
+      .get('/maps/api/geocode/json?key=key&latlng=40.1%2C-80.2')
+      .reply(500)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 40.1,
+        longitude: -80.2,
+      })
+
+      expect(res.status).to.equal(200)
+      expect(res.body.location).to.deep.equal({ coordinates: '40.1,-80.2', name: '40.1,-80.2' })
+    })
+
+    it('returns 422 and saves nothing if the latitude is not a number', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 'nope',
+        longitude: -80.2,
+      })
+
+      expect(res.status).to.equal(422)
+      expect(res.body).to.deep.equal({ error: 'Latitude must be a number between -90 and 90' })
+      expect(getWeatherData()).to.deep.equal({})
+    })
+
+    it('returns 422 if the latitude is out of range', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 91,
+        longitude: -80.2,
+      })
+
+      expect(res.status).to.equal(422)
+      expect(res.body).to.deep.equal({ error: 'Latitude must be a number between -90 and 90' })
+    })
+
+    it('returns 422 if the longitude is missing', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 40.1,
+      })
+
+      expect(res.status).to.equal(422)
+      expect(res.body).to.deep.equal({ error: 'Longitude must be a number between -180 and 180' })
+    })
+
+    it('returns 422 if the longitude is out of range', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie).send({
+        latitude: 40.1,
+        longitude: 181,
+      })
+
+      expect(res.status).to.equal(422)
+      expect(res.body).to.deep.equal({ error: 'Longitude must be a number between -180 and 180' })
+    })
+
+    it('returns 422 if no body is sent at all', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null)
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.post('/admin/weather-location').set('Cookie', cookie)
+
+      expect(res.status).to.equal(422)
+      expect(res.body).to.deep.equal({ error: 'Latitude must be a number between -90 and 90' })
+    })
+  })
+
+  describe('DELETE /admin/weather-location', () => {
+    it('returns 401 if not authenticated', async (ctx) => {
+      const res = await ctx.request.delete('/admin/weather-location')
+
+      expect(res.status).to.equal(401)
+      expect(res.body).to.deep.equal({ error: 'Not authenticated' })
+    })
+
+    it('clears the location so the environment one is used', async (ctx) => {
+      process.env.ADMIN_PASSWORD_HASH = passwordHash
+      mockData(null, { location })
+
+      const cookie = await login(ctx)
+      const res = await ctx.request.delete('/admin/weather-location').set('Cookie', cookie)
+
+      expect(res.status).to.equal(200)
+      expect(res.body).to.deep.equal({ location: null, defaultCoordinates: 'lat,lng' })
+      expect(getWeatherData()).to.deep.equal({})
     })
   })
 })

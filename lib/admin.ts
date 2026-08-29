@@ -8,10 +8,12 @@ import {
   setJobsData,
   toBreeJob,
 } from './jobs'
+import { getLocationName } from './location'
 import { debug } from './util/debug'
 import { getEnv } from './util/env'
 import { isValidInterval } from './util/interval'
 import { guard } from './util/routing'
+import { getWeatherLocation, setWeatherLocation, WeatherLocation } from './weather-location'
 
 const cookieName = 'admin_session'
 const cookieMaxAge = 30 * 24 * 60 * 60 * 1000 // 30 days
@@ -98,6 +100,50 @@ async function updateBreeJobs (previousJobs: JobData[], newJobs: JobData[]) {
   }
 }
 
+function toCoordinate (value: unknown, limit: number) {
+  const coordinate = typeof value === 'string' ? Number(value) : value
+
+  if (typeof coordinate !== 'number' || !Number.isFinite(coordinate)) return
+  if (Math.abs(coordinate) > limit) return
+
+  return coordinate
+}
+
+// the browser and the manual inputs both send a latitude / longitude pair, so
+// the name is looked up here rather than trusted from the client
+async function toWeatherLocation (body: any): Promise<WeatherLocation | string> {
+  const latitude = toCoordinate(body?.latitude, 90)
+  const longitude = toCoordinate(body?.longitude, 180)
+
+  if (latitude === undefined) return 'Latitude must be a number between -90 and 90'
+  if (longitude === undefined) return 'Longitude must be a number between -180 and 180'
+
+  const coordinates = `${latitude},${longitude}`
+
+  try {
+    return { coordinates, name: (await getLocationName(coordinates)) || coordinates }
+  } catch (error: any) {
+    /* v8 ignore next -- @preserve */
+    debug('Getting location name errored:', error?.stack || error)
+
+    // a failed lookup shouldn't prevent setting the location, since the
+    // coordinates are all the weather scripts actually need
+    return { coordinates, name: coordinates }
+  }
+}
+
+async function getWeatherLocationData () {
+  return {
+    location: (await getWeatherLocation()) || null,
+    defaultCoordinates: getEnv('WEATHER_LOCATION') || null,
+  }
+}
+
+// escaped so a value containing `</script>` can't break out of the tag
+function toJson (data: unknown) {
+  return JSON.stringify(data).replace(/</g, '\\u003c')
+}
+
 function render (res: express.Response, view: string, data: object = {}) {
   res.set('Content-Type', 'text/html')
   res.render(view, { ...data, layout: false })
@@ -111,10 +157,10 @@ export function createAdminRoutes () {
       return render(res, 'admin-login')
     }
 
-    // escaped so an interval containing `</script>` can't break out of the tag
-    const jobsJson = JSON.stringify(await getJobsData()).replace(/</g, '\\u003c')
-
-    render(res, 'admin', { jobsJson })
+    render(res, 'admin', {
+      jobsJson: toJson(await getJobsData()),
+      weatherJson: toJson(await getWeatherLocationData()),
+    })
   }))
 
   router.post('/login', guard(async (req, res) => {
@@ -188,6 +234,29 @@ export function createAdminRoutes () {
     await updateBreeJobs(currentJobs, newJobs)
 
     res.json({ jobs: newJobs })
+  }))
+
+  router.get('/weather-location', ensureAuthenticated, guard(async (req, res) => {
+    res.json(await getWeatherLocationData())
+  }))
+
+  router.post('/weather-location', ensureAuthenticated, guard(async (req, res) => {
+    const location = await toWeatherLocation(req.body)
+
+    if (typeof location === 'string') {
+      return res.status(422).json({ error: location })
+    }
+
+    await setWeatherLocation(location)
+
+    res.json(await getWeatherLocationData())
+  }))
+
+  // clearing it makes the weather scripts fall back to the environment
+  router.delete('/weather-location', ensureAuthenticated, guard(async (req, res) => {
+    await setWeatherLocation(undefined)
+
+    res.json(await getWeatherLocationData())
   }))
 
   return router

@@ -25,6 +25,14 @@
       font-size: 1.4em;
       margin: 0 0 1em;
     }
+    h2 {
+      font-size: 1.1em;
+      margin: 1.6em 0 0.6em;
+    }
+    section {
+      border-top: 1px solid #4a4a4a;
+      padding-bottom: 0.6em;
+    }
     .link-button {
       background: none;
       border: 0;
@@ -68,6 +76,52 @@
     .job-error:empty {
       display: none;
     }
+    .weather-current {
+      font-size: 0.95em;
+      margin: 0 0 0.8em;
+    }
+    .weather-current .muted {
+      color: #b5b5b5;
+    }
+    .weather-controls {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6em;
+    }
+    .weather-controls input {
+      background: #444;
+      border: 1px solid #666;
+      border-radius: 4px;
+      color: #f8f8f8;
+      font-size: 0.95em;
+      padding: 0.5em;
+      width: 9em;
+    }
+    .button {
+      background: #4a7fd4;
+      border: 0;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.95em;
+      padding: 0.5em 1em;
+    }
+    .button:disabled {
+      background: #555;
+      color: #999;
+      cursor: default;
+    }
+    #weather-message {
+      flex: 1 1 100%;
+      font-size: 0.9em;
+    }
+    #weather-message.error {
+      color: #fda4a3;
+    }
+    #weather-message.success {
+      color: #e5ffb2;
+    }
     footer {
       border-top: 1px solid #4a4a4a;
       display: flex;
@@ -102,15 +156,129 @@
 </head>
 <body>
   <header>
-    <h1>Jobs</h1>
+    <h1>Admin</h1>
     <button type="button" class="link-button" id="logout">Log Out</button>
   </header>
+  <h2>Weather Location</h2>
+  <section id="weather">
+    <p class="weather-current" id="weather-current"></p>
+    <div class="weather-controls">
+      <button type="button" class="button" id="weather-detect">Use Current Location</button>
+      <input type="text" id="weather-latitude" inputmode="decimal" placeholder="Latitude" aria-label="Latitude">
+      <input type="text" id="weather-longitude" inputmode="decimal" placeholder="Longitude" aria-label="Longitude">
+      <button type="button" class="button" id="weather-set">Set Location</button>
+      <button type="button" class="link-button" id="weather-clear">Use Default</button>
+      <span id="weather-message"></span>
+    </div>
+  </section>
+  <h2>Jobs</h2>
   <div id="jobs"></div>
   <footer>
     <button type="button" id="save" disabled>Save</button>
     <span id="message"></span>
   </footer>
   <script>
+    const weather = {{{weatherJson}}}
+    const weatherCurrentEl = document.getElementById('weather-current')
+    const weatherMessageEl = document.getElementById('weather-message')
+    const weatherDetectEl = document.getElementById('weather-detect')
+    const weatherSetEl = document.getElementById('weather-set')
+    const weatherClearEl = document.getElementById('weather-clear')
+    const latitudeEl = document.getElementById('weather-latitude')
+    const longitudeEl = document.getElementById('weather-longitude')
+
+    function setWeatherMessage (text, type) {
+      weatherMessageEl.textContent = text
+      weatherMessageEl.className = type || ''
+    }
+
+    function renderWeatherLocation (data) {
+      weather.location = data.location
+      weather.defaultCoordinates = data.defaultCoordinates
+
+      if (data.location) {
+        weatherCurrentEl.innerHTML = ''
+        weatherCurrentEl.appendChild(document.createTextNode(data.location.name + ' '))
+
+        const coordinates = document.createElement('span')
+
+        coordinates.className = 'muted'
+        coordinates.textContent = '(' + data.location.coordinates + ')'
+
+        weatherCurrentEl.appendChild(coordinates)
+      } else {
+        weatherCurrentEl.textContent = data.defaultCoordinates
+          ? 'Using the default location (' + data.defaultCoordinates + ')'
+          : 'No location is set'
+      }
+
+      weatherClearEl.style.display = data.location ? '' : 'none'
+    }
+
+    function setWeatherDisabled (disabled) {
+      weatherDetectEl.disabled = disabled
+      weatherSetEl.disabled = disabled
+    }
+
+    async function saveWeatherLocation (options, successMessage) {
+      setWeatherDisabled(true)
+
+      try {
+        const res = await fetch('/admin/weather-location', options)
+        const body = await res.json().catch(() => ({}))
+
+        if (!res.ok) {
+          setWeatherMessage(body.error || 'Saving the location failed', 'error')
+        } else {
+          renderWeatherLocation(body)
+          latitudeEl.value = ''
+          longitudeEl.value = ''
+          setWeatherMessage(successMessage, 'success')
+        }
+      } catch (_) {
+        setWeatherMessage('Saving the location failed', 'error')
+      }
+
+      setWeatherDisabled(false)
+    }
+
+    function saveCoordinates (latitude, longitude) {
+      return saveWeatherLocation({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude, longitude }),
+      }, 'Location saved')
+    }
+
+    weatherDetectEl.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        return setWeatherMessage('This browser cannot detect your location', 'error')
+      }
+
+      setWeatherMessage('Detecting your location...')
+      setWeatherDisabled(true)
+
+      navigator.geolocation.getCurrentPosition((position) => {
+        setWeatherDisabled(false)
+        saveCoordinates(position.coords.latitude, position.coords.longitude)
+      }, (error) => {
+        setWeatherDisabled(false)
+        setWeatherMessage(error.message || 'Detecting your location failed', 'error')
+      })
+    })
+
+    weatherSetEl.addEventListener('click', () => {
+      setWeatherMessage('')
+      saveCoordinates(latitudeEl.value.trim(), longitudeEl.value.trim())
+    })
+
+    weatherClearEl.addEventListener('click', () => {
+      setWeatherMessage('')
+      saveWeatherLocation({ method: 'DELETE' }, 'Now using the default location')
+    })
+
+    renderWeatherLocation(weather)
+
     const jobs = {{{jobsJson}}}
     const original = JSON.stringify(jobs)
     const jobsEl = document.getElementById('jobs')

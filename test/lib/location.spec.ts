@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { handleServer } from '../util'
 import { startServer } from '../../index'
+import { getLocationName } from '../../lib/location'
 
 describe('lib/location', () => {
   handleServer(startServer)
@@ -110,6 +111,100 @@ describe('lib/location', () => {
         message: 'query3 could not get search results',
       })
       expect(res.body.error.code).to.equal('ERR_BAD_RESPONSE')
+    })
+  })
+
+  describe('#getLocationName', () => {
+    function nockGeocode (reply: object) {
+      nock('https://maps.googleapis.com')
+      .get('/maps/api/geocode/json?key=key&latlng=40.1%2C-80.2')
+      .reply(200, reply)
+    }
+
+    function component (longName: string, shortName: string, ...types: string[]) {
+      return { long_name: longName, short_name: shortName, types }
+    }
+
+    it('returns the city and state of the first result', async () => {
+      nockGeocode({
+        results: [
+          {
+            address_components: [
+              component('123', '123', 'street_number'),
+              component('Pittsburgh', 'Pittsburgh', 'locality', 'political'),
+              component('Pennsylvania', 'PA', 'administrative_area_level_1', 'political'),
+            ],
+            formatted_address: '123 Main St, Pittsburgh, PA 15201, USA',
+          },
+        ],
+      })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal('Pittsburgh, PA')
+    })
+
+    it('falls back to a sublocality when there is no locality', async () => {
+      nockGeocode({
+        results: [
+          {
+            address_components: [
+              component('Brooklyn', 'Brooklyn', 'sublocality', 'political'),
+              component('New York', 'NY', 'administrative_area_level_1', 'political'),
+            ],
+          },
+        ],
+      })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal('Brooklyn, NY')
+    })
+
+    it('falls back to the third-level area when there is no locality or sublocality', async () => {
+      nockGeocode({
+        results: [
+          {
+            address_components: [
+              component('Ross Township', 'Ross Twp', 'administrative_area_level_3', 'political'),
+              component('Pennsylvania', 'PA', 'administrative_area_level_1', 'political'),
+            ],
+          },
+        ],
+      })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal('Ross Township, PA')
+    })
+
+    it('falls back to the formatted address when the city or state is missing', async () => {
+      nockGeocode({
+        results: [
+          {
+            address_components: [
+              component('Pennsylvania', 'PA', 'administrative_area_level_1', 'political'),
+            ],
+            formatted_address: 'Pennsylvania, USA',
+          },
+        ],
+      })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal('Pennsylvania, USA')
+    })
+
+    it('falls back to the formatted address when there are no address components', async () => {
+      nockGeocode({
+        results: [{ formatted_address: 'Pennsylvania, USA' }],
+      })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal('Pennsylvania, USA')
+    })
+
+    it('returns undefined when there are no results', async () => {
+      nockGeocode({ results: [] })
+
+      expect(await getLocationName('40.1,-80.2')).to.equal(undefined)
+    })
+
+    it('returns undefined when the response has no results property', async () => {
+      nockGeocode({})
+
+      expect(await getLocationName('40.1,-80.2')).to.equal(undefined)
     })
   })
 })

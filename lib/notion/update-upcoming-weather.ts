@@ -9,6 +9,7 @@ import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { makeConditionParts, makeTemperatureParts } from './util/weather'
 import { DayWeather, getDailyWeather } from '../weather'
+import { getWeatherCoordinates } from '../weather-location'
 import type { NotionBlock } from './types'
 import { getDateFromText } from '../util/dates'
 import { updateBlock } from './util/updates'
@@ -113,37 +114,35 @@ async function updateBlocks ({ dateObjects, notionToken, weather }: UpdateBlocks
 interface UpdateWeatherOptions {
   notionToken: string
   questsId: string
-  location: string
 }
 
-export async function updateWeather ({ notionToken, questsId, location }: UpdateWeatherOptions) {
+export async function updateWeather ({ notionToken, questsId }: UpdateWeatherOptions) {
   const questBlocks = await getAllQuests({ notionToken, pageId: questsId })
   const dateObjects = getDates(questBlocks)
 
   debugVerbose('dateObjects:', dateObjects)
 
+  const location = await getWeatherCoordinates()
   const weatherData = await getDailyWeather(location)
   const weather = getWeatherByDate(weatherData.daily.data)
 
   await updateBlocks({ dateObjects, notionToken, weather })
 }
 
-/* v8 ignore next 23 -- @preserve */
+/* v8 ignore next 21 -- @preserve */
 export default async function main () {
   const notionToken = getEnv('NOTION_TOKEN')!
   const questsId = getEnv('NOTION_QUESTS_ID')!
-  const location = getEnv('WEATHER_LOCATION')!
 
   debugVerbose('ENV:', {
     notionToken,
     questsId,
-    location,
   })
 
   try {
     debug('Updating quests with weather...')
 
-    await updateWeather({ notionToken, questsId, location })
+    await updateWeather({ notionToken, questsId })
 
     debug('Successfully updated quests with weather')
   } catch (error: any) {

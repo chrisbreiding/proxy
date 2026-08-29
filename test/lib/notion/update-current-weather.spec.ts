@@ -1,4 +1,6 @@
+import mockFs from 'mock-fs'
 import nock from 'nock'
+import path from 'path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { updateWeather } from '../../../lib/notion/update-current-weather'
@@ -80,12 +82,19 @@ describe('lib/notion/update-current-weather', () => {
   }
 
   beforeEach(() => {
-    vi.useFakeTimers()
+    // mock-fs defers its async callbacks with timers, so only Date is faked
+    vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date(2022, 11, 28))
+    // isolates these tests from any real data/weather-data.json on disk, so
+    // they always fall back to the WEATHER_LOCATION env var
+    mockFs({
+      'test/fixtures': mockFs.load(path.resolve(process.cwd(), 'test/fixtures')),
+    })
   })
 
   afterEach(() => {
     vi.useRealTimers()
+    mockFs.restore()
   })
 
   it('updates the current weather block and daily weather table', async () => {
@@ -94,7 +103,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -110,7 +118,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -125,7 +132,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -137,7 +143,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -152,7 +157,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -167,7 +171,6 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
@@ -182,10 +185,43 @@ describe('lib/notion/update-current-weather', () => {
     await updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })
 
     await snapshot
+  })
+
+  it('uses the location set in the admin page instead of the environment variable', async () => {
+    const weather = fixtureContents('weather/weather')
+
+    delete weather.weatherAlerts
+
+    const weatherScope = nock('https://weatherkit.apple.com')
+    .matchHeader('authorization', `Bearer ${token}`)
+    .get(`${weatherUrlBasePath.replace('/en/lat/lng', '/en/40.1/-80.2')}&dataSets=currentWeather,forecastDaily,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+    .reply(200, weather)
+
+    nockGetBlockChildren('current-weather-id', { fixture: 'weather/current-weather-children' })
+    nockGetBlockChildren('table-id', { reply: makeTableRows() })
+
+    nock('https://api.notion.com')
+    .patch(/.*/)
+    .times(10)
+    .reply(200)
+
+    mockFs({
+      'data': {
+        'weather-data.json': JSON.stringify({
+          location: { coordinates: '40.1,-80.2', name: 'Somewhere, PA' },
+        }),
+      },
+    })
+
+    await updateWeather({
+      notionToken: 'notion-token',
+      currentWeatherId: 'current-weather-id',
+    })
+
+    expect(weatherScope.isDone()).to.equal(true)
   })
 
   it('errors if current weather block does not have exactly 2 children', async () => {
@@ -196,7 +232,6 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })).rejects.toThrowError('Expected current weather block to have 2 children, a table block and a paragraph block')
   })
 
@@ -211,7 +246,6 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })).rejects.toThrowError('Expected first block to be a table, but it is a \'paragraph\'')
   })
 
@@ -226,7 +260,6 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })).rejects.toThrowError('Expected second block to be a paragraph, but it is a \'table\'')
   })
 
@@ -240,7 +273,6 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-      location: 'lat,lng',
     })).rejects.toThrowError('Expected table to have 8 rows, but it has 0')
   })
 })

@@ -5,6 +5,7 @@ import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { DayWeather, getWeatherIcon, getCurrentAndDailyWeather, CurrentAndDailyWeather } from '../weather'
+import { getWeatherCoordinates } from '../weather-location'
 import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './util/weather'
 import type { OwnBlock } from './types'
 import { getBlockChildrenDeep } from './util/queries'
@@ -124,11 +125,11 @@ async function getCurrentWeatherBlock (weather: CurrentAndDailyWeather) {
 
 interface UpdateWeatherOptions {
   currentWeatherId: string
-  location: string
   notionToken: string
 }
 
-export async function updateWeather ({ currentWeatherId, location, notionToken }: UpdateWeatherOptions) {
+export async function updateWeather ({ currentWeatherId, notionToken }: UpdateWeatherOptions) {
+  const location = await getWeatherCoordinates()
   const weather = await getCurrentAndDailyWeather(location)
   const { block, text } = await getCurrentWeatherBlock(weather)
 
@@ -143,15 +144,13 @@ export async function updateWeather ({ currentWeatherId, location, notionToken }
   })
 }
 
-/* v8 ignore next 25 -- @preserve */
+/* v8 ignore next 23 -- @preserve */
 export default async function main () {
   const currentWeatherId = getEnv('CURRENT_WEATHER_ID')!
-  const location = getEnv('WEATHER_LOCATION')!
   const notionToken = getEnv('NOTION_TOKEN')!
 
   debugVerbose('ENV:', {
     currentWeatherId,
-    location,
     notionToken,
   })
 
@@ -160,7 +159,6 @@ export default async function main () {
 
     await updateWeather({
       currentWeatherId,
-      location,
       notionToken,
     })
   } catch (error: any) {
