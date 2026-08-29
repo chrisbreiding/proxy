@@ -2,6 +2,7 @@
 
 exports[`lib/notion/update-current-weather > colors cool temperature blue 1`] = `
 "# 🌑 40° {💙}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -24,6 +25,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > colors hot temperature orange 1`] = `
 "# ☀️ 85° {🧡}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -46,6 +48,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > colors sweltering temperature red 1`] = `
 "# 🌨 100° {💔}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -68,6 +71,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > colors warm temperature green 1`] = `
 "# ☁️ 60° {💚}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -90,6 +94,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > displays rain icon and probability if rain 1`] = `
 "# ☔️ (45%) {🩶} 23° {💜}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -112,6 +117,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > displays snow icon and accumulation if snow 1`] = `
 "# ❄️ (0.98in) {🩶} 23° {💜}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |
@@ -134,6 +140,7 @@ Updated Dec 28, 12:00am {🩶}
 
 exports[`lib/notion/update-current-weather > updates the current weather block and daily weather table 1`] = `
 "# 🥶 23° {💜}
+location-name
 | Wed, 12/28 | 23° {💙} / {🩶} 62° {🧡} | 🌪  |
 | ---------- | ------------------------ | --- |
 | Thu, 12/29 | 45° {💙} / {🩶} 66° {🧡} | ⛅️  |

@@ -65,6 +65,7 @@ describe('lib/notion/update-current-weather', () => {
 
     return snapshotUpdateBlocks([
       'current-weather-id',
+      'location-id',
       'row-1',
       'row-2',
       'row-3',
@@ -205,7 +206,7 @@ describe('lib/notion/update-current-weather', () => {
 
     nock('https://api.notion.com')
     .patch(/.*/)
-    .times(10)
+    .times(11)
     .reply(200)
 
     mockFs({
@@ -224,7 +225,7 @@ describe('lib/notion/update-current-weather', () => {
     expect(weatherScope.isDone()).to.equal(true)
   })
 
-  it('errors if current weather block does not have exactly 2 children', async () => {
+  it('errors if current weather block does not have exactly 3 children', async () => {
     nockWeather()
     nockGetBlockChildren('current-weather-id', { reply: { results: [] } })
     nockUpdateBlock('current-weather-id')
@@ -232,13 +233,14 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-    })).rejects.toThrowError('Expected current weather block to have 2 children, a table block and a paragraph block')
+    })).rejects.toThrowError('Expected current weather block to have 3 children, a paragraph block, a table block, and a paragraph block')
   })
 
-  it('errors if first child of current weather block is not a table', async () => {
+  it('errors if first child of current weather block is not a paragraph', async () => {
     nockWeather()
     nockGetBlockChildren('current-weather-id', { reply: { results: [
-      block.p(),
+      block({ type: 'table', content: {} }),
+      block({ type: 'table', content: {} }),
       block.p(),
     ] } })
     nockUpdateBlock('current-weather-id')
@@ -246,12 +248,28 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-    })).rejects.toThrowError('Expected first block to be a table, but it is a \'paragraph\'')
+    })).rejects.toThrowError('Expected first block to be a paragraph, but it is a \'table\'')
   })
 
   it('errors if second child of current weather block is not a table', async () => {
     nockWeather()
     nockGetBlockChildren('current-weather-id', { reply: { results: [
+      block.p(),
+      block.p(),
+      block.p(),
+    ] } })
+    nockUpdateBlock('current-weather-id')
+
+    await expect(() => updateWeather({
+      notionToken: 'notion-token',
+      currentWeatherId: 'current-weather-id',
+    })).rejects.toThrowError('Expected second block to be a table, but it is a \'paragraph\'')
+  })
+
+  it('errors if third child of current weather block is not a paragraph', async () => {
+    nockWeather()
+    nockGetBlockChildren('current-weather-id', { reply: { results: [
+      block.p(),
       block({ type: 'table', content: {} }),
       block({ type: 'table', content: {} }),
     ] } })
@@ -260,7 +278,7 @@ describe('lib/notion/update-current-weather', () => {
     await expect(() => updateWeather({
       notionToken: 'notion-token',
       currentWeatherId: 'current-weather-id',
-    })).rejects.toThrowError('Expected second block to be a paragraph, but it is a \'table\'')
+    })).rejects.toThrowError('Expected third block to be a paragraph, but it is a \'table\'')
   })
 
   it('errors if table does not have 8 rows', async () => {
@@ -269,6 +287,7 @@ describe('lib/notion/update-current-weather', () => {
     nockGetBlockChildren('table-id', { reply: { results: [] } })
 
     nockUpdateBlock('current-weather-id')
+    nockUpdateBlock('location-id')
 
     await expect(() => updateWeather({
       notionToken: 'notion-token',

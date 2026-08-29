@@ -5,7 +5,7 @@ import { compact } from '../util/collections'
 import { debug, debugVerbose } from '../util/debug'
 import { getEnv } from '../util/env'
 import { DayWeather, getWeatherIcon, getCurrentAndDailyWeather, CurrentAndDailyWeather } from '../weather'
-import { getWeatherCoordinates } from '../weather-location'
+import { getWeatherCoordinates, getWeatherLocationName } from '../weather-location'
 import { makeConditionParts, makePrecipPart, makeTemperatureParts } from './util/weather'
 import type { OwnBlock } from './types'
 import { getBlockChildrenDeep } from './util/queries'
@@ -45,21 +45,38 @@ interface UpdateTableWeatherOptions {
 async function updateTableWeather ({ notionToken, currentWeatherId, weather }: UpdateTableWeatherOptions) {
   const toggleContents = await getBlockChildrenDeep({ notionToken, pageId: currentWeatherId })
 
-  if (toggleContents.length !== 2) {
-    throw new Error('Expected current weather block to have 2 children, a table block and a paragraph block')
+  if (toggleContents.length !== 3) {
+    throw new Error('Expected current weather block to have 3 children, a paragraph block, a table block, and a paragraph block')
   }
 
-  const table = toggleContents[0]
+  const locationParagraph = toggleContents[0]
+
+  if (locationParagraph.type !== 'paragraph') {
+    throw new Error(`Expected first block to be a paragraph, but it is a '${locationParagraph.type}'`)
+  }
+
+  const table = toggleContents[1]
 
   if (table.type !== 'table') {
-    throw new Error(`Expected first block to be a table, but it is a '${table.type}'`)
+    throw new Error(`Expected second block to be a table, but it is a '${table.type}'`)
   }
 
-  const paragraph = toggleContents[1]
+  const paragraph = toggleContents[2]
 
   if (paragraph.type !== 'paragraph') {
-    throw new Error(`Expected second block to be a paragraph, but it is a '${paragraph.type}'`)
+    throw new Error(`Expected third block to be a paragraph, but it is a '${paragraph.type}'`)
   }
+
+  const locationName = await getWeatherLocationName()
+
+  debugVerbose('Update location name to:', locationName)
+
+  const locationParagraphBlock = makeBlock({
+    text: locationName,
+    type: 'paragraph',
+  })
+
+  await updateBlock({ notionToken, blockId: locationParagraph.id, block: locationParagraphBlock })
 
   const tableRows = table.children
 

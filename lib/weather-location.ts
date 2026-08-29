@@ -37,3 +37,11 @@ export async function getWeatherCoordinates () {
 
   return location?.coordinates || getEnv('WEATHER_LOCATION')!
 }
+
+// the location set in the admin page wins. without one, fall back to the
+// location configured via the environment
+export async function getWeatherLocationName () {
+  const location = await getWeatherLocation()
+
+  return location?.name || getEnv('WEATHER_LOCATION_NAME')!
+}
