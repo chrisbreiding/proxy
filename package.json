@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "axios": "^1.17.0",
-    "body-parser": "^2.2.2",
+    "body-parser": "^2.4.0",
     "bree": "^9.2.9",
     "cheerio": "^1.2.0",
     "cors": "^2.8.6",
