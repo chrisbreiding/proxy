@@ -1,5 +1,5 @@
 import { URL } from 'url'
-import axios, { Method } from 'axios'
+import axios, { Method, ResponseType } from 'axios'
 import Debug from 'debug'
 import path from 'path'
 import type { ParsedQs } from 'qs'
@@ -13,6 +13,7 @@ export interface RequestOptions {
   headers?: { [key: string]: string }
   params?: ParsedQs
   method?: Method
+  responseType?: ResponseType
 }
 
 function normalizedParams (originalParams?: ParsedQs) {
@@ -36,7 +37,7 @@ function normalizedParams (originalParams?: ParsedQs) {
 }
 
 export async function request<T = any> (options: RequestOptions): Promise<T> {
-  const { url, body, headers, params, method = 'get' } = options
+  const { url, body, headers, params, method = 'get', responseType } = options
 
   debugVerbose('request: %s %s %o', method.toUpperCase(), url, { body, params, headers })
 
@@ -58,6 +59,7 @@ export async function request<T = any> (options: RequestOptions): Promise<T> {
       headers,
       params: normalizedParams(params),
       data: body,
+      responseType,
     })
 
     /* v8 ignore next 8 -- @preserve */

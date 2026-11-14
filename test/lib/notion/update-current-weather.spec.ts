@@ -4,18 +4,16 @@ import path from 'path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { updateWeather } from '../../../lib/notion/update-current-weather'
-import type { ConditionCode } from '../../../lib/weather'
-import { fixtureContents, weatherUrlBasePath } from '../../util'
+import type { SourceIcon } from '../../../lib/weather'
+import { fixtureContents, weatherPath, weatherUrlBase } from '../../util'
 import { block, nockGetBlockChildren, nockUpdateBlock, snapshotUpdateBlocks } from './util'
 
 interface WeatherProps {
-  conditionCode?: ConditionCode
-  precipitationAmount?: number
-  precipitationChance?: number
-  temperature?: number
+  icon?: SourceIcon
+  precip?: number
+  precipprob?: number
+  temp?: number
 }
-
-const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/notion/update-current-weather', () => {
   function makeTableRows () {
@@ -29,29 +27,25 @@ describe('lib/notion/update-current-weather', () => {
   function nockWeather (props: WeatherProps = {}) {
     const weather = fixtureContents('weather/weather')
 
-    weather.currentWeather = {
-      ...weather.currentWeather,
-      temperature: props.temperature || weather.currentWeather.temperature,
-      conditionCode: props.conditionCode || weather.currentWeather.conditionCode,
+    weather.currentConditions = {
+      ...weather.currentConditions,
+      temp: props.temp || weather.currentConditions.temp,
+      icon: props.icon || weather.currentConditions.icon,
     }
 
-    if (props.precipitationAmount || props.precipitationChance) {
-      weather.forecastHourly = {
-        hours: [
-          {
-            ...weather.forecastHourly.hours[0],
-            precipitationAmount: props.precipitationAmount,
-            precipitationChance: props.precipitationChance,
-          },
-        ],
+    // the first hour is the current hour
+    if (props.precip || props.precipprob) {
+      weather.days[0].hours[0] = {
+        ...weather.days[0].hours[0],
+        precip: props.precip,
+        precipprob: props.precipprob,
       }
     }
 
-    delete weather.weatherAlerts
+    delete weather.alerts
 
-    nock('https://weatherkit.apple.com')
-    .matchHeader('authorization', `Bearer ${token}`)
-    .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastDaily,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+    nock(weatherUrlBase)
+    .get(weatherPath({ include: 'current,days,hours' }))
     .reply(200, weather)
   }
 
@@ -78,10 +72,6 @@ describe('lib/notion/update-current-weather', () => {
     ])
   }
 
-  function toCelsius (fahrenheit: number) {
-    return (fahrenheit - 32) / 1.8
-  }
-
   beforeEach(() => {
     // mock-fs defers its async callbacks with timers, so only Date is faked
     vi.useFakeTimers({ toFake: ['Date'] })
@@ -99,7 +89,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('updates the current weather block and daily weather table', async () => {
-    const snapshot = nockItUp({ conditionCode: 'Blizzard' })
+    const snapshot = nockItUp({ icon: 'snow' })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -112,8 +102,8 @@ describe('lib/notion/update-current-weather', () => {
   it('colors cool temperature blue', async () => {
     const snapshot = nockItUp({
       // @ts-expect-error
-      conditionCode: 'Other',
-      temperature: toCelsius(40),
+      icon: 'other',
+      temp: 40,
     })
 
     await updateWeather({
@@ -126,8 +116,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('colors warm temperature green', async () => {
     const snapshot = nockItUp({
-      conditionCode: 'Cloudy',
-      temperature: toCelsius(60),
+      icon: 'cloudy',
+      temp: 60,
     })
 
     await updateWeather({
@@ -139,7 +129,7 @@ describe('lib/notion/update-current-weather', () => {
   })
 
   it('colors hot temperature orange', async () => {
-    const snapshot = nockItUp({ temperature: toCelsius(85) })
+    const snapshot = nockItUp({ temp: 85 })
 
     await updateWeather({
       notionToken: 'notion-token',
@@ -151,8 +141,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('colors sweltering temperature red', async () => {
     const snapshot = nockItUp({
-      temperature: toCelsius(100),
-      conditionCode: 'MixedSnowAndSleet',
+      temp: 100,
+      icon: 'thunder-rain',
     })
 
     await updateWeather({
@@ -165,8 +155,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('displays rain icon and probability if rain', async () => {
     const snapshot = nockItUp({
-      conditionCode: 'Rain',
-      precipitationChance: 0.45,
+      icon: 'rain',
+      precipprob: 45,
     })
 
     await updateWeather({
@@ -179,8 +169,8 @@ describe('lib/notion/update-current-weather', () => {
 
   it('displays snow icon and accumulation if snow', async () => {
     const snapshot = nockItUp({
-      conditionCode: 'Snow',
-      precipitationAmount: 25,
+      icon: 'snow',
+      precip: 0.98,
     })
 
     await updateWeather({
@@ -194,11 +184,10 @@ describe('lib/notion/update-current-weather', () => {
   it('uses the location set in the admin page instead of the environment variable', async () => {
     const weather = fixtureContents('weather/weather')
 
-    delete weather.weatherAlerts
+    delete weather.alerts
 
-    const weatherScope = nock('https://weatherkit.apple.com')
-    .matchHeader('authorization', `Bearer ${token}`)
-    .get(`${weatherUrlBasePath.replace('/en/lat/lng', '/en/40.1/-80.2')}&dataSets=currentWeather,forecastDaily,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+    const weatherScope = nock(weatherUrlBase)
+    .get(weatherPath({ include: 'current,days,hours', location: '40.1,-80.2' }))
     .reply(200, weather)
 
     nockGetBlockChildren('current-weather-id', { fixture: 'weather/current-weather-children' })

@@ -6,10 +6,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 delete process.env.TZ
 
 import { updateWeather } from '../../../lib/notion/update-upcoming-weather'
-import { fixtureContents, weatherUrlBasePath } from '../../util'
+import { fixtureContents, weatherPath, weatherUrlBase } from '../../util'
 import { block, nockGetBlockChildren, snapshotUpdateBlocks } from './util'
-
-const token = process.env.APPLE_WEATHER_TOKEN!
 
 describe('lib/notion/update-upcoming-weather', () => {
   beforeEach(() => {
@@ -31,19 +29,18 @@ describe('lib/notion/update-upcoming-weather', () => {
   it('updates upcoming quest dates with temperature and conditions', async () => {
     const weather = fixtureContents('weather/weather')
 
-    delete weather.currentWeather
-    delete weather.forecastHourly
-    delete weather.weatherAlerts
+    delete weather.currentConditions
+    delete weather.alerts
+    weather.days.forEach((day: any) => delete day.hours)
 
-    nock('https://weatherkit.apple.com')
-    .matchHeader('authorization', `Bearer ${token}`)
-    .get(`${weatherUrlBasePath}&dataSets=forecastDaily`)
+    nock(weatherUrlBase)
+    .get(weatherPath({ include: 'days' }))
     .reply(200, weather)
 
     const questBlocks = [
       block.p({ text: 'Some text' }),
       block.p({ text: '' }),
-      block.p({ text: 'Wed, 12/28    🌪 23° / 62°' }),
+      block.p({ text: 'Wed, 12/28    ⛈ 23° / 62°' }),
       block.bullet({ text: 'A task' }),
       block.bullet({ text: 'A task' }),
       block.p({ text: 'Thu, 12/29' }),
@@ -96,13 +93,12 @@ describe('lib/notion/update-upcoming-weather', () => {
   it('does not update dates without weather data', async () => {
     const weather = fixtureContents('weather/weather')
 
-    delete weather.currentWeather
-    delete weather.forecastHourly
-    delete weather.weatherAlerts
+    delete weather.currentConditions
+    delete weather.alerts
+    weather.days.forEach((day: any) => delete day.hours)
 
-    nock('https://weatherkit.apple.com')
-    .matchHeader('authorization', `Bearer ${token}`)
-    .get(`${weatherUrlBasePath}&dataSets=forecastDaily`)
+    nock(weatherUrlBase)
+    .get(weatherPath({ include: 'days' }))
     .reply(200, weather)
 
     const questBlocks = [
@@ -138,13 +134,12 @@ describe('lib/notion/update-upcoming-weather', () => {
   it('uses the location set in the admin page instead of the environment variable', async () => {
     const weather = fixtureContents('weather/weather')
 
-    delete weather.currentWeather
-    delete weather.forecastHourly
-    delete weather.weatherAlerts
+    delete weather.currentConditions
+    delete weather.alerts
+    weather.days.forEach((day: any) => delete day.hours)
 
-    const weatherScope = nock('https://weatherkit.apple.com')
-    .matchHeader('authorization', `Bearer ${token}`)
-    .get(`${weatherUrlBasePath.replace('/en/lat/lng', '/en/40.1/-80.2')}&dataSets=forecastDaily`)
+    const weatherScope = nock(weatherUrlBase)
+    .get(weatherPath({ include: 'days', location: '40.1,-80.2' }))
     .reply(200, weather)
 
     const questBlocks = [

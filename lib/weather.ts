@@ -4,7 +4,8 @@ import { request } from './util/network'
 import { getEnv } from './util/env'
 import dayjs from 'dayjs'
 
-const WEATHER_BASE_URL = 'https://weatherkit.apple.com/api/v1'
+const WEATHER_BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline'
+const FORECAST_DAYS = 10
 
 const weatherIconMap = {
   'blizzard': '🥶',
@@ -31,54 +32,58 @@ export function getWeatherIcon (iconName: WeatherIcon) {
 }
 
 type PrecipitationType = 'clear' | 'precipitation' | 'rain' | 'snow' | 'sleet' | 'hail' | 'mixed'
-export type ConditionCode = 'Blizzard' | 'BlowingSnow' | 'Breezy' | 'Clear' | 'Cloudy' | 'Drizzle' | 'Dust' | 'Flurries' | 'Fog' | 'FreezingDrizzle' | 'FreezingRain' | 'Frigid' | 'Hail' | 'Haze' | 'HeavyRain' | 'HeavySnow' | 'Hot' | 'Hurricane' | 'IsolatedThunderstorms' | 'MixedRainAndSleet' | 'MixedRainAndSnow' | 'MixedRainfall' | 'MixedSnowAndSleet' | 'MostlyClear' | 'MostlyCloudy' | 'PartlyCloudy' | 'Rain' | 'ScatteredShowers' | 'ScatteredSnowShowers' | 'ScatteredThunderstorms' | 'SevereThunderstorm' | 'SevereThunderstorms' | 'Showers' | 'Sleet' | 'Smoke' | 'Snow' | 'SnowShowers' | 'Thunderstorm' | 'Thunderstorms' | 'Tornado' | 'TropicalStorm' | 'Windy' | 'WintryMix'
+// Visual Crossing 'icons2' icon set
+export type SourceIcon = 'clear-day' | 'clear-night' | 'cloudy' | 'fog' | 'partly-cloudy-day' | 'partly-cloudy-night' | 'rain' | 'showers-day' | 'showers-night' | 'snow' | 'snow-showers-day' | 'snow-showers-night' | 'thunder-rain' | 'thunder-showers-day' | 'thunder-showers-night' | 'wind'
+type SourcePrecipitationType = 'rain' | 'snow' | 'freezingrain' | 'ice'
 type Severity = 'extreme' | 'severe' | 'moderate' | 'minor' | 'unknown'
-
-interface SourceAlertDetails {
-  area: string
-  messages: {
-    language: string
-    text: string
-  }[]
-}
 
 interface SourceAlert {
   description: string
-  expireTime: string // ISO-8601 datetime
+  endsEpoch: number // unix timestamp
+  event: string
+  headline: string
   id: string
-  issuedTime: string // ISO-8601 datetime
-  severity: Severity
+  onsetEpoch: number // unix timestamp
 }
 
 interface SourceCurrentWeather {
-  conditionCode: ConditionCode
-  temperature: number // °C
-  temperatureApparent: number // °C
-}
-
-interface SourceDayWeather {
-  conditionCode: ConditionCode
-  forecastStart: string // ISO-8601 datetime
-  precipitationAmount: number // mm
-  precipitationChance: number // 0-1
-  precipitationType: PrecipitationType
-  snowfallAmount: number // mm
-  sunrise: string // ISO-8601 datetime
-  sunset: string // ISO-8601 datetime
-  temperatureMax: number // °C
-  temperatureMin: number // °C
+  conditions: string
+  feelslike: number // °F
+  icon: SourceIcon
+  preciptype: SourcePrecipitationType[] | null
+  temp: number // °F
 }
 
 interface SourceHourWeather {
-  forecastStart: string // ISO-8601 datetime
-  precipitationAmount: number // mm
-  precipitationChance: number // 0-1
-  precipitationIntensity: number // mm/hr
-  precipitationType: PrecipitationType
-  snowfallIntensity: number // mm/hr
-  temperature: number // °C
-  temperatureApparent: number // °C
-  windSpeed: number // kph
+  datetimeEpoch: number // unix timestamp
+  feelslike: number // °F
+  precip: number | null // in
+  precipprob: number | null // 0-100
+  preciptype: SourcePrecipitationType[] | null
+  snow: number | null // in
+  temp: number // °F
+  windspeed: number | null // mph
+}
+
+interface SourceDayWeather {
+  conditions: string
+  datetimeEpoch: number // unix timestamp
+  hours?: SourceHourWeather[]
+  icon: SourceIcon
+  precip: number | null // in
+  precipprob: number | null // 0-100
+  preciptype: SourcePrecipitationType[] | null
+  snow: number | null // in
+  sunriseEpoch: number // unix timestamp
+  sunsetEpoch: number // unix timestamp
+  tempmax: number // °F
+  tempmin: number // °F
+}
+
+interface SourceWeather {
+  alerts?: SourceAlert[]
+  currentConditions?: SourceCurrentWeather
+  days: SourceDayWeather[]
 }
 
 interface Alert {
@@ -122,204 +127,149 @@ interface HourWeather {
   windSpeed: number // mph
 }
 
-export function toIcon (conditionCode: ConditionCode): WeatherIcon {
-  switch (conditionCode) {
-    case 'Blizzard':
-    case 'Frigid':
-    case 'HeavySnow':
-      return 'blizzard'
-
-    case 'BlowingSnow':
-    case 'Flurries':
-    case 'Snow':
-    case 'SnowShowers':
-    case 'ScatteredSnowShowers':
-    case 'WintryMix':
+export function toIcon (sourceIcon: SourceIcon): WeatherIcon {
+  switch (sourceIcon) {
+    case 'snow':
+    case 'snow-showers-day':
+    case 'snow-showers-night':
       return 'snow'
 
-    case 'Breezy':
-    case 'Windy':
+    case 'wind':
       return 'wind'
 
-    case 'Clear':
-    case 'MostlyClear':
+    case 'clear-day':
+    case 'clear-night':
       return 'clear'
 
-    case 'Cloudy':
+    case 'cloudy':
       return 'cloudy'
 
-    case 'Drizzle':
-    case 'HeavyRain':
-    case 'MixedRainfall':
-    case 'Rain':
-    case 'ScatteredShowers':
-    case 'Showers':
+    case 'rain':
+    case 'showers-day':
+    case 'showers-night':
       return 'rain'
 
-    case 'Dust':
-    case 'Fog':
-    case 'Haze':
-    case 'Smoke':
+    case 'fog':
       return 'fog'
 
-    case 'Hot':
-      return 'hot'
-
-    case 'Hurricane':
-      return 'hurricane'
-
-    case 'IsolatedThunderstorms':
-    case 'ScatteredThunderstorms':
-    case 'SevereThunderstorm':
-    case 'SevereThunderstorms':
-    case 'Thunderstorm':
-    case 'Thunderstorms':
-    case 'TropicalStorm':
+    case 'thunder-rain':
+    case 'thunder-showers-day':
+    case 'thunder-showers-night':
       return 'storm'
 
-    case 'FreezingDrizzle':
-    case 'FreezingRain':
-    case 'Hail':
-    case 'MixedRainAndSleet':
-    case 'MixedRainAndSnow':
-    case 'MixedSnowAndSleet':
-    case 'Sleet':
-      return 'sleet'
-
-    case 'MostlyCloudy':
-    case 'PartlyCloudy':
+    case 'partly-cloudy-day':
+    case 'partly-cloudy-night':
       return 'partly-cloudy'
-
-    case 'Tornado':
-      return 'tornado'
 
     default:
       return 'default'
   }
 }
 
-const beforeCapitalLetterRegex = /(?!^)(?=[A-Z])/g
+const isFrozenPrecip = (type: SourcePrecipitationType) => type === 'freezingrain' || type === 'ice'
 
-const conditionCodeToSummary = (conditionCode: ConditionCode) => {
-  return conditionCode.split(beforeCapitalLetterRegex).map((word) => {
-    return word === 'And' ? '&' : word
-  }).join(' ')
+// the icon set has no sleet icon, so derive it from the precipitation type
+function toConditionIcon (sourceIcon: SourceIcon, sourcePrecipType: SourcePrecipitationType[] | null): WeatherIcon {
+  const icon = toIcon(sourceIcon)
+
+  if ((icon === 'rain' || icon === 'snow') && sourcePrecipType?.some(isFrozenPrecip)) {
+    return 'sleet'
+  }
+
+  return icon
 }
 
-const toUnix = (dateString: string) => dayjs(dateString).unix()
-const toFahrenheit = (celsius = 0) => (celsius * 1.8) + 32
-const toInches = (millimeters = 0) => millimeters / 25.4
-const toMiles = (kilometers = 0) => kilometers / 1.609
+export function toPrecipType (sourcePrecipType: SourcePrecipitationType[] | null): PrecipitationType {
+  if (!sourcePrecipType?.length) return 'clear'
+  if (sourcePrecipType.length > 1) return 'mixed'
+  if (isFrozenPrecip(sourcePrecipType[0])) return 'sleet'
 
-async function getAlertMessages (alert: SourceAlert) {
-  const token = getEnv('APPLE_WEATHER_TOKEN')
-
-  const data = await request({
-    url: `${WEATHER_BASE_URL}/weatherAlert/en/${alert.id}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }) as SourceAlertDetails
-
-  return data.messages.map((message) => message.text)
+  return sourcePrecipType[0] as PrecipitationType
 }
 
-async function getAlerts (alerts: SourceAlert[]) {
-  return Promise.all(alerts.map(async (alert) => ({
-    title: alert.description,
-    messages: await getAlertMessages(alert),
-    time: toUnix(alert.issuedTime),
-    expires: toUnix(alert.expireTime),
-    severity: alert.severity,
-  })))
+const toProbability = (percent: number | null = 0) => (percent || 0) / 100
+
+function convertAlerts (alerts: SourceAlert[] = []): Alert[] {
+  return alerts.map((alert) => ({
+    title: alert.event,
+    messages: [alert.description],
+    time: alert.onsetEpoch,
+    expires: alert.endsEpoch,
+    // Visual Crossing does not provide alert severity
+    severity: 'unknown',
+  }))
 }
 
 function convertCurrentWeatherData (currentWeather: SourceCurrentWeather, hourWeather?: SourceHourWeather): CurrentWeather {
   return {
-    apparentTemperature: toFahrenheit(currentWeather.temperatureApparent),
-    icon: toIcon(currentWeather.conditionCode),
-    precipProbability: hourWeather?.precipitationChance,
-    precipAccumulation: toInches(hourWeather?.precipitationAmount),
-    summary: conditionCodeToSummary(currentWeather.conditionCode),
-    temperature: toFahrenheit(currentWeather.temperature),
+    apparentTemperature: currentWeather.feelslike,
+    icon: toConditionIcon(currentWeather.icon, currentWeather.preciptype),
+    precipProbability: hourWeather ? toProbability(hourWeather.precipprob) : undefined,
+    precipAccumulation: hourWeather?.precip || 0,
+    summary: currentWeather.conditions,
+    temperature: currentWeather.temp,
   }
 }
 
-function convertDailyWeatherData (forecastDaily: { days: SourceDayWeather[] }): { data: DayWeather[] } {
+function convertDailyWeatherData (days: SourceDayWeather[]): { data: DayWeather[] } {
   return {
-    data: forecastDaily.days.map((dayWeather) => ({
-      icon: toIcon(dayWeather.conditionCode),
-      precipAccumulation: toInches(dayWeather.precipitationAmount),
-      precipProbability: dayWeather.precipitationChance,
-      precipType: dayWeather.precipitationType,
-      snowAccumulation: toInches(dayWeather.snowfallAmount),
-      sunrise: toUnix(dayWeather.sunrise),
-      sunset: toUnix(dayWeather.sunset),
-      temperatureLow: toFahrenheit(dayWeather.temperatureMin),
-      temperatureHigh: toFahrenheit(dayWeather.temperatureMax),
-      time: toUnix(dayWeather.forecastStart),
+    data: days.map((dayWeather) => ({
+      icon: toConditionIcon(dayWeather.icon, dayWeather.preciptype),
+      precipAccumulation: dayWeather.precip || 0,
+      precipProbability: toProbability(dayWeather.precipprob),
+      precipType: toPrecipType(dayWeather.preciptype),
+      snowAccumulation: dayWeather.snow || 0,
+      sunrise: dayWeather.sunriseEpoch,
+      sunset: dayWeather.sunsetEpoch,
+      temperatureLow: dayWeather.tempmin,
+      temperatureHigh: dayWeather.tempmax,
+      time: dayWeather.datetimeEpoch,
     })),
   }
 }
 
-interface WeatherParams {
-  dataSets: string
-  dailyStart?: string
-  hourlyStart?: string
-  hourlyEnd?: string
+function getHours (data: SourceWeather) {
+  return data.days.flatMap((day) => day.hours || [])
 }
 
-function getWeather (location: string, params: WeatherParams) {
-  const token = getEnv('APPLE_WEATHER_TOKEN')
-  const [lat, lng] = location.split(',')
+function getCurrentHour (data: SourceWeather) {
+  const startOfHour = dayjs().startOf('hour').unix()
 
-  return request({
-    url: `${WEATHER_BASE_URL}/weather/en/${lat}/${lng}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  return getHours(data).find((hour) => hour.datetimeEpoch === startOfHour)
+}
+
+interface WeatherParams {
+  days: number
+  include: string
+}
+
+async function getWeather (location: string, { days, include }: WeatherParams) {
+  const key = getEnv('VISUAL_CROSSING_API_KEY')!
+  const [lat, lng] = location.split(',')
+  const start = dayjs().startOf('day')
+  const end = start.add(days - 1, 'day')
+
+  const data = await request({
+    url: `${WEATHER_BASE_URL}/${lat},${lng}/${start.format('YYYY-MM-DD')}/${end.format('YYYY-MM-DD')}`,
     params: {
-      // TODO: set country and time zone based on location
-      country: 'US',
-      timezone: (process.env.TZ || 'America/New_York'),
-      ...params,
+      key,
+      unitGroup: 'us',
+      lang: 'en',
+      iconSet: 'icons2',
+      include,
     },
   })
-}
 
-function getCurrentHourlyStartAndEnd () {
-  const startOfHour = dayjs().startOf('hour')
-  const endOfHour = startOfHour.add(1, 'hour')
-
-  return {
-    hourlyStart: startOfHour.toISOString(),
-    hourlyEnd: endOfHour.toISOString(),
-  }
-}
-
-interface SourceCurrentAndHourlyWeather {
-  currentWeather: SourceCurrentWeather
-  forecastHourly: {
-    hours: SourceHourWeather[]
-  }
+  return data as SourceWeather
 }
 
 export async function getCurrentWeather (location: string): Promise<CurrentWeather> {
-  const { hourlyStart, hourlyEnd } = getCurrentHourlyStartAndEnd()
-
   const data = await getWeather(location, {
-    dataSets: 'currentWeather,forecastHourly',
-    hourlyEnd,
-    hourlyStart,
-  }) as SourceCurrentAndHourlyWeather
+    days: 1,
+    include: 'current,hours',
+  })
 
-  return convertCurrentWeatherData(data.currentWeather, data.forecastHourly.hours[0])
-}
-
-interface SourceDailyWeather {
-  forecastDaily: {
-    days: SourceDayWeather[]
-  }
+  return convertCurrentWeatherData(data.currentConditions!, getCurrentHour(data))
 }
 
 interface DailyWeather {
@@ -328,27 +278,14 @@ interface DailyWeather {
   }
 }
 
-async function convertDailyData (data: SourceDailyWeather): Promise<DailyWeather> {
-  return {
-    daily: convertDailyWeatherData(data.forecastDaily),
-  }
-}
-
 export async function getDailyWeather (location: string): Promise<DailyWeather> {
   const data = await getWeather(location, {
-    dataSets: 'forecastDaily',
-  }) as SourceDailyWeather
+    days: FORECAST_DAYS,
+    include: 'days',
+  })
 
-  return convertDailyData(data)
-}
-
-interface SourceCurrentAndDailyWeather {
-  currentWeather: SourceCurrentWeather
-  forecastDaily: {
-    days: SourceDayWeather[]
-  }
-  forecastHourly: {
-    hours: SourceHourWeather[]
+  return {
+    daily: convertDailyWeatherData(data.days),
   }
 }
 
@@ -359,36 +296,16 @@ export interface CurrentAndDailyWeather {
   }
 }
 
-async function convertCurrentAndDailyData (data: SourceCurrentAndDailyWeather): Promise<CurrentAndDailyWeather> {
-  return {
-    currently: convertCurrentWeatherData(data.currentWeather, data.forecastHourly.hours[0]),
-    daily: convertDailyWeatherData(data.forecastDaily),
-  }
-}
-
 export async function getCurrentAndDailyWeather (location: string): Promise<CurrentAndDailyWeather> {
-  const { hourlyStart, hourlyEnd } = getCurrentHourlyStartAndEnd()
-
   const data = await getWeather(location, {
-    dataSets: 'currentWeather,forecastDaily,forecastHourly',
-    hourlyEnd,
-    hourlyStart,
-  }) as SourceCurrentAndDailyWeather
+    days: FORECAST_DAYS,
+    include: 'current,days,hours',
+  })
 
-  return convertCurrentAndDailyData(data)
-}
-
-interface SourceAllWeather {
-  currentWeather: SourceCurrentWeather
-  forecastDaily: {
-    days: SourceDayWeather[]
+  return {
+    currently: convertCurrentWeatherData(data.currentConditions!, getCurrentHour(data)),
+    daily: convertDailyWeatherData(data.days),
   }
-  forecastHourly: {
-    hours: SourceHourWeather[]
-  }
-  weatherAlerts: {
-    alerts: SourceAlert[]
-  },
 }
 
 export interface AllWeather {
@@ -402,43 +319,33 @@ export interface AllWeather {
   }
 }
 
-async function convertAllData (data: SourceAllWeather): Promise<AllWeather> {
-  const startOfHour = dayjs().startOf('hour').unix()
-  const currentHourWeather = data.forecastHourly.hours.find((hour) => {
-    return dayjs(hour.forecastStart).unix() === startOfHour
-  })
-
+function convertAllData (data: SourceWeather): AllWeather {
   return {
-    alerts: await getAlerts(data.weatherAlerts.alerts),
-    currently: convertCurrentWeatherData(data.currentWeather, currentHourWeather),
-    daily: convertDailyWeatherData(data.forecastDaily),
+    alerts: convertAlerts(data.alerts),
+    currently: convertCurrentWeatherData(data.currentConditions!, getCurrentHour(data)),
+    daily: convertDailyWeatherData(data.days),
     hourly: {
-      data: data.forecastHourly.hours.map((hourWeather) => ({
-        apparentTemperature: toFahrenheit(hourWeather.temperatureApparent),
-        precipIntensity: toInches(hourWeather.precipitationIntensity),
-        precipProbability: hourWeather.precipitationChance,
-        precipType: hourWeather.precipitationType,
-        snowIntensity: toInches(hourWeather.snowfallIntensity),
-        time: toUnix(hourWeather.forecastStart),
-        temperature: toFahrenheit(hourWeather.temperature),
-        windSpeed: toMiles(hourWeather.windSpeed),
+      data: getHours(data).map((hourWeather) => ({
+        apparentTemperature: hourWeather.feelslike,
+        precipIntensity: hourWeather.precip || 0,
+        precipProbability: toProbability(hourWeather.precipprob),
+        precipType: toPrecipType(hourWeather.preciptype),
+        snowIntensity: hourWeather.snow || 0,
+        time: hourWeather.datetimeEpoch,
+        temperature: hourWeather.temp,
+        windSpeed: hourWeather.windspeed || 0,
       })),
     },
   }
 }
 
 export async function getAllWeather (location: string): Promise<AllWeather> {
-  const startOfDay = dayjs().startOf('day').toISOString()
-
   const data = await getWeather(location, {
-    dataSets: 'currentWeather,forecastDaily,forecastHourly,weatherAlerts',
-    dailyStart: startOfDay,
-    hourlyStart: startOfDay,
-  }) as SourceAllWeather
+    days: FORECAST_DAYS,
+    include: 'current,days,hours,alerts',
+  })
 
   return convertAllData(data)
-  // don't understand why this fails coverage
-  /* v8 ignore next -- @preserve */
 }
 
 export async function get (req: express.Request, res: express.Response) {

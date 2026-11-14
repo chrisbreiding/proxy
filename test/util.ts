@@ -95,7 +95,26 @@ export function replaceStackLines (value: string) {
   return value.replace(stackLineRegex, '[stack lines]')
 }
 
-export const weatherUrlBasePath = '/api/v1/weather/en/lat/lng?country=US&timezone=America%2FNew_York'
+export const weatherUrlBase = 'https://weather.visualcrossing.com'
+
+interface WeatherPathOptions {
+  include: string
+  location?: string
+  start?: string
+  end?: string
+}
+
+export function weatherPath ({ include, location = 'lat,lng', start = '2022-12-28', end = '2023-01-06' }: WeatherPathOptions) {
+  const params = new URLSearchParams({
+    key: 'visual-crossing-key',
+    unitGroup: 'us',
+    lang: 'en',
+    iconSet: 'icons2',
+    include,
+  })
+
+  return `/VisualCrossingWebServices/rest/services/timeline/${location}/${start}/${end}?${params}`
+}
 
 export class RequestError extends Error {
   constructor (message: string, extras: object) {

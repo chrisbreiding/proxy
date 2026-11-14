@@ -18,6 +18,7 @@ import * as sync from './lib/sync'
 import { createTvRoutes } from './lib/tv'
 import { debug } from './lib/util/debug'
 import * as weather from './lib/weather'
+import * as weatherMap from './lib/weather-map'
 
 export function startServer (port: number) {
   const app = express()
@@ -78,6 +79,8 @@ export function startServer (port: number) {
   app.get('/location-search', location.search)
   app.get('/location-details', location.details)
   app.get('/weather', weather.get)
+  app.get('/weather-map/tile/:element/:z/:x/:y.:format', weatherMap.getTile)
+  app.get('/weather-map/legend/:element', weatherMap.getLegend)
   app.get('/dogs/:id', dogs.get)
   app.get('/dogs', dogs.search)
   app.get('/sync/:user/:app/:key', ensureApiKey, sync.get)

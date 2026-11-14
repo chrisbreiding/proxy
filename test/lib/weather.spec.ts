@@ -8,11 +8,9 @@ import {
   vi,
 } from 'vitest'
 
-import { fixtureContents, handleServer, weatherUrlBasePath } from '../util'
+import { fixtureContents, handleServer, weatherPath, weatherUrlBase } from '../util'
 import { startServer } from '../../index'
-import { ConditionCode, getWeatherIcon, toIcon, WeatherIcon } from '../../lib/weather'
-
-const token = process.env.APPLE_WEATHER_TOKEN!
+import { getWeatherIcon, SourceIcon, toIcon, toPrecipType, WeatherIcon } from '../../lib/weather'
 
 describe('lib/weather', () => {
   describe('GET /weather', () => {
@@ -27,21 +25,38 @@ describe('lib/weather', () => {
       vi.useRealTimers()
     })
 
-    it('returns weather and converts data from WeatherKit', async (ctx) => {
-      nock('https://weatherkit.apple.com')
-      .matchHeader('authorization', `Bearer ${token}`)
-      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastDaily,forecastHourly,weatherAlerts&hourlyStart=2022-12-28T05:00:00.000Z&dailyStart=2022-12-28T05:00:00.000Z`)
+    it('returns weather and converts data from Visual Crossing', async (ctx) => {
+      nock(weatherUrlBase)
+      .get(weatherPath({ include: 'current,days,hours,alerts' }))
       .reply(200, fixtureContents('weather/weather'))
-
-      nock('https://weatherkit.apple.com')
-      .matchHeader('authorization', `Bearer ${token}`)
-      .get('/api/v1/weatherAlert/en/alert-id')
-      .reply(200, fixtureContents('weather/weather-alert'))
 
       const res = await ctx.request.get('/weather?location=lat,lng')
 
       expect(res.status).to.equal(200)
       expect(res.body).toMatchSnapshot()
+    })
+
+    it('handles missing hours and wind speed', async (ctx) => {
+      const data = fixtureContents('weather/weather')
+      const remainingHourCount = data.days.slice(1).reduce((count: number, day: { hours: unknown[] }) => {
+        return count + day.hours.length
+      }, 0)
+
+      // the current hour is in the first day, so this also leaves no current hour
+      delete data.days[0].hours
+      data.days[1].hours[0].windspeed = null
+
+      nock(weatherUrlBase)
+      .get(weatherPath({ include: 'current,days,hours,alerts' }))
+      .reply(200, data)
+
+      const res = await ctx.request.get('/weather?location=lat,lng')
+
+      expect(res.status).to.equal(200)
+      expect(res.body.currently.precipProbability).toBeUndefined()
+      expect(res.body.currently.precipAccumulation).to.equal(0)
+      expect(res.body.hourly.data).to.have.length(remainingHourCount)
+      expect(res.body.hourly.data[0].windSpeed).to.equal(0)
     })
 
     it('sends 500 with error if no location specified', async (ctx) => {
@@ -54,8 +69,8 @@ describe('lib/weather', () => {
     })
 
     it('sends 500 with error if error', async (ctx) => {
-      nock('https://weatherkit.apple.com')
-      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastDaily,forecastHourly,weatherAlerts&hourlyStart=2022-12-28T05:00:00.000Z&dailyStart=2022-12-28T05:00:00.000Z`)
+      nock(weatherUrlBase)
+      .get(weatherPath({ include: 'current,days,hours,alerts' }))
       .reply(500, {
         message: 'could not get weather',
       })
@@ -82,60 +97,55 @@ describe('lib/weather', () => {
   })
 
   describe('#toIcon', () => {
-    it('converts WeatherKit conditionCode to icon name', () => {
+    it('converts Visual Crossing icon to icon name', () => {
       const conversions = {
-        'Blizzard': 'blizzard',
-        'Frigid': 'blizzard',
-        'HeavySnow': 'blizzard',
-        'BlowingSnow': 'snow',
-        'Flurries': 'snow',
-        'Snow': 'snow',
-        'SnowShowers': 'snow',
-        'ScatteredSnowShowers': 'snow',
-        'Breezy': 'wind',
-        'Windy': 'wind',
-        'Clear': 'clear',
-        'MostlyClear': 'clear',
-        'Cloudy': 'cloudy',
-        'Drizzle': 'rain',
-        'HeavyRain': 'rain',
-        'MixedRainfall': 'rain',
-        'Rain': 'rain',
-        'ScatteredShowers': 'rain',
-        'Showers': 'rain',
-        'Dust': 'fog',
-        'Fog': 'fog',
-        'Haze': 'fog',
-        'Smoke': 'fog',
-        'Hot': 'hot',
-        'Hurricane': 'hurricane',
-        'IsolatedThunderstorms': 'storm',
-        'ScatteredThunderstorms': 'storm',
-        'SevereThunderstorm': 'storm',
-        'SevereThunderstorms': 'storm',
-        'Thunderstorm': 'storm',
-        'Thunderstorms': 'storm',
-        'TropicalStorm': 'storm',
-        'FreezingDrizzle': 'sleet',
-        'FreezingRain': 'sleet',
-        'Hail': 'sleet',
-        'MixedRainAndSleet': 'sleet',
-        'MixedRainAndSnow': 'sleet',
-        'MixedSnowAndSleet': 'sleet',
-        'Sleet': 'sleet',
-        'MostlyCloudy': 'partly-cloudy',
-        'PartlyCloudy': 'partly-cloudy',
-        'Tornado': 'tornado',
-      } as Record<ConditionCode, WeatherIcon>
+        'snow': 'snow',
+        'snow-showers-day': 'snow',
+        'snow-showers-night': 'snow',
+        'wind': 'wind',
+        'clear-day': 'clear',
+        'clear-night': 'clear',
+        'cloudy': 'cloudy',
+        'rain': 'rain',
+        'showers-day': 'rain',
+        'showers-night': 'rain',
+        'fog': 'fog',
+        'thunder-rain': 'storm',
+        'thunder-showers-day': 'storm',
+        'thunder-showers-night': 'storm',
+        'partly-cloudy-day': 'partly-cloudy',
+        'partly-cloudy-night': 'partly-cloudy',
+      } as Record<SourceIcon, WeatherIcon>
 
-      Object.entries(conversions).forEach(([conditionCode, iconName]) => {
-        expect(toIcon(conditionCode as ConditionCode)).to.equal(iconName)
+      Object.entries(conversions).forEach(([sourceIcon, iconName]) => {
+        expect(toIcon(sourceIcon as SourceIcon)).to.equal(iconName)
       })
     })
 
-    it('returns "default" for unexpected conditionCode', () => {
+    it('returns "default" for unexpected icon', () => {
       // @ts-expect-error
       expect(toIcon('nope')).equal('default')
+    })
+  })
+
+  describe('#toPrecipType', () => {
+    it('returns "clear" if no precipitation', () => {
+      expect(toPrecipType(null)).to.equal('clear')
+      expect(toPrecipType([])).to.equal('clear')
+    })
+
+    it('returns "mixed" if multiple precipitation types', () => {
+      expect(toPrecipType(['rain', 'snow'])).to.equal('mixed')
+    })
+
+    it('returns "sleet" for freezing rain or ice', () => {
+      expect(toPrecipType(['freezingrain'])).to.equal('sleet')
+      expect(toPrecipType(['ice'])).to.equal('sleet')
+    })
+
+    it('returns rain or snow as-is', () => {
+      expect(toPrecipType(['rain'])).to.equal('rain')
+      expect(toPrecipType(['snow'])).to.equal('snow')
     })
   })
 })

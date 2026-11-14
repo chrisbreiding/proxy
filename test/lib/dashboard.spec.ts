@@ -11,9 +11,7 @@ import {
 
 import { startServer } from '../../index'
 import { nockGetBlockChildren, nockNotion } from './notion/util'
-import { fixtureContents, handleServer, weatherUrlBasePath } from '../util'
-
-const token = process.env.APPLE_WEATHER_TOKEN!
+import { fixtureContents, handleServer, weatherPath, weatherUrlBase } from '../util'
 
 describe('lib/dashboard', () => {
   describe('GET /dashboard/:key', () => {
@@ -30,14 +28,8 @@ describe('lib/dashboard', () => {
     it('returns garage, quests, and beans data', async (ctx) => {
       nockGetBlockChildren('quests-id', { reply: { results: [] } })
 
-      nock('https://weatherkit.apple.com')
-      .matchHeader('authorization', `Bearer ${token}`)
-      .get([
-        weatherUrlBasePath,
-        'dataSets=currentWeather,forecastHourly',
-        'hourlyStart=2022-12-28T05:00:00.000Z',
-        'hourlyEnd=2022-12-28T06:00:00.000Z',
-      ].join('&'))
+      nock(weatherUrlBase)
+      .get(weatherPath({ include: 'current,hours', end: '2022-12-28' }))
       .reply(200, fixtureContents('weather/weather'))
 
       nockNotion({
@@ -65,9 +57,9 @@ describe('lib/dashboard', () => {
       expect(res.body.weather).toMatchInlineSnapshot(`
         {
           "data": {
-            "apparentTemperature": 39.092,
+            "apparentTemperature": 39.1,
             "icon": "clear",
-            "precipAccumulation": 0.421259842519685,
+            "precipAccumulation": 0.421,
             "precipProbability": 0.8,
             "summary": "Clear",
             "temperature": 23,
@@ -86,9 +78,8 @@ describe('lib/dashboard', () => {
         reply: { results: [] },
       })
 
-      nock('https://weatherkit.apple.com')
-      .matchHeader('authorization', `Bearer ${token}`)
-      .get(`${weatherUrlBasePath}&dataSets=currentWeather,forecastHourly&hourlyStart=2022-12-28T05:00:00.000Z&hourlyEnd=2022-12-28T06:00:00.000Z`)
+      nock(weatherUrlBase)
+      .get(weatherPath({ include: 'current,hours', end: '2022-12-28' }))
       .reply(500, { message: 'could not get weather' })
 
       mockFs({
